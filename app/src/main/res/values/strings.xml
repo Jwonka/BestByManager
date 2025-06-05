@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Best By Manager</string>
+    <string name="login">Login</string>
+    <string name="home">Home</string>
+    <string name="icon">Grocery Store Picture</string>
+    <string name="logout">Logout</string>
+    <string name="register">Register</string>
+    <string name="user_name">Username: </string>
+    <string name="password">Password: </string>
+    <string name="search">Search</string>
+    <string name="enter_user_name">Enter your username</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="search_text">Search for produce expiration dates</string>
+    <string name="manager">Inventory Expiration Manager</string>
+    <string name="expiration_list">Expiration List</string>
+</resources>
