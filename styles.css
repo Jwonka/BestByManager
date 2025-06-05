@@ -48,6 +48,7 @@ h2 {
 }
 
 .listHeadline {
+  text-align: center;
   font-size: clamp(1.2rem, 2.3vw, 2.5rem);
   margin: 1rem;
 }
