@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/main_screen"
+        android:id="@+id/mainScreen"/>
+    <item android:title="@string/product_list"
+        android:id="@+id/productList"/>
+    <item android:title="@string/search"
+        android:id="@+id/search"/>
+    <item android:title="@string/save_product"
+        android:id="@+id/saveVacation"/>
+    <item android:title="@string/delete_product"
+        android:id="@+id/deleteVacation"/>
+</menu>

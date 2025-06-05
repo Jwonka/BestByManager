@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.bestbymanager.R;
-import com.example.bestbymanager.data.database.DatabaseBuilder;
+import com.example.bestbymanager.data.database.ProductDatabaseBuilder;
 import com.example.bestbymanager.utilities.DateFieldBinder;
 import java.util.Date;
 
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
 
-        DatabaseBuilder.getDatabase(this);
+        ProductDatabaseBuilder.getDatabase(this);
 
         enterStartDate = findViewById(R.id.start_date);
         enterEndDate = findViewById(R.id.end_date);
@@ -54,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            Intent intent = new Intent(MainActivity.this, ExpirationList.class)
+            Intent intent = new Intent(MainActivity.this, ExpiredProductReport.class)
                     .putExtra("startDate", startDateString)
                     .putExtra("endDate", endDateString);
             startActivity(intent);
         });
 
-        Button vacationListButton = findViewById(R.id.expiration_list_button);
+        Button vacationListButton = findViewById(R.id.product_list_button);
         vacationListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ExpirationList.class);
+            Intent intent = new Intent(MainActivity.this, ProductList.class);
             startActivity(intent);
         });
 

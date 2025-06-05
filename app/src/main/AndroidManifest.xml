@@ -12,10 +12,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BestByManager"
         tools:targetApi="31">
+
+        <activity
+            android:name=".UI.activities.ProductDetails"
+            android:exported="false"
+            android:label="@string/product_details"
+            android:windowSoftInputMode="adjustPan"
+            android:parentActivityName=".UI.activities.ProductList" />
+        <activity
+            android:name=".UI.activities.ProductList"
+            android:exported="false"
+            android:label="@string/product_list"
+            android:parentActivityName=".UI.activities.MainActivity" />
+        <activity
+            android:name=".UI.activities.ExpiredProductReport"
+            android:exported="false"
+            android:label="@string/expired_product_report"
+            android:parentActivityName=".UI.activities.MainActivity" />
         <activity
             android:name=".UI.activities.MainActivity"
             android:exported="false"
-            android:label="@string/home" />
+            android:label="@string/main_screen" />
         <activity
             android:name=".UI.activities.LoginActivity"
             android:exported="true"

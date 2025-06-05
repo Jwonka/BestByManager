@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/report_row_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/spacing_s"
+    android:layout_marginHorizontal="@dimen/spacing_m"
+    android:fitsSystemWindows="true"
+    app:cardBackgroundColor="@color/sky_blue"
+    app:cardCornerRadius="0dp"
+    app:strokeColor="@color/black"
+    app:strokeWidth="1dp"
+    app:layout_constraintWidth_max="488dp"
+    tools:context=".UI.activities.ExpiredProductReport">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/report_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_xxs">
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/RowCell"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/expiration_date"
+            app:layout_constraintHorizontal_weight="45"/>
+
+        <TextView
+            android:id="@+id/expiration_date"
+            style="@style/RowCell"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/expired_count"
+            app:layout_constraintHorizontal_weight="35"/>
+
+        <TextView
+            android:id="@+id/expired_count"
+            style="@style/RowCell"
+            app:layout_constraintStart_toEndOf="@id/expiration_date"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="15"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
