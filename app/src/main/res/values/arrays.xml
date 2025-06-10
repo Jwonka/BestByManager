@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="product_categories">
+        <item>@string/select_category</item>
+        <item>Bakery</item>
+        <item>Beverages</item>
+        <item>Breakfast</item>
+        <item>Candy</item>
+        <item>Canned Goods</item>
+        <item>Condiments</item>
+        <item>Dairy</item>
+        <item>Deli</item>
+        <item>Meat</item>
+        <item>Produce</item>
+        <item>Personal Care</item>
+        <item>Snacks</item>
+    </string-array>
+</resources>

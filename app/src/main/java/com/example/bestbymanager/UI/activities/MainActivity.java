@@ -1,6 +1,8 @@
 package com.example.bestbymanager.UI.activities;
 
-import static com.example.bestbymanager.utilities.DateFieldBinder.stripString;
+import static com.example.bestbymanager.utilities.LocalDateBinder.bindDateField;
+import static com.example.bestbymanager.utilities.LocalDateBinder.parseOrToday;
+import static com.example.bestbymanager.utilities.LocalDateBinder.stripString;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,8 +12,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.data.database.ProductDatabaseBuilder;
-import com.example.bestbymanager.utilities.DateFieldBinder;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class MainActivity extends AppCompatActivity {
     Button enterStartDate;
@@ -31,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
         enterStartDate = findViewById(R.id.start_date);
         enterEndDate = findViewById(R.id.end_date);
 
-        Date today = new Date();
+        LocalDate today = LocalDate.now();
 
-        DateFieldBinder.attachSearchListener(enterStartDate, this, today);
-        DateFieldBinder.attachSearchListener(enterEndDate, this, today);
+        bindDateField(enterStartDate, this, today);
+        bindDateField(enterEndDate, this, today);
 
         Button searchButton = findViewById(R.id.search_button);
         searchButton.setOnClickListener(v -> {
@@ -46,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            Date start = DateFieldBinder.parseTheDate(startDateString, this);
-            Date end = DateFieldBinder.parseTheDate(endDateString, this);
+            LocalDate start = parseOrToday(startDateString);
+            LocalDate end = parseOrToday(endDateString);
 
-            if (end.before(start)) {
+            if (end.isBefore(start)) {
                 Toast.makeText(this, "End date must be after the start date.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button vacationListButton = findViewById(R.id.product_list_button);
-        vacationListButton.setOnClickListener(v -> {
+        Button productListButton = findViewById(R.id.product_list_button);
+        productListButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ProductList.class);
             startActivity(intent);
         });

@@ -8,11 +8,12 @@
     <string name="user_name">Username: </string>
     <string name="password">Password: </string>
     <string name="search">Search</string>
-    <string name="enter_user_name">Enter your username</string>
-    <string name="enter_password">Enter your password</string>
+    <string name="enter_user_name">Enter Username</string>
+    <string name="enter_password">Enter Password</string>
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
     <string name="expiration_date">Expiration Date</string>
+    <string name="expiration">Expiration</string>
     <string name="search_text">Search for expired products</string>
     <string name="manager">Inventory Expiration Manager</string>
     <string name="expired_product_list">Expired Product List</string>
@@ -23,7 +24,19 @@
     <string name="save_product">Save Product</string>
     <string name="delete_product">Delete Product</string>
     <string name="title">Title</string>
+    <string name="quantity">Quantity</string>
     <string name="product_name">Product Name</string>
+    <string name="product">Product</string>
     <string name="total">Total</string>
+    <string name="weight">Weight</string>
+    <string name="brand">Brand</string>
+    <string name="barcode">Barcode</string>
+    <string name="scan_barcode">Scan Barcode</string>
+    <string name="category">Category</string>
+    <string name="product_photo">Product photo</string>
     <string name="product_details">Product Details</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="select_photo_source">Select photo source</string>
+    <string name="select_category">Select Category</string>
 </resources>

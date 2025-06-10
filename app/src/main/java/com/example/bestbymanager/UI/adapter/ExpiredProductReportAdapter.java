@@ -7,13 +7,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bestbymanager.R;
-import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.pojo.ExpiredProductReportRow;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExpiredProductReportAdapter  extends RecyclerView.Adapter<ExpiredProductReportAdapter.ReportViewHolder> {
     public interface OnRowClick { void onRowClick(int productID); }
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     private List<ExpiredProductReportRow> data = new ArrayList<>();
     private final OnRowClick listener;
@@ -39,13 +40,12 @@ public class ExpiredProductReportAdapter  extends RecyclerView.Adapter<ExpiredPr
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         ExpiredProductReportRow results = data.get(position);
-        Product product = results.product;
 
-        holder.name.setText(product.getProductName());
-        holder.date.setText(product.getExpirationDate());
+        holder.name.setText(results.productName);
+        holder.date.setText(results.expirationDate.format(FMT));
         holder.count.setText(String.valueOf(results.expiredCount));
 
-        holder.itemView.setOnClickListener(vacation1 -> listener.onRowClick(product.getProductID()));
+        holder.itemView.setOnClickListener(vacation1 -> listener.onRowClick(results.productID));
     }
 
     @Override

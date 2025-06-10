@@ -39,7 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.itemView.setOnClickListener(view -> listener.onProductClick(current.getProductID()));
     }
 
-    public void setVacations(List<Product> products){
+    public void setProducts(List<Product> products){
         mProducts = products;
         notifyDataSetChanged();
     }

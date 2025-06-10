@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -44,9 +44,9 @@
                 android:id="@+id/grocery_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/best_by_manager_icon_black"
+                android:src="@drawable/best_by_manager_icon"
                 android:contentDescription="@string/icon"
-                app:layout_constraintWidth_percent="0.4"
+                app:layout_constraintWidth_percent="0.5"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintTop_toBottomOf="@id/login_title"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
                 android:id="@+id/credentials_panel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_l"
+                android:layout_marginTop="@dimen/spacing_xxl"
                 android:layout_marginBottom="@dimen/spacing_s"
                 android:background="@color/sky_blue"
                 android:padding="@dimen/padding_m"
@@ -70,25 +70,20 @@
                     android:id="@+id/username_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    style="@style/CompactOutlinedBox"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    style="@style/WhiteOutlinedBox">
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/user_name_input"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minHeight="@dimen/row_height"
                         android:hint="@string/enter_user_name"
                         android:inputType="textPersonName"
-                        android:minHeight="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="3dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
                         android:textSize="20sp"
+                        style="@style/CompactEditText"
                         tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,26 +92,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    style="@style/CompactOutlinedBox"
                     app:endIconMode="password_toggle"
                     app:layout_constraintTop_toBottomOf="@id/username_layout"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    style="@style/WhiteOutlinedBox">
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_input"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minHeight="@dimen/row_height"
                         android:inputType="textPassword"
                         android:hint="@string/enter_password"
-                        android:minHeight="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="3dp"
                         android:textSize="20sp"
-                        android:textColorHint="@color/black"
-                        android:textColor="@color/black"
+                        style="@style/CompactEditText"
                         tools:ignore="TextContrastCheck"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -131,7 +121,7 @@
                 app:layout_constraintTop_toBottomOf="@id/credentials_panel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_l"/>
+                android:layout_marginTop="@dimen/spacing_xl"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/register_button"
@@ -143,17 +133,9 @@
                 app:layout_constraintTop_toBottomOf="@id/login_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_l"/>
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginBottom="@dimen/spacing_xxl"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="VisualLintBottomNav" />
 </androidx.constraintlayout.widget.ConstraintLayout>

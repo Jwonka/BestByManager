@@ -51,7 +51,7 @@ public class ProductList extends AppCompatActivity {
                 message.setVisibility(View.VISIBLE);
             } else {
                 message.setVisibility(View.GONE);
-                productAdapter.setVacations(list);
+                productAdapter.setProducts(list);
             }
         });
     }

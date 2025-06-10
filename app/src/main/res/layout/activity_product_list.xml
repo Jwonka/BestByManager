@@ -52,22 +52,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/product_details_button"
-        style="@style/LightGreenPillBig"
+        style="@style/DarkGreenPillBig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product"
-        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/spacing_l"/>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="VisualLintBottomNav"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/spacing_xxl"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

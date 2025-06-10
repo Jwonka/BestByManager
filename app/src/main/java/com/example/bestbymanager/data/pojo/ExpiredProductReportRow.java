@@ -1,12 +1,17 @@
 package com.example.bestbymanager.data.pojo;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
-import com.example.bestbymanager.data.entities.Product;
+import java.time.LocalDate;
 
 public class ExpiredProductReportRow {
-    @Embedded(prefix = "prod_")
-    public Product product;
+    @ColumnInfo(name = "prod_productID")
+    public int       productID;
 
-    @ColumnInfo(name = "expiredCount") public int expiredCount;
+    @ColumnInfo(name = "prod_productName")
+    public String    productName;
+
+    @ColumnInfo(name = "prod_expirationDate")
+    public LocalDate expirationDate;
+
+    public int       expiredCount;
 }
