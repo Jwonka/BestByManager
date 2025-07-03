@@ -4,21 +4,30 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import com.example.bestbymanager.UI.authentication.Session;
+import com.example.bestbymanager.data.api.OffApi;
+import com.example.bestbymanager.data.api.ProductResponse;
 import com.example.bestbymanager.data.dao.ProductDAO;
 import com.example.bestbymanager.data.dao.UserDAO;
 import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.entities.User;
-import com.example.bestbymanager.data.pojo.ExpiredProductReportRow;
+import com.example.bestbymanager.data.pojo.ProductReportRow;
+import com.example.bestbymanager.utilities.AlarmScheduler;
+import com.example.bestbymanager.utilities.BarcodeUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Repository {
     private final UserDAO mUserDAO;
@@ -26,37 +35,73 @@ public class Repository {
     private final Context context;
     public static final int NUMBER_OF_THREADS = 4;
     private final Executor executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    private final OffApi api;
 
     public Repository(Application application) {
         this.context = application.getApplicationContext();
         ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(application);
         mUserDAO=db.userDAO();
         mProductDAO=db.productDAO();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://world.openfoodfacts.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        api = retrofit.create(OffApi.class);
     }
 
-    public LiveData<List<ExpiredProductReportRow>> searchReport(LocalDate date) { return mProductDAO.reportRows(date); }
+    public Product getRecentExpirationByBarcode(String code) { return mProductDAO.getRecentExpirationByBarcode(code); }
+    public LiveData<List<Product>> getProductsByBarcode(String code) { return mProductDAO.getProductsByBarcode(code); }
+    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { api.getByBarcode(barcode).enqueue(cb); }
     public LiveData<List<Product>> getProducts(){ return mProductDAO.getProducts(); }
-    public LiveData<List<Product>> getExpiringSoon(LocalDate today, LocalDate selected) {return mProductDAO.getExpiringSoon(today, selected); }
-    public LiveData<Product> getProduct(int productID){ return mProductDAO.getProduct(productID); }
+    public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }
+    public LiveData<User> getUser(long userID){ return mUserDAO.getUser(userID); }
+    public LiveData<List<User>> getUsers(){ return mUserDAO.getUsers(); }
+    public LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected) {return mProductDAO.getExpiring(from, selected); }
+    public LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected) {return mProductDAO.getProductsByDateRange(from, selected); }
+    public LiveData<List<ProductReportRow>> getExpired(LocalDate today) {return mProductDAO.getExpired(today); }
+    public LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode) { return mProductDAO.getReportRowsByBarcode(barcode); }
     public void insertProduct(Product product) { executor.execute(() -> {
-            long id = mProductDAO.insert(product);
+        try {
+            product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));
+            Log.d("BARCODE-SAVE", BarcodeUtil.toCanonical(product.getBarcode()));
+        } catch (IllegalArgumentException ex) {
+            showToast("Unsupported or unreadable barcode");
+            return;
+        }
+        long id = mProductDAO.insert(product);
             if (id == -1) {
                 showToast("Product already exists.");
+            } else {
+                product.setProductID(id);
+                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(), product.getProductName() + " expires today.");
             }
         });
     }
     public void updateProduct(Product product) { executor.execute(() -> {
+            try {
+                product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));
+            } catch (IllegalArgumentException ex) {
+                showToast("Unsupported or unreadable barcode");
+                return;
+            }
             int rows = mProductDAO.updateProduct(product);
             if (rows == 0) {
                 showToast("Error - conflict on barcode or ID.");
+            }  else {
+                AlarmScheduler.cancelAlarm(context, product.getProductID());
+                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(), product.getProductName() + " expires today.");
             }
         });
     }
     public void deleteProduct(Product product) { executor.execute(() -> {
-        int rows = mProductDAO.deleteProduct(product);
-        if (rows == 0) {
-            showToast("Product not found.");
-        }
+            int rows = mProductDAO.deleteProduct(product);
+            if (rows == 0) {
+                showToast("Product not found.");
+            }  else {
+                AlarmScheduler.cancelAlarm(context, product.getProductID());
+            }
         });
     }
 
@@ -75,7 +120,7 @@ public class Repository {
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
             if(user != null && BCrypt.checkpw(plainPassword, user.getHash())){
-                Session.get().logIn(user);
+                Session.get().logIn(user, context);
                 pass.postValue(user);
             } else {
                 pass.postValue(null);
@@ -97,7 +142,7 @@ public class Repository {
             if (id > 0) {
                 User user = new User((int) id, userName, hash);
                 user.isAdmin = isFirstUser;
-                Session.get().logIn(user);
+                Session.get().logIn(user, context);
                 registered.postValue(user);
             } else {
                 registered.postValue(null);

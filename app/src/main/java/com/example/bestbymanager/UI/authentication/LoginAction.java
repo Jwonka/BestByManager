@@ -1,5 +1,6 @@
 package com.example.bestbymanager.UI.authentication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
@@ -17,11 +18,16 @@ public class LoginAction extends AuthenticationAction {
     protected void performAuthorization(String name, String plainPassword) {
         repository.login(name, plainPassword).observe((LifecycleOwner) context, user -> {
             if (user != null) {
-                context.startActivity(new Intent(context, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                if (Session.get().isLoggedOut()) {
+                    Toast.makeText(context, "Session not set!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent deep = ((Activity) context).getIntent().getParcelableExtra("deepLink");
+                Intent target = deep != null ? deep : new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(target);
                 String welcome = user.isAdmin ? "Welcome administrator " + user.getUserName() : "Welcome " + user.getUserName();
                 Toast.makeText(context, welcome, Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
             } else {
                 Toast.makeText(context, "Invalid username or password.", Toast.LENGTH_SHORT).show();
             }

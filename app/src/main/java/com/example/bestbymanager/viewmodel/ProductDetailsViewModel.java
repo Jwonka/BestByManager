@@ -7,8 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
+import com.example.bestbymanager.data.api.ProductResponse;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.entities.Product;
+import com.example.bestbymanager.utilities.BarcodeUtil;
+import retrofit2.Callback;
 
 public class ProductDetailsViewModel extends AndroidViewModel {
 
@@ -21,7 +24,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
         super(app);
         repository = new Repository(app);
 
-        LiveData<Integer> idLive = handle.getLiveData("productID", -1);
+        LiveData<Long> idLive = handle.getLiveData("productID", -1L);
 
         product = Transformations.switchMap(idLive, id -> {
             if (id == null || id <= 0) {
@@ -39,6 +42,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
             repository.updateProduct(product);
         }
     }
-
+    public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(BarcodeUtil.toCanonical(code)); }
     public void delete(Product product) { repository.deleteProduct(product); }
+    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { repository.fetchProduct(BarcodeUtil.toCanonical(barcode), cb); }
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mint_green"
+    android:fitsSystemWindows="true"
+    tools:context=".UI.activities.UserList">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/no_users_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="0dp"
+        android:layout_marginHorizontal="@dimen/spacing_xs"
+        app:cardBackgroundColor="@color/sky_blue"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="488dp">
+
+        <TextView
+            android:id="@+id/no_users_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/padding_m"
+            android:text="@string/no_users"
+            android:textColor="@color/black"
+            style="@style/OutlinedBox"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginHorizontal="0dp"
+        android:contentDescription="@string/product_list"
+        style="@style/OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/no_users_card"
+        app:layout_constraintBottom_toTopOf="@id/user_details_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/user_details_button"
+        style="@style/DarkGreenPillBig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_user"
+        android:paddingLeft="@dimen/spacing_sm"
+        android:paddingRight="@dimen/spacing_sm"
+        android:layout_marginBottom="@dimen/padding_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -43,4 +47,11 @@ dependencies {
     androidTestImplementation"androidx.room:room-testing:$rootProject.roomVersion"
     implementation (libs.jbcrypt)
     implementation libs.zxing.android.embedded
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.glide
+    annotationProcessor libs.compiler
+    implementation libs.zxing.core
+    implementation(libs.exifinterface)
+    implementation libs.preference
 }

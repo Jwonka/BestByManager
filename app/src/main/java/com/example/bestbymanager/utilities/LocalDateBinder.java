@@ -5,11 +5,24 @@ import android.content.Context;
 import android.widget.TextView;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
 import java.util.Locale;
 
 public final class LocalDateBinder {
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd/yy").withLocale(Locale.US);
+    private static final DateTimeFormatter FMT = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, SignStyle.NOT_NEGATIVE)
+            .appendLiteral('/')
+            .appendValue(ChronoField.DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE)
+            .appendLiteral('/')
+            .appendValueReduced(ChronoField.YEAR, 2, 2, 2000)
+            .toFormatter(Locale.US);
+
+    public static String format(LocalDate date) {
+        return date.format(FMT);
+    }
 
     public static LocalDate parseOrToday(String s) {
         try {
@@ -21,10 +34,6 @@ public final class LocalDateBinder {
     }
 
     public static void bindDateField(TextView field, Context context) {
-        bindDateField(field, context, LocalDate.now());
-    }
-
-    public static void bindDateField(TextView field, Context context, LocalDate today) {
 
         field.setOnClickListener(v -> {
             LocalDate seed = parseOrToday(field.getText().toString());
@@ -44,10 +53,6 @@ public final class LocalDateBinder {
     }
 
     public static void bindFutureDateField(TextView field, Context context) {
-        bindFutureDateField(field, context, LocalDate.now());
-    }
-
-    public static void bindFutureDateField(TextView field, Context context, LocalDate today) {
 
         field.setOnClickListener(v -> {
             LocalDate seed = parseOrToday(field.getText().toString());

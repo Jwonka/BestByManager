@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "user", indices = @Index(value = "userName", unique = true))
 public class User {
     @PrimaryKey(autoGenerate = true)
-    private int userID;
+    private long userID;
     @NonNull
     private String userName;
     @NonNull
@@ -24,13 +24,13 @@ public class User {
     }
 
     // Constructor for Room to read the database
-    public User(int userID, @NonNull String userName, @NonNull String hash) {
+    public User(long userID, @NonNull String userName, @NonNull String hash) {
         this.userID = userID;
         this.userName = userName;
         this.hash = hash;
     }
 
-    public int getUserID() {
+    public long getUserID() {
         return userID;
     }
 
