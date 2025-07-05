@@ -27,7 +27,7 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE productID = :productID LIMIT 1")
     LiveData<Product> getProduct(long productID);
 
-    @Query("SELECT * FROM product ORDER BY expirationDate")
+    @Query("SELECT * FROM product ORDER BY expirationDate ASC")
     LiveData<List<Product>> getProducts();
 
     @Query("SELECT product.productID, " +

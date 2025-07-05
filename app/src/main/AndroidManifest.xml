@@ -37,10 +37,18 @@
         </provider>
 
         <activity
+            android:name=".UI.activities.UserReport"
+            android:exported="false"
+            android:parentActivityName=".UI.activities.UserSearch" />
+        <activity
+            android:name=".UI.activities.UserSearch"
+            android:exported="false"
+            android:parentActivityName=".UI.activities.AdministratorActivity" />
+        <activity
             android:name=".UI.activities.UserDetails"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".UI.activities.AdministratorActivity" />
+            android:parentActivityName=".UI.activities.UserList" />
         <activity
             android:name=".UI.activities.UserList"
             android:exported="false"

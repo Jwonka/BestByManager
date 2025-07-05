@@ -9,7 +9,7 @@
     <string name="user_name">Username: </string>
     <string name="password">Password: </string>
     <string name="search">Search</string>
-    <string name="enter_user_name">Enter Username</string>
+    <string name="enter_user_name">Username</string>
     <string name="enter_password">Enter Password</string>
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
@@ -27,6 +27,8 @@
     <string name="no_products">No Products</string>
     <string name="no_users">No Users</string>
     <string name="user_details">User Details</string>
+    <string name="user_report">User Report</string>
+    <string name="user_search">User Search</string>
     <string name="add_user">Add User</string>
     <string name="add_product">Add Product</string>
     <string name="clear_product">Clear</string>
@@ -34,7 +36,14 @@
     <string name="view_expired">View expired or expiring soon</string>
     <string name="switch_mode_desc">Update existing or Add new expiration</string>
     <string name="search_date_range">Search date range</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="user_id">UserID</string>
     <string name="toggle_mode_hint">Add</string>
+    <string name="toggle_admin">Make administrator?</string>
+    <string name="make_admin">Administrator</string>
+    <string name="save_user">Save User</string>
+    <string name="save_admin">Save Admin</string>
     <string name="save_product">Save Product</string>
     <string name="delete_product">Delete Product</string>
     <string name="title">Title</string>

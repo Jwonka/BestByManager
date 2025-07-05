@@ -49,7 +49,7 @@
                     app:layout_constraintWidth_percent="1">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_brand"
+                        android:id="@+id/edit_username"
                         style="@style/CompactEditText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -299,7 +299,7 @@
                     app:layout_constraintTop_toBottomOf="@id/image_preview">
 
                     <TextView
-                        android:id="@+id/add_label"
+                        android:id="@+id/administrator_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/toggle_mode_hint"

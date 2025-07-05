@@ -18,7 +18,7 @@ import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class}, version = 11, exportSchema = false)
+@Database(entities = {User.class, Product.class}, version = 12, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
     public abstract UserDAO userDAO();
@@ -30,7 +30,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                 if(INSTANCE==null) {
                     Log.d("ProductDatabase", "Creating new database instance");
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), ProductDatabaseBuilder.class, "MyProductDatabase.db")
-                            .addMigrations(MIGRATION_10_11)
+                            .addMigrations(MIGRATION_10_11, MIGRATION_11_12)
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
                             .build();
@@ -39,6 +39,16 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE user ADD COLUMN firstName TEXT NOT NULL DEFAULT ''");
+            db.execSQL("ALTER TABLE user ADD COLUMN lastName  TEXT NOT NULL DEFAULT ''");
+            db.execSQL("ALTER TABLE user ADD COLUMN thumbnail BLOB");
+        }
+    };
+
     static final Migration MIGRATION_10_11 = new Migration(10, 11) {
         @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
 

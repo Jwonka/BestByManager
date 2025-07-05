@@ -38,7 +38,7 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
     @NonNull
     @Override
     public ReportViewHolder onCreateViewHolder(@NonNull ViewGroup p, int t) {
-        View row = LayoutInflater.from(p.getContext()).inflate(R.layout.report_row_item, p, false);
+        View row = LayoutInflater.from(p.getContext()).inflate(R.layout.product_report_row_item, p, false);
         return new ReportViewHolder(row);
     }
 

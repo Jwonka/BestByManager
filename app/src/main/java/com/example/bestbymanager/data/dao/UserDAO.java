@@ -15,7 +15,7 @@ import java.util.List;
 
 @Dao
 public interface UserDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     long insert(User user);
 
     @Update

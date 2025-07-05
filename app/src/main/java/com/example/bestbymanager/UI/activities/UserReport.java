@@ -9,18 +9,18 @@ import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
-import com.example.bestbymanager.UI.adapter.ProductReportAdapter;
+import com.example.bestbymanager.UI.adapter.UserReportAdapter;
 import com.example.bestbymanager.UI.authentication.Session;
-import com.example.bestbymanager.databinding.ActivityProductReportBinding;
-import com.example.bestbymanager.viewmodel.ProductReportViewModel;
+import com.example.bestbymanager.databinding.ActivityUserReportBinding;
+import com.example.bestbymanager.viewmodel.UserReportViewModel;
 
-public class ProductReport extends AppCompatActivity {
+public class UserReport extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.product_report);
-        ActivityProductReportBinding binding = ActivityProductReportBinding.inflate(getLayoutInflater());
+        setTitle(R.string.user_report);
+        ActivityUserReportBinding binding = ActivityUserReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Bundle args = new Bundle();
@@ -29,19 +29,19 @@ public class ProductReport extends AppCompatActivity {
         args.putString("mode",      getIntent().getStringExtra("mode"));
         args.putString("barcode",   getIntent().getStringExtra("barcode"));
 
-        ProductReportViewModel prViewModel = new ViewModelProvider(
+        UserReportViewModel userViewModel = new ViewModelProvider(
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
-        ).get(ProductReportViewModel.class);
+        ).get(UserReportViewModel.class);
 
-        ProductReportAdapter prAdapter = new ProductReportAdapter(id ->
-                startActivity(new Intent(this, ProductDetails.class)
-                        .putExtra("productID", id)));
+        UserReportAdapter userAdapter = new UserReportAdapter(id ->
+                startActivity(new Intent(this, UserDetails.class)
+                        .putExtra("userID", id)));
 
-        binding.reportRecycler.setLayoutManager(new LinearLayoutManager(this));
-        binding.reportRecycler.setAdapter(prAdapter);
+        binding.userReportRecycler.setLayoutManager(new LinearLayoutManager(this));
+        binding.userReportRecycler.setAdapter(userAdapter);
 
-        prViewModel.getReport().observe(this, prAdapter::setReportList);
+        userViewModel.getReport().observe(this, userAdapter::setUserList);
     }
 
     @Override

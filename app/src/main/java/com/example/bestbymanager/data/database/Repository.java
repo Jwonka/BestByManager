@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -24,7 +26,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -136,11 +137,11 @@ public class Repository {
             String hash = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
 
             User toInsert = new User(userName, hash);
-            toInsert.isAdmin = isFirstUser;
+            toInsert.setAdmin(isFirstUser);
 
             long id = mUserDAO.insert(toInsert);
             if (id > 0) {
-                User user = new User((int) id, userName, hash);
+                User user = new User(userName, hash);
                 user.isAdmin = isFirstUser;
                 Session.get().logIn(user, context);
                 registered.postValue(user);
@@ -151,6 +152,29 @@ public class Repository {
         });
         return registered;
     }
+
+    public void addUser(User user, String plainPassword) {
+        executor.execute(() -> {
+            user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+
+            long id = mUserDAO.insert(user);
+            if (id > 0) {
+                showToast("User added.");
+            } else {
+                showToast("Username already taken.");
+            }
+        });
+    }
+
+    public void updateUser(User user, @Nullable String newPlainPassword) {
+        executor.execute(() -> {
+            if (newPlainPassword != null && !newPlainPassword.isEmpty()) {
+                user.setHash(BCrypt.hashpw(newPlainPassword, BCrypt.gensalt()));
+            }
+            mUserDAO.update(user);
+        });
+    }
+    public void deleteUser(User user) { executor.execute(() -> mUserDAO.delete(user)); }
 
     private void showToast(String msg) {
         new Handler(Looper.getMainLooper()).post(

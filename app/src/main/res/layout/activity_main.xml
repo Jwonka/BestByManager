@@ -26,7 +26,7 @@
         app:layout_constraintDimensionRatio="1:1"/>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/search_panel"
+        android:id="@+id/user_search_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_s"

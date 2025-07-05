@@ -22,10 +22,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public UserAdapter(UserAdapter.OnUserClick l) { this.listener = l; }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView username;
+        TextView username, userID;
         UserViewHolder(View view) {
             super(view);
             username = view.findViewById(R.id.user_name);
+            userID = view.findViewById(R.id.user_id);
         }
     }
 
@@ -43,6 +44,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User user = data.get(position);
 
         holder.username.setText(user.getUserName());
+        holder.userID.setText(String.valueOf(user.getUserID()));
         holder.itemView.setOnClickListener(v -> listener.onUserClick(user.getUserID()));
     }
 

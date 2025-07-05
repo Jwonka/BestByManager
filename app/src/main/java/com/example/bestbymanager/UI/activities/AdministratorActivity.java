@@ -17,13 +17,18 @@ public class AdministratorActivity extends AppCompatActivity {
         ActivityAdministratorBinding binding = ActivityAdministratorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.userListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserList.class);
+            startActivity(intent);
+        });
+
         binding.userDetailsButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdministratorActivity.this, UserDetails.class);
             startActivity(intent);
         });
 
-        binding.userListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AdministratorActivity.this, UserList.class);
+        binding.userReportButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserReport.class);
             startActivity(intent);
         });
     }

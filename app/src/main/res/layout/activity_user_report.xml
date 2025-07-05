@@ -3,17 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_report_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mint_green"
     android:fitsSystemWindows="true"
-    tools:context=".UI.activities.AboutActivity">
+    tools:context=".UI.activities.UserReport">
 
     <TextView
-        android:id="@+id/product_report_title"
+        android:id="@+id/user_report_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/about"
+        android:text="@string/user_report"
         android:textColor="@color/black"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -21,6 +22,15 @@
         android:background="@color/light_orange"
         android:padding="@dimen/padding_m"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_report_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/user_report_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
