@@ -63,6 +63,7 @@ public class Repository {
     public LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected) {return mProductDAO.getProductsByDateRange(from, selected); }
     public LiveData<List<ProductReportRow>> getExpired(LocalDate today) {return mProductDAO.getExpired(today); }
     public LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode) { return mProductDAO.getReportRowsByBarcode(barcode); }
+    public LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String barcode, LocalDate from, LocalDate to) { return mProductDAO.getProductsByBarcodeAndDateRange(barcode, from, to); }
     public void insertProduct(Product product) { executor.execute(() -> {
         try {
             product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));

@@ -35,6 +35,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/user_id"
                 android:layout_marginTop="@dimen/spacing_s"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -50,6 +53,8 @@
                 android:inputType="none"
                 android:textStyle="bold"
                 android:gravity="center"
+                android:textSize="20sp"
+                android:textColorHint="@color/black"
                 android:textColor="@color/black"
                 tools:text="UserID"
             tools:ignore="TouchTargetSizeCheck" />
@@ -64,6 +69,7 @@
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
                 android:maxLines="1"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_id_input_layout"
@@ -166,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:hint="@string/password"
+                    android:hint="@string/enter_password"
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
@@ -175,6 +181,24 @@
                     android:maxLines="1"
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/password_requirements"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="@dimen/padding_m"
+                android:fontFamily="sans-serif"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:gravity="center"
+                android:text="@string/password_requirements"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/password_input_layout"
+                tools:ignore="TextContrastCheck" />
 
             <ImageView
                 android:id="@+id/image_preview"
@@ -190,20 +214,21 @@
                 android:focusable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/password_input_layout"
+                app:layout_constraintTop_toBottomOf="@id/password_requirements"
                 app:layout_constraintWidth_percent="1"
                 app:layout_constraintDimensionRatio="16:9"
                 android:clipToOutline="true"
                 tools:targetApi="31"
                 tools:ignore="VisualLintBounds" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom_actions"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/spacing_l"
+                android:layout_marginBottom="@dimen/spacing_s"
                 android:layout_marginStart="@dimen/padding_xxs"
                 android:layout_marginEnd="@dimen/padding_xxs"
                 app:layout_constraintTop_toBottomOf="@id/image_preview"
@@ -215,39 +240,54 @@
                     android:id="@+id/administrator_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/toggle_admin"
+                    android:text="@string/deny_admin"
                     android:textSize="12sp"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/admin_toggle"
                     android:layout_marginEnd="@dimen/padding_xxs"
-                    android:textColor="@color/black"/>
+                    app:layout_constraintHorizontal_chainStyle="packed"/>
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/make_admin"
+                    android:id="@+id/admin_toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:layout_marginEnd="@dimen/padding_xxs"
                     android:textOff="@string/save_user"
                     android:textOn="@string/save_admin"
-                    tools:ignore="DuplicateSpeakableTextCheck" />
+                    tools:ignore="DuplicateSpeakableTextCheck"
+                    app:layout_constraintStart_toEndOf="@id/administrator_label"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_user_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_xs"
-                    android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/save_user"/>
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/padding_m"
+                    android:text="@string/save_user"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/administrator_label"
+                    tools:ignore="DuplicateSpeakableTextCheck"
+                    app:layout_constraintHorizontal_chainStyle="packed"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/clear_user_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_l"
-                    android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/clear_product"/>
+                    android:layout_marginStart="@dimen/spacing_xxl"
+                    android:paddingHorizontal="@dimen/padding_m"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:text="@string/clear_product"
+                    app:layout_constraintStart_toEndOf="@id/save_user_button"
+                    app:layout_constraintBaseline_toBaselineOf="@id/save_user_button"/>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

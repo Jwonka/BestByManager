@@ -27,8 +27,8 @@ public class AdministratorActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.userReportButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AdministratorActivity.this, UserReport.class);
+        binding.userSearchButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserSearch.class);
             startActivity(intent);
         });
     }

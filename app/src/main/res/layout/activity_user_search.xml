@@ -46,18 +46,46 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_m">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_search_input_layout"
+                style="@style/CompactOutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:endIconTint="@color/black">
+
+                <AutoCompleteTextView
+                    android:id="@+id/user_dropdown"
+                    style="@style/CompactEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="@string/search_users"
+                    android:inputType="textCapWords|textNoSuggestions"
+                    android:maxLines="1"
+                    android:minHeight="@dimen/row_height"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:imeOptions="actionDone"
+                    tools:ignore="TextContrastCheck"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/barcode_input_layout"
                 style="@style/CompactOutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_search_input_layout"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_barcode_scanner"
                 app:endIconTint="@color/black"

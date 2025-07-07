@@ -11,10 +11,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -42,6 +42,7 @@ public class UserDetails extends AppCompatActivity {
     private static final String TAG = "UserDetails";
     private static final int REQ_CAMERA = 10;
     private EditText userID, firstName, lastName, username, password;
+    private TextView adminLabel;
     Button saveButton;
     Button clearButton;
     SwitchMaterial modeSwitch;
@@ -83,16 +84,16 @@ public class UserDetails extends AppCompatActivity {
         username = binding.editUsername;
         password = binding.editPassword;
         preview = binding.imagePreview;
-        modeSwitch = binding.makeAdmin;
+        modeSwitch = binding.adminToggle;
         saveButton = binding.saveUserButton;
         clearButton = binding.clearUserButton;
+        adminLabel = binding.administratorLabel;
         binding.imagePreview.setOnClickListener(v -> {
             if (ensureCameraPermission()) {
                 launchCamera();
             }
         });
-        modeSwitch.setEnabled(true);
-        modeSwitch.setOnCheckedChangeListener((b, checked) -> saveButton.setText(checked ? R.string.save_admin : R.string.save_user));
+        modeSwitch.setOnCheckedChangeListener((btn, isChecked) -> updateAdmin(isChecked));
         clearButton.setOnClickListener(v -> clearForm());
         saveButton.setOnClickListener(v -> saveUser());
 
@@ -100,16 +101,14 @@ public class UserDetails extends AppCompatActivity {
             handleImage(imageUri);
         }
 
-        userViewModel = new ViewModelProvider(this,
-                new SavedStateViewModelFactory(getApplication(), this))
-                .get(UserDetailsViewModel.class);
+        userViewModel = new ViewModelProvider(this, new SavedStateViewModelFactory(getApplication(), this)).get(UserDetailsViewModel.class);
 
         userViewModel.getUser().observe(this, user -> {
-            if (user == null) {
-                return;
-            }
+            if (user == null) { return; }
             currentUser = user;
             populateForm(user);
+            boolean isAdmin = user.isAdmin();
+            modeSwitch.setChecked(isAdmin);
             thumbBlob = user.getThumbnail();
         });
     }
@@ -242,7 +241,7 @@ public class UserDetails extends AppCompatActivity {
         lastName.setText(user.getLastName());
         username.setText(user.getUserName());
         password.setText(user.getHash());
-        modeSwitch.setEnabled(true);
+        updateAdmin(user.isAdmin());
         if (user.getThumbnail() != null) {
             Bitmap bmp = Converters.toBitmap(user.getThumbnail());
             preview.setImageBitmap(bmp);
@@ -263,8 +262,6 @@ public class UserDetails extends AppCompatActivity {
         thumbBlob = null;
         imageUri = null;
         currentUser = null;
-        modeSwitch.setChecked(false);
-        modeSwitch.setEnabled(false);
     }
 
     private void saveUser() {
@@ -291,8 +288,12 @@ public class UserDetails extends AppCompatActivity {
         } else {
             userViewModel.update(user, password.getText().toString().trim().isEmpty() ? null : password.getText().toString().trim());
         }
-        modeSwitch.setChecked(true);
         Toast.makeText(this, username.getText().toString().trim() + " saved.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateAdmin(boolean isAdmin) {
+        saveButton.setText(isAdmin ? R.string.save_admin : R.string.save_user);
+        adminLabel.setText(isAdmin ? R.string.make_admin : R.string.deny_admin);
     }
 
     private boolean validForm() {

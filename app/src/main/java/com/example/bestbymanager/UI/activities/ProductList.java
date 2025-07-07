@@ -1,12 +1,10 @@
 package com.example.bestbymanager.UI.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +13,9 @@ import com.example.bestbymanager.UI.adapter.ProductAdapter;
 import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.databinding.ActivityProductListBinding;
 import com.example.bestbymanager.viewmodel.ProductListViewModel;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Objects;
 
 public class ProductList extends AppCompatActivity {
 
@@ -41,12 +42,31 @@ public class ProductList extends AppCompatActivity {
         ProductListViewModel productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
         productListViewModel.getProducts().observe(this, list -> {
-            if (list == null || list.isEmpty()) {
+            if (list == null) { return; }
+            if (list.isEmpty()) {
                 binding.noProductsMessage.setVisibility(View.VISIBLE);
-            } else {
-                binding.noProductsMessage.setVisibility(View.GONE);
-                productAdapter.setProducts(list);
+                productAdapter.setProducts(Collections.emptyList());
+                return;
             }
+
+            binding.noProductsMessage.setVisibility(View.GONE);
+            productAdapter.setProducts(list);
+
+            LocalDate today = LocalDate.now();
+            int pos = 0;
+            for (int i = 0; i < Objects.requireNonNull(list).size(); i++) {
+                if (!list.get(i).getExpirationDate().isBefore(today)) {
+                    pos = i;
+                    break;
+                }
+            }
+            final int target = pos;
+            final int offset    = binding.productListRecyclerView.getHeight() / 2;
+            final LinearLayoutManager lm = (LinearLayoutManager) binding.productListRecyclerView.getLayoutManager();
+            binding.productListRecyclerView.post(() -> {
+                assert lm != null;
+                lm.scrollToPositionWithOffset(target, offset);
+            });
         });
     }
 

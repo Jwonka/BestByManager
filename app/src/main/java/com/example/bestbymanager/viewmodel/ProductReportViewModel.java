@@ -25,18 +25,24 @@ public class ProductReportViewModel extends AndroidViewModel {
         LiveData<List<ProductReportRow>> source;
 
         String barcode = savedState.get("barcode");
-        if (barcode != null) {
+        String mode = savedState.get("mode");
+        String startString = savedState.get("startDate");
+        String endString = savedState.get("endDate");
+
+        if (barcode != null && !barcode.isEmpty()) {
             try {
                 barcode = BarcodeUtil.toCanonical(barcode);
-                source = repository.getReportRowsByBarcode(barcode);
+                if (startString != null && endString != null) {
+                    LocalDate start = parseOrToday(startString);
+                    LocalDate end = parseOrToday(endString);
+                    source = repository.getProductsByBarcodeAndDateRange(barcode, start, end);
+                } else {
+                    source= repository.getReportRowsByBarcode(barcode);
+                }
             } catch (IllegalArgumentException ex) {
                 source = new MutableLiveData<>(Collections.emptyList());
             }
         } else {
-            String mode = savedState.get("mode");
-            String startString = savedState.get("startDate");
-            String endString = savedState.get("endDate");
-
             if ("expired".equals(mode)) {
                 source = repository.getExpired(LocalDate.now());
             } else if (startString != null && endString != null) {

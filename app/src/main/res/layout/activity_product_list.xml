@@ -32,6 +32,7 @@
             android:paddingVertical="@dimen/padding_m"
             android:text="@string/no_products"
             android:textColor="@color/black"
+            android:visibility="gone"
             style="@style/OutlinedBox"
             android:textSize="20sp"
             android:textStyle="bold"

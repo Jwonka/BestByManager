@@ -1,31 +1,42 @@
 package com.example.bestbymanager.UI.activities;
 
+import static com.example.bestbymanager.utilities.LocalDateBinder.bindDateField;
 import static com.example.bestbymanager.utilities.LocalDateBinder.format;
+import static com.example.bestbymanager.utilities.LocalDateBinder.parseOrToday;
+import static com.example.bestbymanager.utilities.LocalDateBinder.stripString;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.database.ProductDatabaseBuilder;
 import com.example.bestbymanager.data.database.Repository;
+import com.example.bestbymanager.data.entities.User;
 import com.example.bestbymanager.databinding.ActivityUserSearchBinding;
+import com.example.bestbymanager.viewmodel.UserListViewModel;
+import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import java.time.LocalDate;
 
 public class UserSearch  extends AppCompatActivity {
     private static final int REQ_CAMERA = 42;
     private Repository repository;
-    private ActivityUserSearchBinding binding;
+    private User selectedUser;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
     @Override
@@ -34,16 +45,99 @@ public class UserSearch  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         repository = new Repository(getApplication());
         setTitle(R.string.user_search);
-        binding = ActivityUserSearchBinding.inflate(getLayoutInflater());
+        ActivityUserSearchBinding binding = ActivityUserSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
-
-        getWindow().setStatusBarColor(Color.BLACK);
-        getWindow().setNavigationBarColor(Color.BLACK);
 
         ProductDatabaseBuilder.getDatabase(this);
 
+        AutoCompleteTextView userDropdown = binding.userDropdown;
+        UserListViewModel userViewModel = new ViewModelProvider(this).get(UserListViewModel.class);
+
+        userViewModel.getUsers().observe(this, users -> {
+            ArrayAdapter<User> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
+            userDropdown.setAdapter(adapter);
+        });
+
+        userDropdown.setThreshold(0);
+        userDropdown.setOnClickListener(v -> userDropdown.showDropDown());
+        userDropdown.setOnItemClickListener((parent, view, pos, id) -> {
+            selectedUser = (User) parent.getItemAtPosition(pos);
+        });
+
+        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                String code = result.getContents();
+                binding.editBarcode.setText(code);
+                showUserEnteredProductsForBarcode(code);                  }
+        });
+
+        binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
+            if (ensureCameraPermission()) {
+                ScanOptions options = new ScanOptions();
+                options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
+                options.setPrompt("Align the barcode inside the box");
+                options.setBeepEnabled(false);
+                options.setOrientationLocked(true);
+                barcodeLauncher.launch(options);
+            }
+        });
+
+        binding.editBarcode.setOnEditorActionListener((view, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                    || actionId == EditorInfo.IME_ACTION_GO
+                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                String code = view.getText().toString().trim();
+                if (code.isEmpty()) {
+                    toast("Enter or scan a barcode.");
+                } else {
+                    showUserEnteredProductsForBarcode(code);
+                }
+                return true;
+            }
+            return false;
+        });
+
+        bindDateField(binding.startDate, this);
+        bindDateField(binding.endDate, this);
+
+        binding.searchButton.setOnClickListener(v -> {
+            String startDateString = stripString(binding.startDate);
+            String endDateString = stripString(binding.endDate);
+            String code = TextUtils.isEmpty(binding.editBarcode.getText()) ? "" : binding.editBarcode.getText().toString().trim();
+            boolean hasBarcode   = !code.isEmpty();
+            boolean hasDateRange = !startDateString.equals("Start Date") && !endDateString.equals("End Date");
+
+            if (selectedUser == null) {
+                toast("Select an employee first.");
+                return;
+            }
+
+            if (!hasBarcode && !hasDateRange) {
+                toast("Enter a barcode OR pick a date range.");
+                return;
+            }
+
+            if (hasBarcode && hasDateRange) {
+                toast("Enter a barcode OR a date range, not both.");
+                return;
+            }
+
+            if (hasBarcode) {
+                showUserEnteredProductsForBarcode(code);
+                return;
+            }
+
+            if (hasDateRange) {
+                LocalDate start = parseOrToday(startDateString);
+                LocalDate end = parseOrToday(endDateString);
+
+                if (end.isBefore(start)) {
+                    toast("End date must be after the start date.");
+                    return;
+                }
+                showUserEnteredProductsForDateRange(start, end);
+            }
+        });
     }
 
     private boolean ensureCameraPermission() {
@@ -69,11 +163,10 @@ public class UserSearch  extends AppCompatActivity {
         }
     }
 
-    private void showProductsForBarcode(String code) {
+    private void showUserEnteredProductsForBarcode(String code) {
         repository.getProductsByBarcode(code).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No products in the database for that barcode.", Toast.LENGTH_LONG).show();
+                toast("No products in the database for that barcode.");
             } else {
                 Intent intent = new Intent(this, ProductReport.class).putExtra("barcode", code);
                 startActivity(intent);
@@ -81,11 +174,10 @@ public class UserSearch  extends AppCompatActivity {
         });
     }
 
-    private void showProductsForDateRange(LocalDate start, LocalDate end) {
+    private void showUserEnteredProductsForDateRange(LocalDate start, LocalDate end) {
         repository.getProductsByDateRange(start, end).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No products in the database for that date range.", Toast.LENGTH_LONG).show();
+                toast("No products in the database for that date range.");
             } else {
                 Intent intent = new Intent(UserSearch.this, UserReport.class)
                         .putExtra("startDate", format(start))
@@ -98,8 +190,7 @@ public class UserSearch  extends AppCompatActivity {
     private void showExpiredProducts() {
         repository.getExpired(LocalDate.now()).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No expired products in the database.", Toast.LENGTH_LONG).show();
+                toast("No such user in the database.");
             } else {
                 Intent intent = new Intent(UserSearch.this, UserReport.class)
                         .putExtra("mode", "expired");
@@ -149,4 +240,5 @@ public class UserSearch  extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

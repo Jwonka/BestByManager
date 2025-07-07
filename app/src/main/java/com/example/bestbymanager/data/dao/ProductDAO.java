@@ -39,7 +39,7 @@ public interface ProductDAO {
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate < :cutoff " +
-            "ORDER BY expirationDate, productName")
+            "ORDER BY expirationDate DESC, brand")
     LiveData<List<ProductReportRow>> getExpired(LocalDate cutoff);
 
     @Query("SELECT product.productID, " +
@@ -51,7 +51,7 @@ public interface ProductDAO {
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate BETWEEN :from AND :selected " +
-            "ORDER BY expirationDate, productName")
+            "ORDER BY expirationDate ASC, brand")
     LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected);
 
     @Query("SELECT * FROM product WHERE barcode = :barcode ORDER BY expirationDate ASC LIMIT 1")
@@ -82,5 +82,18 @@ public interface ProductDAO {
             "WHERE  product.barcode = :barcode " +
             "ORDER  BY product.expirationDate")
     LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode);
+
+    @Query("SELECT product.productID, " +
+            "product.brand, " +
+            "product.productName, " +
+            "product.expirationDate, " +
+            "product.quantity, " +
+            "user.userName AS enteredBy " +
+            "FROM product " +
+            "JOIN   user ON product.userID = user.userID " +
+            "WHERE barcode = :barcode " +
+            "AND expirationDate BETWEEN :from AND :to " +
+            "ORDER BY expirationDate ASC")
+    LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String barcode, LocalDate from, LocalDate to);
 }
 

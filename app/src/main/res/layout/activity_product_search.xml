@@ -118,6 +118,20 @@
                 app:layout_constraintStart_toEndOf="@id/start_date"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <TextView
+                android:id="@+id/multiple_search_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/multiple_search_text"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_sm"
+                app:layout_constraintTop_toBottomOf="@id/start_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/search_button"
                 style="@style/LightGreenPill"
@@ -125,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/search"
                 android:contentDescription="@string/search_date_range"
-                app:layout_constraintTop_toBottomOf="@id/start_date"
+                app:layout_constraintTop_toBottomOf="@id/multiple_search_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/spacing_sm"/>

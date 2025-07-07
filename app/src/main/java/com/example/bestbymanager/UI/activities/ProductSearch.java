@@ -5,15 +5,16 @@ import static com.example.bestbymanager.utilities.LocalDateBinder.format;
 import static com.example.bestbymanager.utilities.LocalDateBinder.parseOrToday;
 import static com.example.bestbymanager.utilities.LocalDateBinder.stripString;
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.database.ProductDatabaseBuilder;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.databinding.ActivityProductSearchBinding;
+import com.example.bestbymanager.utilities.BarcodeUtil;
 import com.journeyapps.barcodescanner.ScanOptions;
 import java.time.LocalDate;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -46,9 +48,9 @@ public class ProductSearch extends AppCompatActivity {
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() != null) {
-                String code = result.getContents();
-                binding.editBarcode.setText(code);
-                showProductsForBarcode(code);                  }
+                String rawCode = result.getContents();
+                binding.editBarcode.setText(rawCode);
+            }
         });
 
         binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
@@ -66,19 +68,12 @@ public class ProductSearch extends AppCompatActivity {
             if (actionId == EditorInfo.IME_ACTION_DONE
                     || actionId == EditorInfo.IME_ACTION_GO
                     || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                String code = view.getText().toString().trim();
-                if (code.isEmpty()) {
-                    Toast.makeText(this, "Enter or scan a barcode.", Toast.LENGTH_SHORT).show();
-                } else {
-                    showProductsForBarcode(code);
-                }
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 return true;
             }
             return false;
         });
-
-        getWindow().setStatusBarColor(Color.BLACK);
-        getWindow().setNavigationBarColor(Color.BLACK);
 
         ProductDatabaseBuilder.getDatabase(this);
 
@@ -88,31 +83,36 @@ public class ProductSearch extends AppCompatActivity {
         binding.searchButton.setOnClickListener(v -> {
             String startDateString = stripString(binding.startDate);
             String endDateString = stripString(binding.endDate);
-            String code = TextUtils.isEmpty(binding.editBarcode.getText()) ? "" : binding.editBarcode.getText().toString().trim();
-            boolean hasBarcode   = !code.isEmpty();
+            String rawCode = TextUtils.isEmpty(binding.editBarcode.getText()) ? "" : binding.editBarcode.getText().toString().trim();
+            boolean hasBarcode   = !rawCode.isEmpty();
             boolean hasDateRange = !startDateString.equals("Start Date") && !endDateString.equals("End Date");
 
             if (!hasBarcode && !hasDateRange) {
-                Toast.makeText(this, "Enter a barcode OR pick a date range.", Toast.LENGTH_SHORT).show();
+                toast("Enter a barcode and/or pick a date range.");
                 return;
             }
+
+            String code = null;
+            if (hasBarcode) {
+                try {
+                    code = BarcodeUtil.toCanonical(rawCode);
+                }
+                catch (IllegalArgumentException ex) {
+                    toast("Unsupported barcode format.");
+                    return;
+                }
+            }
+
+            LocalDate start = parseOrToday(startDateString);
+            LocalDate end = parseOrToday(endDateString);
 
             if (hasBarcode && hasDateRange) {
-                Toast.makeText(this, "Enter a barcode OR a date range, not both.", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (hasBarcode) {
+                showProductsForBarcodeAndDate(code, start, end);
+            } else if (hasBarcode) {
                 showProductsForBarcode(code);
-                return;
-            }
-
-            if (hasDateRange) {
-                LocalDate start = parseOrToday(startDateString);
-                LocalDate end = parseOrToday(endDateString);
-
+            } else {
                 if (end.isBefore(start)) {
-                    Toast.makeText(this, "End date must be after the start date.", Toast.LENGTH_LONG).show();
+                    toast("End date must be after the start date.");
                     return;
                 }
                 showProductsForDateRange(start, end);
@@ -151,11 +151,18 @@ public class ProductSearch extends AppCompatActivity {
         }
     }
 
-    private void showProductsForBarcode(String code) {
+    private void showProductsForBarcode(String rawCode) {
+        final String code;
+        try {
+            code = BarcodeUtil.toCanonical(rawCode);
+        } catch (IllegalArgumentException ex) {
+            toast("Unsupported barcode.");
+            return;
+        }
+
         repository.getProductsByBarcode(code).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No products in the database for that barcode.", Toast.LENGTH_LONG).show();
+                toast("No products in the database for that barcode.");
             } else {
                 Intent intent = new Intent(this, ProductReport.class).putExtra("barcode", code);
                 startActivity(intent);
@@ -166,8 +173,7 @@ public class ProductSearch extends AppCompatActivity {
     private void showProductsForDateRange(LocalDate start, LocalDate end) {
         repository.getProductsByDateRange(start, end).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No products in the database for that date range.", Toast.LENGTH_LONG).show();
+                toast("No products in the database for that date range.");
             } else {
                 Intent intent = new Intent(ProductSearch.this, ProductReport.class)
                         .putExtra("startDate", format(start))
@@ -180,14 +186,34 @@ public class ProductSearch extends AppCompatActivity {
     private void showExpiredProducts() {
         repository.getExpired(LocalDate.now()).observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                Toast.makeText(this,
-                        "No expired products in the database.", Toast.LENGTH_LONG).show();
+                toast("No expired products in the database.");
             } else {
                 Intent intent = new Intent(ProductSearch.this, ProductReport.class)
                         .putExtra("mode", "expired");
                 startActivity(intent);
             }
         });
+    }
+
+    private void showProductsForBarcodeAndDate(String rawCode, LocalDate start, LocalDate end) {
+        final String code;
+        try {
+            code = BarcodeUtil.toCanonical(rawCode);
+        } catch (IllegalArgumentException ex) {
+            toast("Unsupported barcode.");
+            return;
+        }
+        repository.getProductsByBarcodeAndDateRange(code, start, end)
+            .observe(this, list -> {
+                if (list == null || list.isEmpty()) {
+                    toast("No matching products found.");
+                } else {
+                    startActivity(new Intent(this, ProductReport.class)
+                            .putExtra("barcode", code)
+                            .putExtra("startDate", format(start))
+                            .putExtra("endDate",   format(end)));
+                }
+            });
     }
 
     @Override
@@ -231,4 +257,5 @@ public class ProductSearch extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

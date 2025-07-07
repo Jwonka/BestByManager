@@ -75,16 +75,6 @@ public class User {
     public void setAdmin(boolean admin) { isAdmin = admin; }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "userID=" + userID +
-                ", userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", hash='" + hash + '\'' +
-                ", thumbnail=" + Arrays.toString(thumbnail) +
-                ", isAdmin=" + isAdmin +
-                '}';
-    }
+    public String toString() { return firstName + " " + lastName + " (" + userName + ")"; }
 }
 

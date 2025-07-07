@@ -2,6 +2,7 @@ package com.example.bestbymanager.UI.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,7 @@ public class ProductReport extends AppCompatActivity {
         args.putString("endDate",   getIntent().getStringExtra("endDate"));
         args.putString("mode",      getIntent().getStringExtra("mode"));
         args.putString("barcode",   getIntent().getStringExtra("barcode"));
-
+        Log.d("REPORT-EXTRA", "barcode=" + getIntent().getStringExtra("barcode"));
         ProductReportViewModel prViewModel = new ViewModelProvider(
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
