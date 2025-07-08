@@ -41,22 +41,6 @@ public class AboutActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
-            startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

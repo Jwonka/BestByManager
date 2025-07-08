@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdapter.ReportViewHolder> {
+
+    public List<ProductReportRow> getCurrentProductList() { return data; }
+
     public interface OnRowClick { void onRowClick(long productID); }
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd/yy");
 
@@ -68,7 +71,6 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
         DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override public int getOldListSize() { return data.size(); }
             @Override public int getNewListSize() { return newData.size(); }
-
             @Override public boolean areItemsTheSame(int oldPos, int newPos) {
                 return data.get(oldPos).productID == newData.get(newPos).productID;
             }

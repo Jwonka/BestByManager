@@ -115,14 +115,14 @@ public class ProductSearch extends AppCompatActivity {
                     toast("End date must be after the start date.");
                     return;
                 }
-                showProductsForDateRange(start, end);
+                showProductsForDateRange(start, end, false);
             }
         });
 
         binding.expiringSoonButton.setOnClickListener(v -> {
             LocalDate today = LocalDate.now();
             LocalDate sevenDaysLater = today.plusDays(7);
-            showProductsForDateRange(today, sevenDaysLater);
+            showProductsForDateRange(today, sevenDaysLater,true);
         });
 
         binding.expiredButton.setOnClickListener(v -> showExpiredProducts());
@@ -170,7 +170,7 @@ public class ProductSearch extends AppCompatActivity {
         });
     }
 
-    private void showProductsForDateRange(LocalDate start, LocalDate end) {
+    private void showProductsForDateRange(LocalDate start, LocalDate end, boolean expiringSoon) {
         repository.getProductsByDateRange(start, end).observe(this, list -> {
             if (list == null || list.isEmpty()) {
                 toast("No products in the database for that date range.");
@@ -178,6 +178,7 @@ public class ProductSearch extends AppCompatActivity {
                 Intent intent = new Intent(ProductSearch.this, ProductReport.class)
                         .putExtra("startDate", format(start))
                         .putExtra("endDate", format(end));
+                if (expiringSoon) { intent.putExtra("mode", "expiring"); }
                 startActivity(intent);
             }
         });
@@ -238,16 +239,12 @@ public class ProductSearch extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
-            return true;
         } else if (item.getItemId() == R.id.productDetails) {
             Intent intent = new Intent(this, ProductDetails.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.about) {
-            Intent intent = new Intent(this, AboutActivity.class);
+        } else if (item.getItemId() == R.id.productList) {
+            Intent intent = new Intent(this, ProductList.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.adminPage) {

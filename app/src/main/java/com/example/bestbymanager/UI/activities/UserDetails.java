@@ -134,16 +134,12 @@ public class UserDetails extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
-            return true;
-        }  else if (item.getItemId() == R.id.productSearch) {
+        } else if (item.getItemId() == R.id.productSearch) {
             Intent intent = new Intent(this, ProductSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.about) {
-            Intent intent = new Intent(this, AboutActivity.class);
+        } else if (item.getItemId() == R.id.productList) {
+            Intent intent = new Intent(this, ProductList.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.deleteProduct) {

@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="@string/main_screen"
         android:id="@+id/mainScreen"/>
-    <item android:title="@string/product_list"
-        android:id="@+id/productList"/>
     <item android:title="@string/product_search"
         android:id="@+id/productSearch"/>
-    <item android:title="@string/about"
-        android:id="@+id/about"/>
+    <item android:title="@string/product_list"
+        android:id="@+id/productList"/>
+    <item android:title="@string/delete_user"
+        android:id="@+id/deleteUser"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/adminPage"
         android:title="@string/admin"
         app:showAsAction="never" />
-    <item android:title="@string/delete_product"
-        android:id="@+id/deleteProduct"/>
 </menu>

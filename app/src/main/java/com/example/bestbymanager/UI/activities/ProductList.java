@@ -15,7 +15,6 @@ import com.example.bestbymanager.databinding.ActivityProductListBinding;
 import com.example.bestbymanager.viewmodel.ProductListViewModel;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Objects;
 
 public class ProductList extends AppCompatActivity {
 
@@ -41,32 +40,15 @@ public class ProductList extends AppCompatActivity {
 
         ProductListViewModel productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
-        productListViewModel.getProducts().observe(this, list -> {
+        productListViewModel.getProducts(LocalDate.now()).observe(this, list -> {
             if (list == null) { return; }
             if (list.isEmpty()) {
                 binding.noProductsMessage.setVisibility(View.VISIBLE);
                 productAdapter.setProducts(Collections.emptyList());
                 return;
             }
-
             binding.noProductsMessage.setVisibility(View.GONE);
             productAdapter.setProducts(list);
-
-            LocalDate today = LocalDate.now();
-            int pos = 0;
-            for (int i = 0; i < Objects.requireNonNull(list).size(); i++) {
-                if (!list.get(i).getExpirationDate().isBefore(today)) {
-                    pos = i;
-                    break;
-                }
-            }
-            final int target = pos;
-            final int offset    = binding.productListRecyclerView.getHeight() / 2;
-            final LinearLayoutManager lm = (LinearLayoutManager) binding.productListRecyclerView.getLayoutManager();
-            binding.productListRecyclerView.post(() -> {
-                assert lm != null;
-                lm.scrollToPositionWithOffset(target, offset);
-            });
         });
     }
 
@@ -92,16 +74,12 @@ public class ProductList extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
-            return true;
         } else if (item.getItemId() == R.id.productSearch) {
             Intent intent = new Intent(this, ProductSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.about) {
-            Intent intent = new Intent(this, AboutActivity.class);
+        } else if (item.getItemId() == R.id.productDetails) {
+            Intent intent = new Intent(this, ProductDetails.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.adminPage) {

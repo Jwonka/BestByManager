@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.entities.Product;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ProductListViewModel extends AndroidViewModel {
@@ -13,7 +14,7 @@ public class ProductListViewModel extends AndroidViewModel {
     public ProductListViewModel(@NonNull Application app) {
         super(app);
         Repository repository = new Repository(app);
-        this.products = repository.getProducts();
+        this.products = repository.getProducts(LocalDate.now());
     }
-    public LiveData<List<Product>> getProducts() { return products; }
+    public LiveData<List<Product>> getProducts(LocalDate today) { return products; }
 }

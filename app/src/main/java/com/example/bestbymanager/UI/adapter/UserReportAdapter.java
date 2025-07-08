@@ -4,11 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.data.pojo.UserReportRow;
 import java.time.format.DateTimeFormatter;
@@ -18,10 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class UserReportAdapter extends RecyclerView.Adapter<UserReportAdapter.ReportViewHolder> {
-    public interface OnRowClick {
-        void onRowClick(long userID);
-    }
 
+    public List<? extends UserReportRow> getCurrentUserList() { return data; }
+    public interface OnRowClick { void onRowClick(long userID);}
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     private final List<UserReportRow> data = new ArrayList<>();

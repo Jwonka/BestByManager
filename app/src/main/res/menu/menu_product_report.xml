@@ -3,14 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="@string/main_screen"
         android:id="@+id/mainScreen"/>
-    <item android:title="@string/product_list"
-        android:id="@+id/productList"/>
-    <item android:title="@string/product_details"
-        android:id="@+id/productDetails"/>
     <item android:title="@string/product_search"
         android:id="@+id/productSearch"/>
-    <item android:title="@string/about"
-        android:id="@+id/about"/>
+    <item android:title="@string/product_details"
+        android:id="@+id/productDetails"/>
+    <item android:title="@string/product_list"
+        android:id="@+id/productList"/>
+    <item
+        android:id="@+id/action_copy"
+        android:title="@string/copying"
+        android:icon="@drawable/ic_content_copy"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/adminPage"
         android:title="@string/admin"

@@ -221,16 +221,12 @@ public class UserSearch  extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
-            return true;
         } else if (item.getItemId() == R.id.productDetails) {
             Intent intent = new Intent(this, ProductDetails.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.about) {
-            Intent intent = new Intent(this, AboutActivity.class);
+        }  else if (item.getItemId() == R.id.productList) {
+            Intent intent = new Intent(this, ProductList.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.adminPage) {

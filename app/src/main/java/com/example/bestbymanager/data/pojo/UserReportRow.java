@@ -5,5 +5,8 @@ public class UserReportRow {
 
     public String userName;
 
+    public String firstName;
+    public String lastName;
+
     public int count;
 }

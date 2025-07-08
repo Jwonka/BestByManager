@@ -27,8 +27,8 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE productID = :productID LIMIT 1")
     LiveData<Product> getProduct(long productID);
 
-    @Query("SELECT * FROM product ORDER BY expirationDate ASC")
-    LiveData<List<Product>> getProducts();
+    @Query("SELECT * FROM product WHERE expirationDate >= :today ORDER BY expirationDate ASC")
+    LiveData<List<Product>> getProducts(LocalDate today);
 
     @Query("SELECT product.productID, " +
             "      product.brand, " +
@@ -42,12 +42,14 @@ public interface ProductDAO {
             "ORDER BY expirationDate DESC, brand")
     LiveData<List<ProductReportRow>> getExpired(LocalDate cutoff);
 
-    @Query("SELECT product.productID, " +
-            "      product.brand, " +
-            "      product.productName, " +
-            "      product.expirationDate, " +
-            "      product.quantity, " +
-            "      user.userName AS enteredBy " +
+    @Query("SELECT product.productId AS productID, "  +
+            "product.brand AS brand, "      +
+            "product.productName AS productName, " +
+            "product.expirationDate AS expirationDate, " +
+            "product.quantity AS quantity, "   +
+            "user.userName AS enteredBy, "   +
+            "product.barcode AS barcode, " +
+            "product.category AS category " +
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate BETWEEN :from AND :selected " +
@@ -63,24 +65,31 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE expirationDate BETWEEN :from AND :selected ORDER BY expirationDate ASC")
     LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected);
 
-    /** JOIN products→users to build the report rows */
-    @Query(
-            "SELECT product.productId         AS productID, "  +
-                    "       product.brand             AS brand, "      +
-                    "       product.productName       AS productName, " +
-                    "       product.expirationDate    AS expirationDate, " +
-                    "       product.quantity          AS quantity, "   +
-                    "       user.userName          AS enteredBy "   +
-                    "FROM   product " +
-                    "JOIN   user ON product.userID = user.userID " +
-                    "ORDER  BY product.expirationDate ASC")
+    @Query("SELECT product.productId AS productID, "  +
+                    "product.brand AS brand, "      +
+                    "product.productName AS productName, " +
+                    "product.expirationDate AS expirationDate, " +
+                    "product.quantity AS quantity, "   +
+                    "user.userName AS enteredBy, "   +
+                    "product.barcode AS barcode, " +
+                    "product.category AS category " +
+                    "FROM product " +
+                    "JOIN user ON product.userID = user.userID " +
+                    "ORDER BY product.expirationDate ASC")
     List<ProductReportRow> getReportRows();
 
-    @Query("SELECT product.productID, product.brand, product.productName, " +
-            "       product.expirationDate, product.quantity, user.userName AS enteredBy " +
-            "FROM   product JOIN user ON user.userID = product.userID " +
-            "WHERE  product.barcode = :barcode " +
-            "ORDER  BY product.expirationDate")
+    @Query("SELECT product.productId AS productID, "  +
+            "product.brand AS brand, "      +
+            "product.productName AS productName, " +
+            "product.expirationDate AS expirationDate, " +
+            "product.quantity AS quantity, "   +
+            "user.userName AS enteredBy, "   +
+            "product.barcode AS barcode, " +
+            "product.category AS category " +
+            "FROM product " +
+            "JOIN user ON user.userID = product.userID " +
+            "WHERE product.barcode = :barcode " +
+            "ORDER BY product.expirationDate")
     LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode);
 
     @Query("SELECT product.productID, " +
@@ -88,7 +97,9 @@ public interface ProductDAO {
             "product.productName, " +
             "product.expirationDate, " +
             "product.quantity, " +
-            "user.userName AS enteredBy " +
+            "user.userName AS enteredBy, " +
+            "product.barcode AS barcode, " +
+            "product.category AS category " +
             "FROM product " +
             "JOIN   user ON product.userID = user.userID " +
             "WHERE barcode = :barcode " +

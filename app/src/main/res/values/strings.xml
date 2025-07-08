@@ -28,6 +28,7 @@
     <string name="user_report">User Report</string>
     <string name="user_search">User Search</string>
     <string name="add_user">Add User</string>
+    <string name="delete_user">Delete User</string>
     <string name="add_product">Add Product</string>
     <string name="clear_product">Clear</string>
     <string name="add_new_expiration">Add Expiring</string>
@@ -66,4 +67,6 @@
     <string name="password_requirements">Include a digit, a symbol, and mixed-case letters.</string>
     <string name="notif_enabled">Notifications enabled</string>
     <string name="no_results">No products match your search.</string>
+    <string name="copying">Copy</string>
+    <string name="share">Share</string>
 </resources>

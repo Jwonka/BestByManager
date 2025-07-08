@@ -11,4 +11,6 @@ public class ProductReportRow {
 
     public int quantity;
     public String enteredBy;
+    public String    barcode;
+    public String    category;
 }

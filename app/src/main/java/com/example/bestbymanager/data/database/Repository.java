@@ -55,7 +55,7 @@ public class Repository {
     public Product getRecentExpirationByBarcode(String code) { return mProductDAO.getRecentExpirationByBarcode(code); }
     public LiveData<List<Product>> getProductsByBarcode(String code) { return mProductDAO.getProductsByBarcode(code); }
     public void fetchProduct(String barcode, Callback<ProductResponse> cb) { api.getByBarcode(barcode).enqueue(cb); }
-    public LiveData<List<Product>> getProducts(){ return mProductDAO.getProducts(); }
+    public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(LocalDate.now()); }
     public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }
     public LiveData<User> getUser(long userID){ return mUserDAO.getUser(userID); }
     public LiveData<List<User>> getUsers(){ return mUserDAO.getUsers(); }
