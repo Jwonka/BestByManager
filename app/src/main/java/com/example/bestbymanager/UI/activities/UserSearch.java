@@ -18,12 +18,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.bestbymanager.R;
-import com.example.bestbymanager.UI.authentication.Session;
+import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.data.database.ProductDatabaseBuilder;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.entities.User;
@@ -33,7 +32,7 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import java.time.LocalDate;
 
-public class UserSearch  extends AppCompatActivity {
+public class UserSearch  extends BaseAdminActivity {
     private static final int REQ_CAMERA = 42;
     private Repository repository;
     private User selectedUser;
@@ -44,25 +43,23 @@ public class UserSearch  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         repository = new Repository(getApplication());
-        setTitle(R.string.user_search);
+        setTitle(R.string.employee_search);
         ActivityUserSearchBinding binding = ActivityUserSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ProductDatabaseBuilder.getDatabase(this);
 
-        AutoCompleteTextView userDropdown = binding.userDropdown;
+        AutoCompleteTextView employeeDropdown = binding.employeeDropdown;
         UserListViewModel userViewModel = new ViewModelProvider(this).get(UserListViewModel.class);
 
         userViewModel.getUsers().observe(this, users -> {
             ArrayAdapter<User> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
-            userDropdown.setAdapter(adapter);
+            employeeDropdown.setAdapter(adapter);
         });
 
-        userDropdown.setThreshold(0);
-        userDropdown.setOnClickListener(v -> userDropdown.showDropDown());
-        userDropdown.setOnItemClickListener((parent, view, pos, id) -> {
-            selectedUser = (User) parent.getItemAtPosition(pos);
-        });
+        employeeDropdown.setThreshold(0);
+        employeeDropdown.setOnClickListener(v -> employeeDropdown.showDropDown());
+        employeeDropdown.setOnItemClickListener((parent, view, pos, id) -> selectedUser = (User) parent.getItemAtPosition(pos));
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() != null) {
@@ -201,14 +198,7 @@ public class UserSearch  extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_product_search, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        getMenuInflater().inflate(R.menu.menu_user_search, menu);
         return true;
     }
 
@@ -221,16 +211,12 @@ public class UserSearch  extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
+        } else if (item.getItemId() == R.id.employeeDetails) {
+            Intent intent = new Intent(this, UserDetails.class);
             startActivity(intent);
             return true;
-        }  else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
+        }  else if (item.getItemId() == R.id.employeeList) {
+            Intent intent = new Intent(this, UserList.class);
             startActivity(intent);
             return true;
         }

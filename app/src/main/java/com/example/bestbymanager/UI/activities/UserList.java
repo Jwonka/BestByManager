@@ -5,25 +5,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.adapter.UserAdapter;
-import com.example.bestbymanager.UI.authentication.Session;
+import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.databinding.ActivityUserListBinding;
 import com.example.bestbymanager.viewmodel.UserListViewModel;
 
-public class UserList extends AppCompatActivity {
+public class UserList extends BaseAdminActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.user_list);
+        setTitle(R.string.employee_list);
         ActivityUserListBinding binding = ActivityUserListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.userDetailsButton.setOnClickListener(v -> {
+        binding.employeeDetailsButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserList.this, UserDetails.class);
             startActivity(intent);
         });
@@ -33,16 +32,16 @@ public class UserList extends AppCompatActivity {
                     .putExtra("userID", userID);
             startActivity(intent);
         });
-        binding.userListRecyclerView.setAdapter(userAdapter);
-        binding.userListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.employeeListRecyclerView.setAdapter(userAdapter);
+        binding.employeeListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         UserListViewModel userListViewModel = new ViewModelProvider(this).get(UserListViewModel.class);
 
         userListViewModel.getUsers().observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                binding.noUsersMessage.setVisibility(View.VISIBLE);
+                binding.noEmployeeCard.setVisibility(View.VISIBLE);
             } else {
-                binding.noUsersMessage.setVisibility(View.GONE);
+                binding.noEmployeeCard.setVisibility(View.GONE);
                 userAdapter.setUsers(list);
             }
         });
@@ -50,14 +49,7 @@ public class UserList extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_product_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        getMenuInflater().inflate(R.menu.menu_user_list, menu);
         return true;
     }
 
@@ -70,16 +62,12 @@ public class UserList extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
+        } else if (item.getItemId() == R.id.employeeSearch) {
+            Intent intent = new Intent(this, UserSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
+        } else if (item.getItemId() == R.id.employeeDetails) {
+            Intent intent = new Intent(this, UserDetails.class);
             startActivity(intent);
             return true;
         }

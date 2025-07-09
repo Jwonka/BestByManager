@@ -26,13 +26,6 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();

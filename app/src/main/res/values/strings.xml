@@ -21,14 +21,14 @@
     <string name="product_search">Product Search</string>
     <string name="expiring">Expiring</string>
     <string name="product_list">Product List</string>
-    <string name="user_list">User List</string>
+    <string name="employee_list">Employee List</string>
+    <string name="employee_details">Employee Details</string>
+    <string name="employee_report">Employee Report</string>
+    <string name="employee_search">Employee Search</string>
+    <string name="delete_employee">Delete Employee</string>
     <string name="no_products">No Products</string>
-    <string name="no_users">No Users</string>
-    <string name="user_details">User Details</string>
-    <string name="user_report">User Report</string>
-    <string name="user_search">User Search</string>
-    <string name="add_user">Add User</string>
-    <string name="delete_user">Delete User</string>
+    <string name="no_employees">No Employees</string>
+    <string name="add_employee">Add Employee</string>
     <string name="add_product">Add Product</string>
     <string name="clear_product">Clear</string>
     <string name="add_new_expiration">Add Expiring</string>
@@ -41,8 +41,8 @@
     <string name="deny_admin">Deny admin access</string>
     <string name="make_admin">Allow admin access</string>
     <string name="admin">Administrator</string>
-    <string name="search_users">Select Employee</string>
-    <string name="save_user">Save User</string>
+    <string name="search_employees">Select Employee</string>
+    <string name="save_employee">Save User</string>
     <string name="save_admin">Save Admin</string>
     <string name="save_product">Save Product</string>
     <string name="delete_product">Delete Product</string>
@@ -67,6 +67,12 @@
     <string name="password_requirements">Include a digit, a symbol, and mixed-case letters.</string>
     <string name="notif_enabled">Notifications enabled</string>
     <string name="no_results">No products match your search.</string>
+    <string name="results">Results</string>
     <string name="copying">Copy</string>
     <string name="share">Share</string>
+    <string name="not_authorized">You are not authorized to view this screen.</string>
+    <string name="generate_password">Create Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="temp_password_created">Temporary password created.</string>
+    <string name="temp_pwd_dialog">Temporary password: <b>%1$s</b>\n\nChange it within 24 hours.</string>
 </resources>

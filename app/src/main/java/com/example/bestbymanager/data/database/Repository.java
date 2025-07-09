@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -55,7 +54,7 @@ public class Repository {
     public Product getRecentExpirationByBarcode(String code) { return mProductDAO.getRecentExpirationByBarcode(code); }
     public LiveData<List<Product>> getProductsByBarcode(String code) { return mProductDAO.getProductsByBarcode(code); }
     public void fetchProduct(String barcode, Callback<ProductResponse> cb) { api.getByBarcode(barcode).enqueue(cb); }
-    public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(LocalDate.now()); }
+    public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(today); }
     public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }
     public LiveData<User> getUser(long userID){ return mUserDAO.getUser(userID); }
     public LiveData<List<User>> getUsers(){ return mUserDAO.getUsers(); }
@@ -121,7 +120,9 @@ public class Repository {
         MutableLiveData<User> pass = new MutableLiveData<>();
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
-            if(user != null && BCrypt.checkpw(plainPassword, user.getHash())){
+            boolean ok = user != null && user.getHash() != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
+
+            if(ok){
                 Session.get().logIn(user, context);
                 pass.postValue(user);
             } else {
@@ -154,17 +155,25 @@ public class Repository {
         return registered;
     }
 
-    public void addUser(User user, String plainPassword) {
+    public LiveData<User> addUser(User user, @Nullable String plainPassword) {
+        MutableLiveData<User> result = new MutableLiveData<>();
         executor.execute(() -> {
-            user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+            if (plainPassword != null && !plainPassword.isEmpty()) {
+                user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+            } else {
+                user.setHash(null);
+            }
 
             long id = mUserDAO.insert(user);
             if (id > 0) {
-                showToast("User added.");
+                user.setUserID(id);
+                result.postValue(user);
             } else {
                 showToast("Username already taken.");
+                result.postValue(null);
             }
         });
+        return result;
     }
 
     public void updateUser(User user, @Nullable String newPlainPassword) {
@@ -177,8 +186,20 @@ public class Repository {
     }
     public void deleteUser(User user) { executor.execute(() -> mUserDAO.delete(user)); }
 
+    public interface TempPwdCallback { void onResult(boolean ok, @Nullable String plainTemp); }
+
+    public void issueTempPassword(long userId, TempPwdCallback cb) {
+        executor.execute(() -> {
+            try {
+                String tmp = mUserDAO.setTempPassword(userId);
+                new Handler(Looper.getMainLooper()).post(() -> cb.onResult(true, tmp));
+            } catch (Exception ex) {
+                new Handler(Looper.getMainLooper()).post(() -> cb.onResult(false, null));
+            }
+        });
+    }
+
     private void showToast(String msg) {
-        new Handler(Looper.getMainLooper()).post(
-                () -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
     }
 }

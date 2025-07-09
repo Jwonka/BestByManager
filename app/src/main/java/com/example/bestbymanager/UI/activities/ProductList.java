@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.adapter.ProductAdapter;
-import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.databinding.ActivityProductListBinding;
 import com.example.bestbymanager.viewmodel.ProductListViewModel;
 import java.time.LocalDate;
@@ -59,13 +58,6 @@ public class ProductList extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
@@ -78,12 +70,8 @@ public class ProductList extends AppCompatActivity {
             Intent intent = new Intent(this, ProductSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
+        } else if (item.getItemId() == R.id.employeeDetails) {
             Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
             startActivity(intent);
             return true;
         }

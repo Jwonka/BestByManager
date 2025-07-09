@@ -2,6 +2,7 @@ package com.example.bestbymanager.viewmodel;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -31,9 +32,10 @@ public class UserDetailsViewModel extends AndroidViewModel {
             }
         });
     }
-    public void addUser(User user, String plainPassword) { repository.addUser(user, plainPassword); }
+    public LiveData<User> addUser(User user, @Nullable String plainPassword) { return repository.addUser(user, plainPassword); }
 
-    public void update(User user, String plainPassword) {repository.updateUser(user, plainPassword);  }
+    public void update(User user, @Nullable String plainPassword) { repository.updateUser(user, plainPassword); }
 
     public void delete(User user) { repository.deleteUser(user); }
+    public void issueTempPassword(long userID, Repository.TempPwdCallback cb) { repository.issueTempPassword(userID, cb); }
 }

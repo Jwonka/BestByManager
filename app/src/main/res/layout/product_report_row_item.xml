@@ -31,7 +31,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/user_name"
+            app:layout_constraintEnd_toStartOf="@id/employee_name"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@id/brand"/>
 
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/employee_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_m"

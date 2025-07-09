@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="@string/main_screen"
-        android:id="@+id/mainScreen"/>
-    <item android:title="@string/product_search"
+
+    <item
+        android:title="@string/product_search"
         android:id="@+id/productSearch"/>
-    <item android:title="@string/product_list"
+
+    <item
+        android:title="@string/product_list"
         android:id="@+id/productList"/>
-    <item android:title="@string/delete_product"
+
+    <item
+        android:title="@string/delete_product"
         android:id="@+id/deleteProduct"
         android:icon="@drawable/ic_delete"
         app:showAsAction="ifRoom"/>
+
     <item
-        android:id="@+id/adminPage"
-        android:title="@string/admin"
-        app:showAsAction="never" />
+        android:title="@string/main_screen"
+        android:id="@+id/mainScreen"
+        android:icon="@drawable/ic_home"
+        app:showAsAction="always"/>
 </menu>

@@ -26,7 +26,7 @@
         app:layout_constraintDimensionRatio="1:1"/>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/user_search_panel"
+        android:id="@+id/employee_search_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_l"
@@ -47,7 +47,7 @@
             android:padding="@dimen/padding_m">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/user_search_input_layout"
+                android:id="@+id/employee_search_input_layout"
                 style="@style/CompactOutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,12 +59,12 @@
                 app:endIconTint="@color/black">
 
                 <AutoCompleteTextView
-                    android:id="@+id/user_dropdown"
+                    android:id="@+id/employee_dropdown"
                     style="@style/CompactEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:hint="@string/search_users"
+                    android:hint="@string/search_employees"
                     android:inputType="textCapWords|textNoSuggestions"
                     android:maxLines="1"
                     android:minHeight="@dimen/row_height"
@@ -85,7 +85,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/user_search_input_layout"
+                app:layout_constraintTop_toBottomOf="@id/employee_search_input_layout"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_barcode_scanner"
                 app:endIconTint="@color/black"

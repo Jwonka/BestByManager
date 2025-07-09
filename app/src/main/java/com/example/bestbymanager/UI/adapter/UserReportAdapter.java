@@ -34,7 +34,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<UserReportAdapter.Re
         ReportViewHolder(View view) {
             super(view);
             userID = view.findViewById(R.id.user_id);
-            userName = view.findViewById(R.id.user_name);
+            userName = view.findViewById(R.id.employee_name);
             count = view.findViewById(R.id.count);
         }
     }

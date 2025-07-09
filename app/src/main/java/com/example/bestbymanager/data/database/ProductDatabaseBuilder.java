@@ -18,7 +18,7 @@ import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class}, version = 12, exportSchema = false)
+@Database(entities = {User.class, Product.class}, version = 14, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
     public abstract UserDAO userDAO();
@@ -30,7 +30,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                 if(INSTANCE==null) {
                     Log.d("ProductDatabase", "Creating new database instance");
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(), ProductDatabaseBuilder.class, "MyProductDatabase.db")
-                            .addMigrations(MIGRATION_10_11, MIGRATION_11_12)
+                            .addMigrations(MIGRATION_12_13, MIGRATION_13_14)
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
                             .build();
@@ -39,6 +39,46 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+
+            db.execSQL(
+                    "CREATE TABLE user_new (" +
+                            " userID          INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                            " userName        TEXT    NOT NULL," +
+                            " firstName       TEXT    NOT NULL," +
+                            " lastName        TEXT    NOT NULL," +
+                            " hash            TEXT," +
+                            " thumbnail       BLOB," +
+                            " isAdmin         INTEGER NOT NULL," +
+                            " resetTokenHash  TEXT," +
+                            " resetExpires    TEXT," +
+                            " mustChange      INTEGER NOT NULL DEFAULT 0" +
+                            ")");
+
+            db.execSQL(
+                    "INSERT INTO user_new (" +
+                            " userID, userName, firstName, lastName, hash, thumbnail, isAdmin," +
+                            " resetTokenHash, resetExpires, mustChange) " +
+                            "SELECT userID, userName, firstName, lastName, hash, thumbnail, isAdmin," +
+                            "       resetTokenHash, resetExpires, mustChange " +   // may all be NULL
+                            "FROM user");
+
+            db.execSQL("DROP TABLE user");
+            db.execSQL("ALTER TABLE user_new RENAME TO user");
+
+            db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_user_userName ON user(userName)");
+        }
+    };
+
+    static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE user ADD COLUMN resetTokenHash TEXT");
+            db.execSQL("ALTER TABLE user ADD COLUMN resetExpires   TEXT");
+            db.execSQL("ALTER TABLE user ADD COLUMN mustChange     INTEGER NOT NULL DEFAULT 0");
+        }
+    };
 
     static final Migration MIGRATION_11_12 = new Migration(11, 12) {
         @Override
@@ -52,12 +92,10 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
     static final Migration MIGRATION_10_11 = new Migration(10, 11) {
         @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
 
-            // 1. add the column so the SELECT below can read it
             try {
                 db.execSQL("ALTER TABLE product ADD COLUMN userID INTEGER NOT NULL DEFAULT 1");
             } catch (SQLiteException dup) { /* column already present – fine */ }
 
-            // 2. create new table with full FK + index
             db.execSQL(
                     "CREATE TABLE product_new (" +
                             "  productID      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
@@ -76,7 +114,6 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             "  FOREIGN KEY(userID) REFERENCES user(userID) ON DELETE CASCADE)"
             );
 
-            // 3. copy all rows, giving legacy rows userID = 1
             db.execSQL(
                     "INSERT INTO product_new (" +
                             " productID, userID, brand, productName, expirationDate, quantity," +
@@ -86,16 +123,12 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             " FROM product"
             );
 
-            // 4. replace old table
             db.execSQL("DROP TABLE product");
             db.execSQL("ALTER TABLE product_new RENAME TO product");
 
-            // 5. index for fast joins
             db.execSQL("CREATE INDEX IF NOT EXISTS index_product_userID ON product(userID)");
 
-            // 6. make sure sentinel user exists
-            db.execSQL("INSERT OR IGNORE INTO `user`" +
-                    "(userID,userName,hash,isAdmin) VALUES(1,'Unknown','',0)");
+            db.execSQL("INSERT OR IGNORE INTO `user` (userID,userName,hash,isAdmin) VALUES(1,'Unknown','',0)");
 
             db.execSQL("PRAGMA foreign_keys = ON");
         }

@@ -2,11 +2,29 @@ package com.example.bestbymanager.data.database;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import androidx.annotation.Nullable;
 import androidx.room.TypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Converters {
+
+    private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+    @TypeConverter
+    @Nullable
+    public static String fromOffsetDateTime(@Nullable OffsetDateTime odt) {
+        return odt == null ? null : ISO.format(odt);
+    }
+
+    @TypeConverter
+    @Nullable
+    public static OffsetDateTime toOffsetDateTime(@Nullable String value) {
+        return value == null ? null : OffsetDateTime.parse(value, ISO);
+    }
+
     @TypeConverter
     public static byte[] fromBitmap(Bitmap bmp) {
         if (bmp == null) return null;

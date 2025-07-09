@@ -1,12 +1,12 @@
 package com.example.bestbymanager.data.entities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import java.util.Arrays;
+import java.time.OffsetDateTime;
 
 @Entity(tableName = "user", indices = @Index(value = "userName", unique = true))
 public class User {
@@ -18,10 +18,14 @@ public class User {
     private String firstName;
     @NonNull
     private String lastName;
-    @NonNull
+    @Nullable
     private String hash;
     private byte[] thumbnail;
     public boolean isAdmin;
+    @Nullable String resetTokenHash;
+    @Nullable
+    OffsetDateTime resetExpires;
+    boolean   mustChange;
 
     // Empty constructor for UI layer – ignored by Room
     @Ignore
@@ -35,7 +39,16 @@ public class User {
     }
 
     // Constructor for Room to read the database
-    public User(long userID, @NonNull String userName, @NonNull String hash, @NonNull String firstName, @NonNull String lastName, byte[] thumbnail, boolean isAdmin) {
+    public User(long userID,
+                @NonNull String userName,
+                @Nullable String hash,
+                @NonNull String firstName,
+                @NonNull String lastName,
+                byte[] thumbnail,
+                boolean isAdmin,
+                @Nullable String resetTokenHash,
+                @Nullable OffsetDateTime resetExpires,
+                boolean mustChange) {
         this.userID = userID;
         this.userName = userName;
         this.hash = hash;
@@ -43,17 +56,21 @@ public class User {
         this.lastName = lastName;
         this.thumbnail = thumbnail;
         this.isAdmin = isAdmin;
+        this.resetTokenHash = resetTokenHash;
+        this.resetExpires   = resetExpires;
+        this.mustChange     = mustChange;
     }
 
     public long getUserID() {
         return userID;
     }
 
-    @NonNull
+    public void setUserID(long userID) { this.userID = userID; }
+    @Nullable
     public String getHash() {
         return hash;
     }
-    public void setHash(@NonNull String hash) {
+    public void setHash(@Nullable String hash) {
         this.hash = hash;
     }
     @NonNull
@@ -73,7 +90,18 @@ public class User {
     public void setFirstName(@NonNull String firstName) { this.firstName = firstName; }
     public boolean isAdmin() { return isAdmin; }
     public void setAdmin(boolean admin) { isAdmin = admin; }
+    public void setResetTokenHash(@Nullable String token) { this.resetTokenHash = token; }
+    @Nullable
+    public String getResetTokenHash() { return resetTokenHash; }
 
+    public void setResetExpires(@Nullable OffsetDateTime ts) { this.resetExpires = ts; }
+    @Nullable
+    public OffsetDateTime getResetExpires() { return resetExpires; }
+
+    public void setMustChange(boolean flag) { this.mustChange = flag; }
+    public boolean isMustChange() { return mustChange; }
+
+    @NonNull
     @Override
     public String toString() { return firstName + " " + lastName + " (" + userName + ")"; }
 }

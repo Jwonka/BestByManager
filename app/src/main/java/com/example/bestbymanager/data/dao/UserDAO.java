@@ -6,11 +6,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
-
-import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.entities.User;
-
+import com.example.bestbymanager.utilities.PasswordUtil;
 import java.util.List;
 
 @Dao
@@ -41,4 +40,15 @@ public interface UserDAO {
 
     @Query("SELECT * FROM user ORDER BY userID")
     LiveData<List<User>> getUsers();
+
+    @Transaction
+    default String setTempPassword(long userId) {
+        String tmp = PasswordUtil.generateTemp();
+        String hash = PasswordUtil.hash(tmp);
+        updatePassword(userId, hash, true);
+        return tmp;
+    }
+
+    @Query("UPDATE `user` SET hash = :hash, mustChange = :mustChange WHERE userID = :id")
+    void updatePassword(long id, String hash, boolean mustChange);
 }

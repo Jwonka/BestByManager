@@ -49,34 +49,45 @@
             android:padding="@dimen/padding_m">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/user_search_button"
+                android:id="@+id/employee_search_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_search"
+                android:text="@string/employee_search"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/user_Details_button"
+                android:id="@+id/employee_Details_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_details"
+                android:text="@string/employee_details"
                 android:layout_marginTop="@dimen/spacing_m"
-                app:layout_constraintTop_toBottomOf="@id/user_search_button"
+                app:layout_constraintTop_toBottomOf="@id/employee_search_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/user_list_button"
+                android:id="@+id/employee_list_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_list"
+                android:text="@string/employee_list"
                 android:layout_marginTop="@dimen/spacing_m"
-                app:layout_constraintTop_toBottomOf="@id/user_Details_button"
+                app:layout_constraintTop_toBottomOf="@id/employee_Details_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/home_button"
+                style="@style/DarkGreenPillBig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_screen"
+                android:layout_marginTop="@dimen/spacing_m"
+                app:layout_constraintTop_toBottomOf="@id/employee_list_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 

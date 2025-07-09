@@ -11,10 +11,11 @@ import java.util.List;
 
 public class ProductListViewModel extends AndroidViewModel {
     private final LiveData<List<Product>> products;
+
     public ProductListViewModel(@NonNull Application app) {
         super(app);
         Repository repository = new Repository(app);
         this.products = repository.getProducts(LocalDate.now());
     }
-    public LiveData<List<Product>> getProducts(LocalDate today) { return products; }
+    public LiveData<List<Product>> getProducts(LocalDate ignoredToday) { return products; }
 }

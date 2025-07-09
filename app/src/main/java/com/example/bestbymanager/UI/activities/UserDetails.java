@@ -19,14 +19,16 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.bestbymanager.R;
+import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.database.Converters;
 import com.example.bestbymanager.data.entities.User;
@@ -37,14 +39,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class UserDetails extends AppCompatActivity {
+public class UserDetails extends BaseAdminActivity {
     private UserDetailsViewModel userViewModel;
     private static final String TAG = "UserDetails";
     private static final int REQ_CAMERA = 10;
-    private EditText userID, firstName, lastName, username, password;
+    private EditText userID, firstName, lastName, username;
     private TextView adminLabel;
-    Button saveButton;
-    Button clearButton;
+    Button saveButton, clearButton, password;
     SwitchMaterial modeSwitch;
     private User currentUser;
     private ImageView preview;
@@ -66,7 +67,7 @@ public class UserDetails extends AppCompatActivity {
         if (s != null) {
             imageUri = s.getParcelable("IMAGE_URI");
         }
-        setTitle(R.string.user_details);
+        setTitle(R.string.employee_details);
         takePictureLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 ok -> {
@@ -82,12 +83,12 @@ public class UserDetails extends AppCompatActivity {
         firstName = binding.editFirstName;
         lastName = binding.editLastName;
         username = binding.editUsername;
-        password = binding.editPassword;
         preview = binding.imagePreview;
         modeSwitch = binding.adminToggle;
         saveButton = binding.saveUserButton;
-        clearButton = binding.clearUserButton;
+        clearButton = binding.clearEmployeeButton;
         adminLabel = binding.administratorLabel;
+        password = binding.generateTempPwd;
         binding.imagePreview.setOnClickListener(v -> {
             if (ensureCameraPermission()) {
                 launchCamera();
@@ -100,6 +101,24 @@ public class UserDetails extends AppCompatActivity {
         if (imageUri != null) {
             handleImage(imageUri);
         }
+
+        password.setOnClickListener(v -> {
+            if (currentUser == null) {
+                toast("Save user first");
+                return;
+            }
+            userViewModel.issueTempPassword(currentUser.getUserID(), (ok, plain) -> {
+                if (ok) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.temp_password_created)
+                            .setMessage(getString(R.string.temp_pwd_dialog, plain))
+                            .setPositiveButton("OK", null)
+                            .show();
+                } else {
+                    toast("Could not generate password.");
+                }
+            });
+        });
 
         userViewModel = new ViewModelProvider(this, new SavedStateViewModelFactory(getApplication(), this)).get(UserDetailsViewModel.class);
 
@@ -120,8 +139,7 @@ public class UserDetails extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        menu.findItem(R.id.deleteEmployee).setVisible(currentUser != null);
         return true;
     }
 
@@ -134,27 +152,23 @@ public class UserDetails extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
+        } else if (item.getItemId() == R.id.employeeSearch) {
+            Intent intent = new Intent(this, UserSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
+        } else if (item.getItemId() == R.id.employeeList) {
+            Intent intent = new Intent(this, UserList.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.deleteProduct) {
+        } else if (item.getItemId() == R.id.deleteEmployee) {
             if (currentUser != null) {
                 userViewModel.delete(currentUser);
                 clearForm();
-                Toast.makeText(this, "Product deleted.", Toast.LENGTH_LONG).show();
+                toast("Employee deleted.");
             } else {
-                Toast.makeText(this, "Error deleting product.", Toast.LENGTH_LONG).show();
+                toast("Error deleting employee.");
             }
             this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -232,11 +246,13 @@ public class UserDetails extends AppCompatActivity {
     }
 
     private void populateForm(User user) {
+        currentUser = user;
+        invalidateOptionsMenu();
+
         userID.setText(String.valueOf(user.getUserID()));
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
         username.setText(user.getUserName());
-        password.setText(user.getHash());
         updateAdmin(user.isAdmin());
         if (user.getThumbnail() != null) {
             Bitmap bmp = Converters.toBitmap(user.getThumbnail());
@@ -245,6 +261,9 @@ public class UserDetails extends AppCompatActivity {
             preview.setBackgroundResource(R.drawable.image_placeholder_border);
             preview.setImageResource(R.drawable.ic_add_photo);
         }
+        boolean hasPwd = user.getHash() != null && !user.getHash().isEmpty();
+        password.setEnabled(true);
+        password.setText(hasPwd ? R.string.reset_password : R.string.generate_password);
     }
 
     private void clearForm() {
@@ -252,12 +271,14 @@ public class UserDetails extends AppCompatActivity {
         firstName.setText("");
         lastName.setText("");
         username.setText("");
-        password.setText("");
         preview.setBackgroundResource(R.drawable.image_placeholder_border);
         preview.setImageResource(R.drawable.ic_add_photo);
         thumbBlob = null;
         imageUri = null;
         currentUser = null;
+        password.setEnabled(false);
+        password.setText(R.string.generate_password);
+        invalidateOptionsMenu();
     }
 
     private void saveUser() {
@@ -280,15 +301,23 @@ public class UserDetails extends AppCompatActivity {
         user.setThumbnail(thumbBlob);
 
         if (isNew) {
-            userViewModel.addUser(user, password.getText().toString().trim());
+            LiveData<User> savedLive = userViewModel.addUser(user, null);
+            savedLive.observe(this, saved -> { savedLive.removeObservers(this);
+                if (saved == null) {
+                    return;
+                }
+                currentUser = saved;
+                populateForm(saved);
+                toast(saved.getUserName() + " saved.");
+            });
         } else {
-            userViewModel.update(user, password.getText().toString().trim().isEmpty() ? null : password.getText().toString().trim());
+            userViewModel.update(user, null);
+            toast(user.getUserName() + " saved.");
         }
-        Toast.makeText(this, username.getText().toString().trim() + " saved.", Toast.LENGTH_SHORT).show();
     }
 
     private void updateAdmin(boolean isAdmin) {
-        saveButton.setText(isAdmin ? R.string.save_admin : R.string.save_user);
+        saveButton.setText(isAdmin ? R.string.save_admin : R.string.save_employee);
         adminLabel.setText(isAdmin ? R.string.make_admin : R.string.deny_admin);
     }
 
@@ -296,30 +325,24 @@ public class UserDetails extends AppCompatActivity {
         String firstNameTxt = firstName.getText().toString().trim();
         if (firstNameTxt.isEmpty()) {
             firstName.requestFocus();
-            Toast.makeText(this, "Please enter a first name.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a first name.");
             return false;
         }
 
         String lastNameTxt = lastName.getText().toString().trim();
         if (lastNameTxt.isEmpty()) {
             lastName.requestFocus();
-            Toast.makeText(this, "Please enter a last name.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a last name.");
             return false;
         }
 
         String usernameTxt = username.getText().toString().trim();
         if (usernameTxt.isEmpty()) {
             username.requestFocus();
-            Toast.makeText(this, "Please enter a username.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        String passwordTxt = password.getText().toString().trim();
-        if (passwordTxt.isEmpty()) {
-            password.requestFocus();
-            Toast.makeText(this, "Please enter a password.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a username.");
             return false;
         }
         return true;
     }
+    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

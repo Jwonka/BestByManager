@@ -32,7 +32,7 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
             super(view);
             brand = view.findViewById(R.id.brand);
             productName = view.findViewById(R.id.product_name);
-            enteredBy = view.findViewById(R.id.user_name);
+            enteredBy = view.findViewById(R.id.employee_name);
             date = view.findViewById(R.id.expiration_date);
             quantity = view.findViewById(R.id.expired_quantity);
         }

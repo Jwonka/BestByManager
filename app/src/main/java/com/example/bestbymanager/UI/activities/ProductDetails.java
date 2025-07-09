@@ -8,7 +8,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import androidx.exifinterface.media.ExifInterface;
@@ -208,13 +207,13 @@ public class ProductDetails extends AppCompatActivity {
                         }
                     });
                 } else {
-                    runOnUiThread(() -> Toast.makeText(ProductDetails.this, "Product not found.", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> toast("Product not found."));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ProductResponse> call, @NonNull Throwable t) {
-                Toast.makeText(ProductDetails.this, "Network error", Toast.LENGTH_SHORT).show();
+                toast("Network error");
                 Log.e(TAG, "Failed to fetch product", t);
             }
         };
@@ -266,8 +265,7 @@ public class ProductDetails extends AppCompatActivity {
             code = toCanonical(rawCode);
             Log.d("BARCODE-LOOKUP", toCanonical(code));
         } catch (IllegalArgumentException ex) {
-            Toast.makeText(this,
-                    "Unsupported or unreadable barcode", Toast.LENGTH_SHORT).show();
+            toast("Unsupported or unreadable barcode");
             return;
         }
 
@@ -293,8 +291,7 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        menu.findItem(R.id.deleteProduct).setVisible(currentProduct != null);
         return true;
     }
 
@@ -319,15 +316,11 @@ public class ProductDetails extends AppCompatActivity {
             if (currentProduct != null) {
                 productViewModel.delete(currentProduct);
                 clearForm();
-                Toast.makeText(this, "Product deleted.", Toast.LENGTH_LONG).show();
+                toast("Product deleted.");
             } else {
-                Toast.makeText(this, "Error deleting product.", Toast.LENGTH_LONG).show();
+                toast("Error deleting product.");
             }
             this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -405,6 +398,9 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void populateForm(Product product) {
+        currentProduct = product;
+        invalidateOptionsMenu();
+
         name.setText(product.getProductName());
         brand.setText(product.getBrand());
         weight.setText(product.getWeight());
@@ -424,6 +420,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void clearForm() {
+
         brand.setText("");
         name.setText("");
         weight.setText("");
@@ -437,6 +434,7 @@ public class ProductDetails extends AppCompatActivity {
         thumbBlob = null;
         imageUri = null;
         currentProduct = null;
+        invalidateOptionsMenu();
         modeSwitch.setChecked(false);
         modeSwitch.setEnabled(false);
     }
@@ -469,19 +467,19 @@ public class ProductDetails extends AppCompatActivity {
             String canonical = toCanonical(barcode.getText().toString().trim());
             toSave.setBarcode(canonical);
         } catch (IllegalArgumentException ex) {
-            Toast.makeText(this, "Unsupported or unreadable barcode", Toast.LENGTH_SHORT).show();
+            toast("Unsupported or unreadable barcode");
             return;
         }
 
         if (addNew && toSave.isExpired()) {
-            Toast.makeText(this, "Cannot add a product that is already expired.", Toast.LENGTH_LONG).show();
+            toast("Cannot add a product that is already expired.");
             return;
         }
         if (!addNew && toSave.isExpired()) {
             int oldQty   = currentProduct.getQuantity();
             int newQty   = Integer.parseInt(quantity.getText().toString().trim());
             if (newQty > oldQty) {
-                Toast.makeText(this, "Product expired. Quantity can only be reduced.", Toast.LENGTH_LONG).show();
+                toast("Product expired. Quantity can only be reduced.");
                 return;
             }
         }
@@ -489,35 +487,35 @@ public class ProductDetails extends AppCompatActivity {
         productViewModel.save(toSave);
         modeSwitch.setEnabled(true);
         modeSwitch.setChecked(true);
-        Toast.makeText(this, name.getText().toString().trim() + " saved.", Toast.LENGTH_SHORT).show();
+        toast(name.getText().toString().trim() + " saved.");
     }
 
     private boolean validForm() {
         String nameTxt = name.getText().toString().trim();
         if (nameTxt.isEmpty()) {
             name.requestFocus();
-            Toast.makeText(this, "Please enter a product name.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a product name.");
             return false;
         }
 
         String brandTxt = brand.getText().toString().trim();
         if (brandTxt.isEmpty()) {
             brand.requestFocus();
-            Toast.makeText(this, "Please enter a brand.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a brand.");
             return false;
         }
 
         String expTxt = editExp.getText().toString().trim();
         if (expTxt.isEmpty()) {
             editExp.requestFocus();
-            Toast.makeText(this, "Please select an expiration date.", Toast.LENGTH_SHORT).show();
+            toast("Please select an expiration date.");
             return false;
         }
 
         String qtyTxt = quantity.getText().toString().trim();
         if (qtyTxt.isEmpty()) {
             quantity.requestFocus();
-            Toast.makeText(this, "Please enter a quantity.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a quantity.");
             return false;
         }
         int qty;
@@ -526,32 +524,34 @@ public class ProductDetails extends AppCompatActivity {
             if (qty < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             quantity.requestFocus();
-            Toast.makeText(this, "Quantity must be a non-negative integer.", Toast.LENGTH_SHORT).show();
+            toast("Quantity must be a non-negative integer.");
             return false;
         }
 
         String weightTxt = weight.getText().toString().trim();
         if (weightTxt.isEmpty()) {
             weight.requestFocus();
-            Toast.makeText(this, "Please enter a weight.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a weight.");
             return false;
         }
 
         String barcodeTxt = barcode.getText().toString().trim();
         if (barcodeTxt.isEmpty()) {
             barcode.requestFocus();
-            Toast.makeText(this, "Please enter a barcode.", Toast.LENGTH_SHORT).show();
+            toast("Please enter a barcode.");
             return false;
         }
 
         int categoryPosition = category.getSelectedItemPosition();
         if (categoryPosition == 0) {
             category.requestFocus();
-            Toast.makeText(this, "Please select a category.", Toast.LENGTH_SHORT).show();
+            toast("Please select a category.");
             return false;
         }
 
         return true;
     }
+
+    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }
 

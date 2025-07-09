@@ -7,26 +7,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.adapter.UserReportAdapter;
-import com.example.bestbymanager.UI.authentication.Session;
+import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.data.pojo.UserReportRow;
 import com.example.bestbymanager.databinding.ActivityUserReportBinding;
 import com.example.bestbymanager.viewmodel.UserReportViewModel;
-
 import java.util.List;
 
-public class UserReport extends AppCompatActivity {
+public class UserReport extends BaseAdminActivity {
     private UserReportAdapter userAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.user_report);
+        setTitle(R.string.results);
         ActivityUserReportBinding binding = ActivityUserReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -45,22 +43,15 @@ public class UserReport extends AppCompatActivity {
                 startActivity(new Intent(this, UserDetails.class)
                         .putExtra("userID", id)));
 
-        binding.userReportRecycler.setLayoutManager(new LinearLayoutManager(this));
-        binding.userReportRecycler.setAdapter(userAdapter);
+        binding.employeeReportRecycler.setLayoutManager(new LinearLayoutManager(this));
+        binding.employeeReportRecycler.setAdapter(userAdapter);
 
         userViewModel.getReport().observe(this, userAdapter::setUserList);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_product_report, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        getMenuInflater().inflate(R.menu.menu_user_report, menu);
         return true;
     }
 
@@ -73,16 +64,16 @@ public class UserReport extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
+        } else if (item.getItemId() == R.id.employeeSearch) {
+            Intent intent = new Intent(this, UserSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
+        } else if (item.getItemId() == R.id.employeeDetails) {
+            Intent intent = new Intent(this, UserDetails.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
+        } else if (item.getItemId() == R.id.employeeList) {
+            Intent intent = new Intent(this, UserList.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.action_copy) {
@@ -90,10 +81,6 @@ public class UserReport extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.action_share) {
             shareReport();
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
-            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

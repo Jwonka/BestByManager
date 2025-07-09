@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.adapter.ProductReportAdapter;
-import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.pojo.ProductReportRow;
 import com.example.bestbymanager.databinding.ActivityProductReportBinding;
 import com.example.bestbymanager.viewmodel.ProductReportViewModel;
@@ -26,7 +25,7 @@ public class ProductReport extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.product_report);
+        setTitle(R.string.results);
         ActivityProductReportBinding binding = ActivityProductReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -58,13 +57,6 @@ public class ProductReport extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
@@ -77,7 +69,7 @@ public class ProductReport extends AppCompatActivity {
             Intent intent = new Intent(this, ProductSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.productDetails) {
+        } else if (item.getItemId() == R.id.employeeDetails) {
             Intent intent = new Intent(this, ProductDetails.class);
             startActivity(intent);
             return true;
@@ -91,10 +83,6 @@ public class ProductReport extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_share) {
             shareReport();
             return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-                Intent intent = new Intent(this, AdministratorActivity.class);
-                startActivity(intent);
-                return true;
         }
             return super.onOptionsItemSelected(item);
     }
