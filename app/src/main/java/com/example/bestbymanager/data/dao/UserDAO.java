@@ -14,7 +14,7 @@ import java.util.List;
 
 @Dao
 public interface UserDAO {
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(User user);
 
     @Update
@@ -43,7 +43,7 @@ public interface UserDAO {
 
     @Transaction
     default String setTempPassword(long userId) {
-        String tmp = PasswordUtil.generateTemp();
+        String tmp = PasswordUtil.generateTempPassword();
         String hash = PasswordUtil.hash(tmp);
         updatePassword(userId, hash, true);
         return tmp;

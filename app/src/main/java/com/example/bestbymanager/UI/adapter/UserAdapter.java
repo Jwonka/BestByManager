@@ -22,11 +22,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public UserAdapter(UserAdapter.OnUserClick l) { this.listener = l; }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView username, userID;
+        TextView username, fullname;
         UserViewHolder(View view) {
             super(view);
-            username = view.findViewById(R.id.employee_name);
-            userID = view.findViewById(R.id.user_id);
+            username = view.findViewById(R.id.username);
+            fullname = view.findViewById(R.id.full_name);
         }
     }
 
@@ -42,9 +42,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @NonNull UserAdapter.UserViewHolder holder, int position) {
 
         User user = data.get(position);
+        String name = user.getFirstName() + " " + user.getLastName();
 
         holder.username.setText(user.getUserName());
-        holder.userID.setText(String.valueOf(user.getUserID()));
+        holder.fullname.setText(name);
         holder.itemView.setOnClickListener(v -> listener.onUserClick(user.getUserID()));
     }
 
@@ -65,7 +66,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override public boolean areContentsTheSame(int oldPos, int newPos) {
                 User a = data.get(oldPos);
                 User b = newData.get(newPos);
-                return Objects.equals(a.getUserName(),       b.getUserName());
+                return Objects.equals(a.getUserName(), b.getUserName()) &&
+                        Objects.equals(a.getFirstName(), b.getFirstName()) &&
+                        Objects.equals(a.getLastName(),  b.getLastName());
             }
         });
 

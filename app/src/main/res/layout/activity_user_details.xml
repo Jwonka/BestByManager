@@ -29,38 +29,6 @@
             android:paddingHorizontal="@dimen/spacing_sm">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/user_id_input_layout"
-                style="@style/CompactOutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/user_id"
-                android:layout_marginTop="@dimen/spacing_s"
-                android:textColorHint="@color/black"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_user_id"
-                style="@style/CompactEditText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:focusable="false"
-                android:inputType="none"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:textColorHint="@color/black"
-                android:textColor="@color/black"
-                tools:text="UserID"
-            tools:ignore="TouchTargetSizeCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/first_name_input_layout"
                 style="@style/CompactOutlinedBox"
                 android:layout_width="0dp"
@@ -72,7 +40,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/user_id_input_layout"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="1">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -205,12 +173,11 @@
                     android:id="@+id/admin_toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="@dimen/spacing_m"
                     android:textOff="@string/save_employee"
                     android:textOn="@string/save_admin"
-                    tools:ignore="DuplicateSpeakableTextCheck"
                     app:layout_constraintStart_toEndOf="@id/administrator_label"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_user_button"
@@ -230,7 +197,7 @@
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/generate_password"
+                    android:text="@string/reset_password"
                     android:layout_marginTop="@dimen/spacing_m"
                     android:layout_marginEnd="@dimen/spacing_l"
                     android:paddingHorizontal="@dimen/padding_s"

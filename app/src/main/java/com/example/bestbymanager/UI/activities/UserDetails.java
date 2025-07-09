@@ -1,6 +1,10 @@
 package com.example.bestbymanager.UI.activities;
 
+import static com.example.bestbymanager.utilities.PasswordUtil.generateTempPassword;
+
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,12 +23,13 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.bestbymanager.R;
@@ -43,7 +48,7 @@ public class UserDetails extends BaseAdminActivity {
     private UserDetailsViewModel userViewModel;
     private static final String TAG = "UserDetails";
     private static final int REQ_CAMERA = 10;
-    private EditText userID, firstName, lastName, username;
+    private EditText firstName, lastName, username;
     private TextView adminLabel;
     Button saveButton, clearButton, password;
     SwitchMaterial modeSwitch;
@@ -79,7 +84,6 @@ public class UserDetails extends BaseAdminActivity {
         ActivityUserDetailsBinding binding = ActivityUserDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        userID = binding.textUserId;
         firstName = binding.editFirstName;
         lastName = binding.editLastName;
         username = binding.editUsername;
@@ -107,13 +111,10 @@ public class UserDetails extends BaseAdminActivity {
                 toast("Save user first");
                 return;
             }
-            userViewModel.issueTempPassword(currentUser.getUserID(), (ok, plain) -> {
-                if (ok) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.temp_password_created)
-                            .setMessage(getString(R.string.temp_pwd_dialog, plain))
-                            .setPositiveButton("OK", null)
-                            .show();
+            userViewModel.resetPassword(currentUser.getUserID())
+                    .observe(this, temp -> {
+                if (temp != null) {
+                    showPasswordResetDialog(temp, currentUser);
                 } else {
                     toast("Could not generate password.");
                 }
@@ -249,7 +250,6 @@ public class UserDetails extends BaseAdminActivity {
         currentUser = user;
         invalidateOptionsMenu();
 
-        userID.setText(String.valueOf(user.getUserID()));
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
         username.setText(user.getUserName());
@@ -261,13 +261,10 @@ public class UserDetails extends BaseAdminActivity {
             preview.setBackgroundResource(R.drawable.image_placeholder_border);
             preview.setImageResource(R.drawable.ic_add_photo);
         }
-        boolean hasPwd = user.getHash() != null && !user.getHash().isEmpty();
         password.setEnabled(true);
-        password.setText(hasPwd ? R.string.reset_password : R.string.generate_password);
     }
 
     private void clearForm() {
-        userID.setText("");
         firstName.setText("");
         lastName.setText("");
         username.setText("");
@@ -277,7 +274,6 @@ public class UserDetails extends BaseAdminActivity {
         imageUri = null;
         currentUser = null;
         password.setEnabled(false);
-        password.setText(R.string.generate_password);
         invalidateOptionsMenu();
     }
 
@@ -301,17 +297,20 @@ public class UserDetails extends BaseAdminActivity {
         user.setThumbnail(thumbBlob);
 
         if (isNew) {
-            LiveData<User> savedLive = userViewModel.addUser(user, null);
-            savedLive.observe(this, saved -> { savedLive.removeObservers(this);
-                if (saved == null) {
-                    return;
-                }
-                currentUser = saved;
-                populateForm(saved);
-                toast(saved.getUserName() + " saved.");
-            });
+            String temp = generateTempPassword();
+            userViewModel.addUser(user, temp)
+                    .observe(this, newUser -> {
+                        if (newUser != null) {
+                            currentUser = newUser;
+                            populateForm(currentUser);
+                            toast(currentUser.getUserName() + " saved.");
+                            showPasswordResetDialog(temp, currentUser);
+                        } else {
+                            toast("Username already taken.");
+                        }
+                    });
         } else {
-            userViewModel.update(user, null);
+            userViewModel.update(user);
             toast(user.getUserName() + " saved.");
         }
     }
@@ -343,6 +342,38 @@ public class UserDetails extends BaseAdminActivity {
             return false;
         }
         return true;
+    }
+
+    private void showPasswordResetDialog(@NonNull String temp, @Nullable User user) {
+
+        final String message;
+
+        if (user == null) {
+            message = getString(R.string.temp_pwd_dialog, temp);
+        } else {
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            message = getString(R.string.temp_pwd_body, user.getUserName(), fullName, temp);
+        }
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this)
+                .setTitle(R.string.temp_password_created)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.copying, (d,w) -> {
+                    ClipboardManager cm = getSystemService(ClipboardManager.class);
+                    cm.setPrimaryClip(ClipData.newPlainText("temp-password", temp));
+                    toast("Copied to clipboard");
+                })
+
+                .setNegativeButton(R.string.share, (d,w) -> {
+                    Intent send = new Intent(Intent.ACTION_SEND)
+                            .setType("text/plain")
+                            .putExtra(Intent.EXTRA_TEXT, message);
+                    startActivity(Intent.createChooser(send, "Send with…"));
+                });
+        b.setNeutralButtonIcon(AppCompatResources.getDrawable(this, R.drawable.ic_content_copy));
+        b.setNegativeButtonIcon(AppCompatResources.getDrawable(this, R.drawable.ic_share));
+        b.show();
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

@@ -18,7 +18,7 @@ public class User {
     private String firstName;
     @NonNull
     private String lastName;
-    @Nullable
+    @NonNull
     private String hash;
     private byte[] thumbnail;
     public boolean isAdmin;
@@ -41,7 +41,7 @@ public class User {
     // Constructor for Room to read the database
     public User(long userID,
                 @NonNull String userName,
-                @Nullable String hash,
+                @NonNull String hash,
                 @NonNull String firstName,
                 @NonNull String lastName,
                 byte[] thumbnail,
@@ -66,11 +66,11 @@ public class User {
     }
 
     public void setUserID(long userID) { this.userID = userID; }
-    @Nullable
+    @NonNull
     public String getHash() {
         return hash;
     }
-    public void setHash(@Nullable String hash) {
+    public void setHash(@NonNull String hash) {
         this.hash = hash;
     }
     @NonNull
@@ -93,11 +93,9 @@ public class User {
     public void setResetTokenHash(@Nullable String token) { this.resetTokenHash = token; }
     @Nullable
     public String getResetTokenHash() { return resetTokenHash; }
-
     public void setResetExpires(@Nullable OffsetDateTime ts) { this.resetExpires = ts; }
     @Nullable
     public OffsetDateTime getResetExpires() { return resetExpires; }
-
     public void setMustChange(boolean flag) { this.mustChange = flag; }
     public boolean isMustChange() { return mustChange; }
 

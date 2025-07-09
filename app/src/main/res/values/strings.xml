@@ -71,8 +71,8 @@
     <string name="copying">Copy</string>
     <string name="share">Share</string>
     <string name="not_authorized">You are not authorized to view this screen.</string>
-    <string name="generate_password">Create Password</string>
     <string name="reset_password">Reset Password</string>
     <string name="temp_password_created">Temporary password created.</string>
     <string name="temp_pwd_dialog">Temporary password: <b>%1$s</b>\n\nChange it within 24 hours.</string>
+    <string name="temp_pwd_body">Username: %1$s\nEmployee: %2$s\nPassword: %3$s\n\nChange it within 24 hours.</string>
 </resources>

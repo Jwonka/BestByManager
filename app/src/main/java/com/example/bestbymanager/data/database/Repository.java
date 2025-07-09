@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -120,7 +120,7 @@ public class Repository {
         MutableLiveData<User> pass = new MutableLiveData<>();
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
-            boolean ok = user != null && user.getHash() != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
+            boolean ok = user != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
 
             if(ok){
                 Session.get().logIn(user, context);
@@ -155,38 +155,32 @@ public class Repository {
         return registered;
     }
 
-    public LiveData<User> addUser(User user, @Nullable String plainPassword) {
+    public LiveData<User> addUser(User user, @NonNull String plainPassword) {
         MutableLiveData<User> result = new MutableLiveData<>();
         executor.execute(() -> {
-            if (plainPassword != null && !plainPassword.isEmpty()) {
-                user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
-            } else {
-                user.setHash(null);
-            }
+            user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
 
             long id = mUserDAO.insert(user);
             if (id > 0) {
                 user.setUserID(id);
                 result.postValue(user);
             } else {
-                showToast("Username already taken.");
                 result.postValue(null);
             }
         });
         return result;
     }
 
-    public void updateUser(User user, @Nullable String newPlainPassword) {
-        executor.execute(() -> {
-            if (newPlainPassword != null && !newPlainPassword.isEmpty()) {
-                user.setHash(BCrypt.hashpw(newPlainPassword, BCrypt.gensalt()));
-            }
-            mUserDAO.update(user);
-        });
-    }
+    public void updateUser(User user) { executor.execute(() -> mUserDAO.update(user)); }
     public void deleteUser(User user) { executor.execute(() -> mUserDAO.delete(user)); }
 
-    public interface TempPwdCallback { void onResult(boolean ok, @Nullable String plainTemp); }
+    public interface TempPwdCallback { void onResult(boolean ok, String plainTemp); }
+
+    public LiveData<String> resetPassword(long userID) {
+        MutableLiveData<String> out = new MutableLiveData<>();
+        issueTempPassword(userID, (ok, plainTemp) -> out.postValue(ok ? plainTemp : null));
+        return out;
+    }
 
     public void issueTempPassword(long userId, TempPwdCallback cb) {
         executor.execute(() -> {
