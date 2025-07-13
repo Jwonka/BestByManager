@@ -10,6 +10,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 import com.example.bestbymanager.data.entities.User;
 import com.example.bestbymanager.utilities.PasswordUtil;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Dao
@@ -45,10 +46,14 @@ public interface UserDAO {
     default String setTempPassword(long userId) {
         String tmp = PasswordUtil.generateTempPassword();
         String hash = PasswordUtil.hash(tmp);
-        updatePassword(userId, hash, true);
+        OffsetDateTime expires = OffsetDateTime.now().plusHours(24);
+        updatePassword(userId, hash, expires, true);
         return tmp;
     }
 
-    @Query("UPDATE `user` SET hash = :hash, mustChange = :mustChange WHERE userID = :id")
-    void updatePassword(long id, String hash, boolean mustChange);
+    @Query("UPDATE `user` SET hash = :hash, mustChange = :mustChange, resetExpires = :expires WHERE userID = :id")
+    void updatePassword(long id, String hash, OffsetDateTime expires, boolean mustChange);
+
+    @Query("UPDATE `user` SET hash = :hash, mustChange = 0, resetTokenHash = NULL, resetExpires = NULL WHERE userID = :id")
+    void changePassword(long id, String hash);
 }

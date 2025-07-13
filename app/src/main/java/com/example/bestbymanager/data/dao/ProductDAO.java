@@ -31,11 +31,12 @@ public interface ProductDAO {
     LiveData<List<Product>> getProducts(LocalDate today);
 
     @Query("SELECT product.productID, " +
-            "      product.brand, " +
-            "      product.productName, " +
-            "      product.expirationDate, " +
-            "      product.quantity, " +
-            "      user.userName AS enteredBy " +
+            "product.brand, " +
+            "product.productName, " +
+            "product.expirationDate, " +
+            "product.purchaseDate, " +
+            "product.quantity, " +
+            "user.userName AS enteredBy " +
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate < :cutoff " +
@@ -46,6 +47,7 @@ public interface ProductDAO {
             "product.brand AS brand, "      +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
+            "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, "   +
             "user.userName AS enteredBy, "   +
             "product.barcode AS barcode, " +
@@ -69,6 +71,7 @@ public interface ProductDAO {
                     "product.brand AS brand, "      +
                     "product.productName AS productName, " +
                     "product.expirationDate AS expirationDate, " +
+                    "product.purchaseDate AS purchaseDate, " +
                     "product.quantity AS quantity, "   +
                     "user.userName AS enteredBy, "   +
                     "product.barcode AS barcode, " +
@@ -82,6 +85,7 @@ public interface ProductDAO {
             "product.brand AS brand, "      +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
+            "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, "   +
             "user.userName AS enteredBy, "   +
             "product.barcode AS barcode, " +
@@ -96,6 +100,7 @@ public interface ProductDAO {
             "product.brand, " +
             "product.productName, " +
             "product.expirationDate, " +
+            "product.purchaseDate, " +
             "product.quantity, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +

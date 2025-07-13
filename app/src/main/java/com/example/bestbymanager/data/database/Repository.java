@@ -1,10 +1,10 @@
 package com.example.bestbymanager.data.database;
 
+import static com.example.bestbymanager.utilities.PasswordUtil.hash;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -22,6 +22,7 @@ import com.example.bestbymanager.utilities.AlarmScheduler;
 import com.example.bestbymanager.utilities.BarcodeUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -66,7 +67,6 @@ public class Repository {
     public void insertProduct(Product product) { executor.execute(() -> {
         try {
             product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));
-            Log.d("BARCODE-SAVE", BarcodeUtil.toCanonical(product.getBarcode()));
         } catch (IllegalArgumentException ex) {
             showToast("Unsupported or unreadable barcode");
             return;
@@ -120,6 +120,10 @@ public class Repository {
         MutableLiveData<User> pass = new MutableLiveData<>();
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
+            if (user != null && user.isMustChange() && user.getResetExpires() != null && OffsetDateTime.now().isAfter(user.getResetExpires())) {
+                pass.postValue(null);
+                return;
+            }
             boolean ok = user != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
 
             if(ok){
@@ -136,7 +140,7 @@ public class Repository {
         MutableLiveData<User> registered = new MutableLiveData<>();
         executor.execute(() -> {
             boolean isFirstUser = mUserDAO.userCount() == 0;
-            String hash = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+            String hash = hash(plainPassword);
 
             User toInsert = new User(userName, hash);
             toInsert.setAdmin(isFirstUser);
@@ -158,7 +162,7 @@ public class Repository {
     public LiveData<User> addUser(User user, @NonNull String plainPassword) {
         MutableLiveData<User> result = new MutableLiveData<>();
         executor.execute(() -> {
-            user.setHash(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+            user.setHash(hash(plainPassword));
 
             long id = mUserDAO.insert(user);
             if (id > 0) {
@@ -195,5 +199,18 @@ public class Repository {
 
     private void showToast(String msg) {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
+    }
+
+    public LiveData<Boolean> changePassword(long userId, @NonNull String plainPwd) {
+        MutableLiveData<Boolean> ok = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                mUserDAO.changePassword(userId, hash(plainPwd));
+                ok.postValue(true);
+            } catch (Exception ex) {
+                ok.postValue(false);
+            }
+        });
+        return ok;
     }
 }

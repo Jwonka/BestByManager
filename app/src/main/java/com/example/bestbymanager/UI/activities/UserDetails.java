@@ -1,7 +1,6 @@
 package com.example.bestbymanager.UI.activities;
 
 import static com.example.bestbymanager.utilities.PasswordUtil.generateTempPassword;
-
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -366,14 +365,31 @@ public class UserDetails extends BaseAdminActivity {
                 })
 
                 .setNegativeButton(R.string.share, (d,w) -> {
-                    Intent send = new Intent(Intent.ACTION_SEND)
-                            .setType("text/plain")
-                            .putExtra(Intent.EXTRA_TEXT, message);
-                    startActivity(Intent.createChooser(send, "Send with…"));
+                    Intent share = buildShareIntent(message);
+                    startActivity(Intent.createChooser(share, getString(R.string.share_with)));
                 });
         b.setNeutralButtonIcon(AppCompatResources.getDrawable(this, R.drawable.ic_content_copy));
         b.setNegativeButtonIcon(AppCompatResources.getDrawable(this, R.drawable.ic_share));
         b.show();
+    }
+
+    private Intent buildShareIntent(String body) {
+
+        String subject = getString(R.string.temp_pwd_subject);
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+
+        // universal text
+        share.putExtra(Intent.EXTRA_TEXT, body);
+
+        // subject – e-mail
+        share.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+        // sms_body – SMS / RCS apps
+        share.putExtra("sms_body", body);
+
+        return share;
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

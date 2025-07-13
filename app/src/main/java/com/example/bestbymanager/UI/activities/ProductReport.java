@@ -110,7 +110,7 @@ public class ProductReport extends AppCompatActivity {
                 sb.append(escape(r.brand)).append("\t")
                         .append(escape(r.productName)).append("\t")
                         .append(escape(r.barcode)).append('\t')
-                        .append(escape(r.category)).append('\t')
+                        .append(r.purchaseDate).append('\t')
                         .append(r.expirationDate).append("\t")
                         .append(r.quantity).append("\t")
                         .append(escape(r.enteredBy)).append("\n");

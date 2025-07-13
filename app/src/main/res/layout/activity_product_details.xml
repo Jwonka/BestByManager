@@ -49,12 +49,13 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:hint="@string/brand"
-                    android:maxLines="1"
+                    android:singleLine="true"
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:imeOptions="actionNext"
                     tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,7 +85,8 @@
                     android:hint="@string/product_name"
                     android:textSize="20sp"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     style="@style/CompactEditText"
                     tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -115,7 +117,8 @@
                     android:textColorHint="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,7 +147,8 @@
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
                     style="@style/CompactEditText"
                     tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -184,7 +188,7 @@
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:singleLine="true"
                     style="@style/CompactEditText"
                     tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>

@@ -52,7 +52,6 @@
                 style="@style/CompactOutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"

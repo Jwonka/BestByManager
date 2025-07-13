@@ -50,12 +50,13 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:hint="@string/first_name"
-                    android:maxLines="1"
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,7 +86,8 @@
                     android:hint="@string/last_name"
                     android:textSize="20sp"
                     android:gravity="center"
-                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     style="@style/CompactEditText"
                     tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -111,12 +113,13 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:hint="@string/enter_user_name"
-                    android:maxLines="1"
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
                     tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 

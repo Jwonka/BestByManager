@@ -86,6 +86,9 @@
             android:name=".UI.activities.MainActivity"
             android:exported="false"/>
         <activity
+            android:name=".UI.activities.ResetPasswordActivity"
+            android:exported="true"/>
+        <activity
             android:name=".UI.activities.LoginActivity"
             android:exported="true">
             <intent-filter>

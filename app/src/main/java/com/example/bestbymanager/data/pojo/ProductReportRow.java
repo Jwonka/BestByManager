@@ -8,6 +8,7 @@ public class ProductReportRow {
     public String brand;
     public String productName;
     public LocalDate expirationDate;
+    public LocalDate purchaseDate;
 
     public int quantity;
     public String enteredBy;

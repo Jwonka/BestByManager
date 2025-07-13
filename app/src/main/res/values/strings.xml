@@ -65,6 +65,7 @@
     <string name="camera">Camera</string>
     <string name="about">About</string>
     <string name="password_requirements">Include a digit, a symbol, and mixed-case letters.</string>
+    <string name="password_confirmation_requirements">Passwords must match.</string>
     <string name="notif_enabled">Notifications enabled</string>
     <string name="no_results">No products match your search.</string>
     <string name="results">Results</string>
@@ -72,7 +73,13 @@
     <string name="share">Share</string>
     <string name="not_authorized">You are not authorized to view this screen.</string>
     <string name="reset_password">Reset Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="temp_password_created">Temporary password created.</string>
     <string name="temp_pwd_dialog">Temporary password: <b>%1$s</b>\n\nChange it within 24 hours.</string>
-    <string name="temp_pwd_body">Username: %1$s\nEmployee: %2$s\nPassword: %3$s\n\nChange it within 24 hours.</string>
+    <string name="temp_pwd_body">\nUsername: %1$s\nEmployee: %2$s\nPassword: %3$s\n\nChange it within 24 hours.</string>
+    <string name="temp_pwd_subject">Temporary password</string>
+    <string name="temp_pwd_header">Temporary password: </string>
+    <string name="share_with">Share with …</string>
+    <string name="password_updated">Password updated.</string>
+    <string name="password_update_failed">Could not change password.</string>
 </resources>

@@ -2,17 +2,18 @@ package com.example.bestbymanager.UI.authentication;
 
 import android.content.Context;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.bestbymanager.data.database.Repository;
 
 public abstract class AuthenticationAction {
 
     protected final Context context;
-    private final EditText userName;
+    private final TextView userName;
     private final EditText password;
     protected final Repository repository;
     private final boolean strict;
-    protected AuthenticationAction(Context context, EditText userName, EditText password, Repository repository, boolean strict) {
+    protected AuthenticationAction(Context context, TextView userName, EditText password, Repository repository, boolean strict) {
         this.context = context;
         this.userName = userName;
         this.password = password;
@@ -28,21 +29,22 @@ public abstract class AuthenticationAction {
         performAuthorization(name, plainPassword);
     }
 
-    private boolean validInput(String name, String plainPassword, boolean strict) {
+    protected boolean validInput(String name, String plainPassword, boolean strict) {
 
         if (name.isEmpty()) { return fail(userName, "Username required."); }
 
         if (name.length() > 30) { return fail(userName, "Username must be less than 30 characters."); }
 
-        if(plainPassword.isEmpty()) { return fail(password, "password required."); }
-
-        if (plainPassword.length() > 30) { return fail(password, "Password must be less than 30 characters."); }
-
         return !strict || strongEnough(plainPassword);
     }
 
-    private boolean strongEnough(String plainPassword) {
-        if(plainPassword.length() < 12) return fail(password,"Password must be 12-characters minimum.");
+    protected boolean strongEnough(String plainPassword) {
+
+        if(plainPassword.isEmpty()) { return fail(password, "password required."); }
+
+        if(plainPassword.length() < 12) return fail(password,"Password must be at least 12-characters.");
+
+        if (plainPassword.length() > 30) { return fail(password, "Password must be less than 30 characters."); }
 
         if(plainPassword.chars().noneMatch(Character::isDigit)) return fail(password,"Password must contain a number.");
 
@@ -55,7 +57,7 @@ public abstract class AuthenticationAction {
         return true;
     }
 
-    private boolean fail(EditText field, String message) {
+    protected boolean fail(TextView field, String message) {
         field.setError(message);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         return false;
