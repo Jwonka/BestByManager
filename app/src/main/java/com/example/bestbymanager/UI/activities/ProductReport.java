@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -34,7 +33,8 @@ public class ProductReport extends AppCompatActivity {
         args.putString("endDate",   getIntent().getStringExtra("endDate"));
         args.putString("mode",      getIntent().getStringExtra("mode"));
         args.putString("barcode",   getIntent().getStringExtra("barcode"));
-        Log.d("REPORT-EXTRA", "barcode=" + getIntent().getStringExtra("barcode"));
+        args.putString("allProducts",   getIntent().getStringExtra("allProducts"));
+
         ProductReportViewModel prViewModel = new ViewModelProvider(
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
@@ -89,60 +89,52 @@ public class ProductReport extends AppCompatActivity {
 
     private void copyToClipboard() {
         List<ProductReportRow> rows = prAdapter.getCurrentProductList();
-        String header = resolveReportLabel(rows);
-        String text = header + "\n\n" + buildReportText(rows);
+        String text = resolveReportLabel(rows) + "\n\n" + buildReadableReport(rows);
 
         ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         cm.setPrimaryClip(ClipData.newPlainText("Report", text));
-        Toast.makeText(this, "Copied: " + header, Toast.LENGTH_SHORT).show();
-    }
-
-    private String buildReportText(List<? extends ProductReportRow> rows) {
-        StringBuilder sb = new StringBuilder();
-
-        if (rows.isEmpty()) {
-            return "No results.";
-        }
-
-        if (rows.get(0) != null) {
-            sb.append("Brand\tProduct Name\tBarcode\tCategory\tExpiration Date\tQuantity\tEmployee\n");
-            for (ProductReportRow r : rows) {
-                sb.append(escape(r.brand)).append("\t")
-                        .append(escape(r.productName)).append("\t")
-                        .append(escape(r.barcode)).append('\t')
-                        .append(r.purchaseDate).append('\t')
-                        .append(r.expirationDate).append("\t")
-                        .append(r.quantity).append("\t")
-                        .append(escape(r.enteredBy)).append("\n");
-            }
-        }
-        return sb.toString();
-    }
-    private static String escape(String s) {
-        return s == null ? "" : s.replace("\t", " ").replace("\n", " ");
+        Toast.makeText(this, "Copied: " + resolveReportLabel(rows), Toast.LENGTH_SHORT).show();
     }
 
     private void shareReport() {
         List<ProductReportRow> rows = prAdapter.getCurrentProductList();
-        String subject = resolveReportLabel(rows);
-        String body = buildReportText(rows);
+        String text = resolveReportLabel(rows) + "\n\n" + buildReadableReport(rows);
 
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
-        share.putExtra(Intent.EXTRA_SUBJECT, subject);
-        share.putExtra(Intent.EXTRA_TEXT, body);
-        startActivity(Intent.createChooser(share, "Share..."));
+        share.putExtra(Intent.EXTRA_SUBJECT, resolveReportLabel(rows));
+        share.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(share, "Share report via"));
+    }
+
+    private String buildReadableReport(List<? extends ProductReportRow> rows) {
+        if (rows.isEmpty()) { return "No results."; }
+
+        StringBuilder sb = new StringBuilder();
+        for (ProductReportRow r : rows) {
+            sb.append("============================\n");
+            sb.append("Brand: ").append(r.brand).append("\n");
+            sb.append("Product: ").append(r.productName).append("\n");
+            sb.append("Barcode: ").append(r.barcode).append("\n");
+            sb.append("Purchase Date: ").append(r.purchaseDate).append("\n");
+            sb.append("Expiration Date: ").append(r.expirationDate).append("\n");
+            sb.append("Quantity: ").append(r.quantity).append("\n");
+            sb.append("Entered By: ").append(r.enteredBy).append("\n");
+            sb.append("-------------------------------------------------------\n\n");
+        }
+        return sb.toString();
     }
 
     private String resolveReportLabel(List<ProductReportRow> rows) {
-        Intent in   = getIntent();
+        Intent in = getIntent();
         String mode = in.getStringExtra("mode");
-        String barcode    = in.getStringExtra("barcode");
-        String start   = in.getStringExtra("startDate");
-        String end    = in.getStringExtra("endDate");
+        String barcode = in.getStringExtra("barcode");
+        String start = in.getStringExtra("startDate");
+        String end = in.getStringExtra("endDate");
 
-        if ("expired".equals(mode))    return "Expired Products Report";
-        if ("expiring".equals(mode))   return "Products Expiring Soon";
+        if ("expired".equals(mode)) { return "Expired Products Report"; }
+        if ("expiring".equals(mode)) { return "Products Expiring Soon"; }
+        if ("allProducts".equals(mode)) return "All Products – Full Inventory";
 
         if (barcode != null && start == null && end == null) {
             String name = rows.isEmpty() ? barcode : rows.get(0).productName;

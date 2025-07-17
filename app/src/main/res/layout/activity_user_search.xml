@@ -13,7 +13,7 @@
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="@dimen/spacing_s"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
         android:adjustViewBounds="true"
@@ -29,7 +29,7 @@
         android:id="@+id/employee_search_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_l"
+        android:layout_marginTop="@dimen/spacing_s"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginEnd="@dimen/spacing_xs"
         app:cardBackgroundColor="@color/sky_blue"
@@ -39,12 +39,13 @@
         app:layout_constraintTop_toBottomOf="@id/grocery_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_max="488dp">
+        app:layout_constraintWidth_max="488dp"
+        tools:ignore="VisualLintBounds">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_m">
+            android:padding="@dimen/spacing_s">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/employee_search_input_layout"
@@ -83,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/black"
                 android:textColor="@color/black"
+                android:layout_marginTop="@dimen/spacing_xs"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/employee_search_input_layout"
@@ -118,7 +120,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_sm"
+                android:layout_marginTop="@dimen/spacing_s"
                 app:layout_constraintTop_toBottomOf="@id/barcode_input_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -156,45 +158,45 @@
                 app:layout_constraintTop_toBottomOf="@id/start_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_sm"/>
+                android:layout_marginTop="@dimen/spacing_s"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clear_button"
+                style="@style/LightGreenPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear"
+                app:layout_constraintTop_toBottomOf="@id/search_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/spacing_s"/>
 
             <TextView
-                android:id="@+id/expired_label"
+                android:id="@+id/admin_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/view_expired"
+                android:text="@string/view_admins"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_sm"
-                app:layout_constraintTop_toBottomOf="@id/search_button"
+                android:layout_marginTop="@dimen/spacing_s"
+                app:layout_constraintTop_toBottomOf="@id/clear_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/expired_button"
+                android:id="@+id/admin_button"
                 style="@style/LightGreenPill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/expired"
-                app:layout_constraintTop_toBottomOf="@id/expired_label"
+                android:text="@string/admins"
+                app:layout_constraintTop_toBottomOf="@id/admin_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/expiring_soon_button"
-                android:maxLines="1"
-                android:layout_marginTop="@dimen/spacing_xs"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/expiring_soon_button"
-                style="@style/LightGreenPill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/expiring"
-                app:layout_constraintTop_toBottomOf="@id/expired_label"
-                app:layout_constraintStart_toEndOf="@id/expired_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:maxLines="1"
                 android:layout_marginTop="@dimen/spacing_xs"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

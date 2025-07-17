@@ -10,7 +10,6 @@ import androidx.lifecycle.Transformations;
 import com.example.bestbymanager.data.api.ProductResponse;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.entities.Product;
-import com.example.bestbymanager.utilities.BarcodeUtil;
 import retrofit2.Callback;
 
 public class ProductDetailsViewModel extends AndroidViewModel {
@@ -42,7 +41,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
             repository.updateProduct(product);
         }
     }
-    public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(BarcodeUtil.toCanonical(code)); }
+    public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(code); }
     public void delete(Product product) { repository.deleteProduct(product); }
-    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { repository.fetchProduct(BarcodeUtil.toCanonical(barcode), cb); }
+    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { repository.fetchProduct(barcode, cb); }
 }

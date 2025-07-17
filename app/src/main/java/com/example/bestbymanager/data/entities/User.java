@@ -8,6 +8,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import java.time.OffsetDateTime;
 
+/** @noinspection ALL*/
 @Entity(tableName = "user", indices = @Index(value = "userName", unique = true))
 public class User {
     @PrimaryKey(autoGenerate = true)

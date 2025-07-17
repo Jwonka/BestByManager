@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+/** @noinspection NotNullFieldNotInitialized, unused */
 @Entity(tableName = "product",
         indices    = @Index(value = "userID"),
         foreignKeys = @ForeignKey(

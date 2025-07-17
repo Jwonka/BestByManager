@@ -1,7 +1,6 @@
 package com.example.bestbymanager.data.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -108,60 +107,6 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
             db.execSQL("ALTER TABLE user ADD COLUMN resetTokenHash TEXT");
             db.execSQL("ALTER TABLE user ADD COLUMN resetExpires   TEXT");
             db.execSQL("ALTER TABLE user ADD COLUMN mustChange     INTEGER NOT NULL DEFAULT 0");
-        }
-    };
-
-    static final Migration MIGRATION_11_12 = new Migration(11, 12) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase db) {
-            db.execSQL("ALTER TABLE user ADD COLUMN firstName TEXT NOT NULL DEFAULT ''");
-            db.execSQL("ALTER TABLE user ADD COLUMN lastName  TEXT NOT NULL DEFAULT ''");
-            db.execSQL("ALTER TABLE user ADD COLUMN thumbnail BLOB");
-        }
-    };
-
-    static final Migration MIGRATION_10_11 = new Migration(10, 11) {
-        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
-
-            try {
-                db.execSQL("ALTER TABLE product ADD COLUMN userID INTEGER NOT NULL DEFAULT 1");
-            } catch (SQLiteException dup) { /* column already present – fine */ }
-
-            db.execSQL(
-                    "CREATE TABLE product_new (" +
-                            "  productID      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                            "  userID         INTEGER NOT NULL DEFAULT 1,"  +        // FK column
-                            "  brand          TEXT," +
-                            "  productName    TEXT NOT NULL," +
-                            "  expirationDate INTEGER NOT NULL," +
-                            "  quantity       INTEGER NOT NULL," +
-                            "  weight         TEXT," +
-                            "  barcode        TEXT," +
-                            "  category       INTEGER NOT NULL," +
-                            "  isle           INTEGER NOT NULL," +
-                            "  purchaseDate   INTEGER," +
-                            "  imageUri       TEXT," +
-                            "  thumbnail      BLOB," +
-                            "  FOREIGN KEY(userID) REFERENCES user(userID) ON DELETE CASCADE)"
-            );
-
-            db.execSQL(
-                    "INSERT INTO product_new (" +
-                            " productID, userID, brand, productName, expirationDate, quantity," +
-                            " weight, barcode, category, isle, purchaseDate, imageUri, thumbnail)" +
-                            " SELECT productID, userID, brand, productName, expirationDate, quantity," +
-                            "        weight, barcode, category, isle, purchaseDate, imageUri, thumbnail" +
-                            " FROM product"
-            );
-
-            db.execSQL("DROP TABLE product");
-            db.execSQL("ALTER TABLE product_new RENAME TO product");
-
-            db.execSQL("CREATE INDEX IF NOT EXISTS index_product_userID ON product(userID)");
-
-            db.execSQL("INSERT OR IGNORE INTO `user` (userID,userName,hash,isAdmin) VALUES(1,'Unknown','',0)");
-
-            db.execSQL("PRAGMA foreign_keys = ON");
         }
     };
 }

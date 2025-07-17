@@ -15,15 +15,11 @@ public class Converters {
 
     @TypeConverter
     @Nullable
-    public static String fromOffsetDateTime(@Nullable OffsetDateTime odt) {
-        return odt == null ? null : ISO.format(odt);
-    }
+    public static String fromOffsetDateTime(@Nullable OffsetDateTime odt) { return odt == null ? null : ISO.format(odt); }
 
     @TypeConverter
     @Nullable
-    public static OffsetDateTime toOffsetDateTime(@Nullable String value) {
-        return value == null ? null : OffsetDateTime.parse(value, ISO);
-    }
+    public static OffsetDateTime toOffsetDateTime(@Nullable String value) { return value == null ? null : OffsetDateTime.parse(value, ISO); }
 
     @TypeConverter
     public static byte[] fromBitmap(Bitmap bmp) {
@@ -33,18 +29,11 @@ public class Converters {
         return out.toByteArray();
     }
     @TypeConverter
-    public static Bitmap toBitmap(byte[] bytes) {
-        return (bytes == null) ? null
-                : BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
+    public static Bitmap toBitmap(byte[] bytes) {return (bytes == null) ? null : BitmapFactory.decodeByteArray(bytes, 0, bytes.length); }
 
     @TypeConverter
-    public static Long fromLocalDate(LocalDate date) {
-        return date == null ? null : date.toEpochDay();
-    }
+    public static Long fromLocalDate(LocalDate date) { return date == null ? null : date.toEpochDay(); }
 
     @TypeConverter
-    public static LocalDate toLocalDate(Long epochDay) {
-        return epochDay == null ? null : LocalDate.ofEpochDay(epochDay);
-    }
+    public static LocalDate toLocalDate(Long epochDay) { return epochDay == null ? null : LocalDate.ofEpochDay(epochDay); }
 }

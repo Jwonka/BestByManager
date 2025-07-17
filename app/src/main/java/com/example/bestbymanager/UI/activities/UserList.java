@@ -5,13 +5,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.adapter.UserAdapter;
 import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
+import com.example.bestbymanager.data.entities.User;
 import com.example.bestbymanager.databinding.ActivityUserListBinding;
 import com.example.bestbymanager.viewmodel.UserListViewModel;
+
+import java.util.List;
 
 public class UserList extends BaseAdminActivity {
 
@@ -37,7 +42,11 @@ public class UserList extends BaseAdminActivity {
 
         UserListViewModel userListViewModel = new ViewModelProvider(this).get(UserListViewModel.class);
 
-        userListViewModel.getUsers().observe(this, list -> {
+        boolean showOnlyAdmins = getIntent().getBooleanExtra("admin_only", false);
+
+        LiveData<List<User>> liveList = showOnlyAdmins ? userListViewModel.loadAdmins() : userListViewModel.getUsers();
+
+        liveList.observe(this, list -> {
             if (list == null || list.isEmpty()) {
                 binding.noEmployeeCard.setVisibility(View.VISIBLE);
             } else {

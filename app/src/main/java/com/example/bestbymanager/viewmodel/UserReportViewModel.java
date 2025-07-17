@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.pojo.UserReportRow;
-import com.example.bestbymanager.utilities.BarcodeUtil;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -24,30 +23,47 @@ public class UserReportViewModel extends AndroidViewModel {
 
         LiveData<List<UserReportRow>> source;
 
+        String mode = savedState.get("mode");
+        if (mode == null) mode = "";
         String barcode = savedState.get("barcode");
-        if (barcode != null) {
-            try {
-                barcode = BarcodeUtil.toCanonical(barcode);
-                //source = repository.getReportRowsByBarcode(barcode);
-            } catch (IllegalArgumentException ex) {
-                source = new MutableLiveData<>(Collections.emptyList());
-            }
-        } else {
-            String mode = savedState.get("mode");
-            String startString = savedState.get("startDate");
-            String endString = savedState.get("endDate");
+        if (barcode == null) barcode = "";
+        String start = savedState.get("startDate");
+        String end = savedState.get("endDate");
+        Long userIdLong = savedState.get("user");
+        long userID = userIdLong != null ? userIdLong : -1;
+        LocalDate from = start == null ? LocalDate.now() : parseOrToday(start);
+        LocalDate to = end == null ? LocalDate.now() : parseOrToday(end);
+        LocalDate today = LocalDate.now();
 
-            if ("expired".equals(mode)) {
-                //source = repository.getExpired(LocalDate.now());
-            } else if (startString != null && endString != null) {
-                LocalDate start = parseOrToday(startString);
-                LocalDate end = parseOrToday(endString);
-                //source = repository.getExpiring(start, end);
-            } else {
-                //source = repository.getExpiring(LocalDate.now(), LocalDate.now().plusDays(7));
-            }
+        switch (mode) {
+            case "allEntries":
+                source = repository.getAllEntries(today);
+                break;
+            case "user":
+                source = repository.getEntriesByEmployee(userID, today);
+                break;
+            case "barcode":
+                source = repository.getEntriesForBarcode(barcode, today);
+                break;
+            case "range":
+                source = repository.getEntriesByDateRange(from, to, today);
+                break;
+            case "barcode-range":
+                source = repository.getEntriesByBarcodeForRange(barcode, from, to, today);
+                break;
+            case "barcode-user":
+                source = repository.getEntriesForEmployeeAndBarcode(userID, barcode, today);
+                break;
+            case "range-user":
+                source = repository.getEntriesForEmployeeInRange(userID, from, to, today);
+                break;
+            case "barcode-range-user":
+                source = repository.getEntriesByBarcodeForEmployeeInRange(userID, barcode, from, to, today);
+                break;
+            default:
+                source = new MutableLiveData<>(Collections.emptyList());
+                break;
         }
-        source = new MutableLiveData<>(Collections.emptyList());
         this.report = source;
     }
 }

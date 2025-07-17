@@ -6,41 +6,40 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/spacing_s"
     android:layout_marginHorizontal="@dimen/spacing_xs"
-    app:cardBackgroundColor="@color/sky_blue"
-    app:cardCornerRadius="24dp"
+    app:cardBackgroundColor="@color/light_orange"
+    app:cardCornerRadius="12dp"
     app:strokeColor="@color/black"
-    app:strokeWidth="1dp"
-    android:fitsSystemWindows="true">
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="4dp">
+        android:padding="@dimen/padding_s">
 
         <TextView
-            android:id="@+id/entered_by"
+            android:id="@+id/header_full_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_m"
-            android:textStyle="bold"
+            android:text="@string/full_name"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:textSize="16sp"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/full_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/header_user_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_m"
+            android:text="@string/user_name"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBaseline_toBaselineOf="@id/entered_by" />
+            android:textSize="18sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/header_full_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

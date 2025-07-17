@@ -1,5 +1,6 @@
 package com.example.bestbymanager.data.database;
 
+import static com.example.bestbymanager.utilities.BarcodeUtil.toCanonical;
 import static com.example.bestbymanager.utilities.PasswordUtil.hash;
 import android.app.Application;
 import android.content.Context;
@@ -7,9 +8,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+import com.example.bestbymanager.UI.adapter.LoginResult;
 import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.api.OffApi;
 import com.example.bestbymanager.data.api.ProductResponse;
@@ -18,11 +21,12 @@ import com.example.bestbymanager.data.dao.UserDAO;
 import com.example.bestbymanager.data.entities.Product;
 import com.example.bestbymanager.data.entities.User;
 import com.example.bestbymanager.data.pojo.ProductReportRow;
+import com.example.bestbymanager.data.pojo.UserReportRow;
 import com.example.bestbymanager.utilities.AlarmScheduler;
-import com.example.bestbymanager.utilities.BarcodeUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -30,6 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/** @noinspection unused*/
 public class Repository {
     private final UserDAO mUserDAO;
     private final ProductDAO mProductDAO;
@@ -37,6 +42,9 @@ public class Repository {
     public static final int NUMBER_OF_THREADS = 4;
     private final Executor executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
     private final OffApi api;
+    private static final LiveData<List<?>> EMPTY = new MutableLiveData<>(Collections.emptyList());
+    @SuppressWarnings("unchecked")
+    private static <T> LiveData<T> emptyLiveData() { return (LiveData<T>) EMPTY; }
 
     public Repository(Application application) {
         this.context = application.getApplicationContext();
@@ -52,21 +60,61 @@ public class Repository {
         api = retrofit.create(OffApi.class);
     }
 
-    public Product getRecentExpirationByBarcode(String code) { return mProductDAO.getRecentExpirationByBarcode(code); }
-    public LiveData<List<Product>> getProductsByBarcode(String code) { return mProductDAO.getProductsByBarcode(code); }
-    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { api.getByBarcode(barcode).enqueue(cb); }
+    public LiveData<List<ProductReportRow>> getAllProducts() { return mProductDAO.getAllProducts(); }
+    public LiveData<List<UserReportRow>> getAllEntries(LocalDate today) { return mUserDAO.getAllEntries(today); }
+    public LiveData<List<UserReportRow>> getEntriesByEmployee(long userID, LocalDate today) { return mUserDAO.getEntriesByEmployee(userID, today); }
+    public LiveData<List<UserReportRow>> getEntriesByBarcodeForRange(String raw, LocalDate from, LocalDate to, LocalDate today) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mUserDAO.getEntriesByBarcodeForRange(code, from, to, today);
+    }
+    public LiveData<List<UserReportRow>> getEntriesForEmployeeAndBarcode(long userID, String raw, LocalDate today) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mUserDAO.getEntriesForEmployeeAndBarcode(userID, code, today);
+    }
+    public LiveData<List<UserReportRow>> getEntriesByBarcodeForEmployeeInRange(long userID, String raw, LocalDate from, LocalDate to, LocalDate today) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mUserDAO.getEntriesByBarcodeForEmployeeInRange(userID, code, from, to, today);
+    }
+    public LiveData<List<UserReportRow>> getEntriesForEmployeeInRange(long userID, LocalDate from, LocalDate to, LocalDate today) { return mUserDAO.getEntriesForEmployeeInRange(userID, from, to, today); }
+    public LiveData<List<UserReportRow>> getAdmins() { return mUserDAO.getAdmins(); }
+    public LiveData<List<UserReportRow>> getEntriesByDateRange(LocalDate from, LocalDate to, LocalDate today) { return mUserDAO.getEntriesByDateRange(from, to, today); }
+    public LiveData<List<UserReportRow>> getEntriesForBarcode(String raw, LocalDate today) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mUserDAO.getEntriesByBarcode(code, today);
+    }
+    public Product getRecentExpirationByBarcode(String raw) {
+        String code = canonicalOrNull(raw);
+        if (code == null) { return null; }
+        return mProductDAO.getRecentExpirationByBarcode(code);
+    }
+    public LiveData<List<Product>> getProductsByBarcode(String raw) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mProductDAO.getProductsByBarcode(code);
+    }
+    public void fetchProduct(String raw, Callback<ProductResponse> cb) {
+        String code = canonicalOrNull(raw);
+        if (code == null) { return; }
+        api.getByBarcode(code).enqueue(cb);
+    }
     public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(today); }
     public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }
     public LiveData<User> getUser(long userID){ return mUserDAO.getUser(userID); }
     public LiveData<List<User>> getUsers(){ return mUserDAO.getUsers(); }
+    public LiveData<List<User>> loadAdmins() { return mUserDAO.loadAdmins(); }
     public LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected) {return mProductDAO.getExpiring(from, selected); }
     public LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected) {return mProductDAO.getProductsByDateRange(from, selected); }
     public LiveData<List<ProductReportRow>> getExpired(LocalDate today) {return mProductDAO.getExpired(today); }
-    public LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode) { return mProductDAO.getReportRowsByBarcode(barcode); }
-    public LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String barcode, LocalDate from, LocalDate to) { return mProductDAO.getProductsByBarcodeAndDateRange(barcode, from, to); }
+    public LiveData<List<ProductReportRow>> getReportRowsByBarcode(String raw) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() :  mProductDAO.getReportRowsByBarcode(code);
+    }
+    public LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String raw, LocalDate from, LocalDate to) {
+        String code = canonicalOrNull(raw);
+        return code == null ? emptyLiveData() : mProductDAO.getProductsByBarcodeAndDateRange(code, from, to);
+    }
     public void insertProduct(Product product) { executor.execute(() -> {
         try {
-            product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));
+            product.setBarcode(toCanonical(product.getBarcode()));
         } catch (IllegalArgumentException ex) {
             showToast("Unsupported or unreadable barcode");
             return;
@@ -82,7 +130,7 @@ public class Repository {
     }
     public void updateProduct(Product product) { executor.execute(() -> {
             try {
-                product.setBarcode(BarcodeUtil.toCanonical(product.getBarcode()));
+                product.setBarcode(toCanonical(product.getBarcode()));
             } catch (IllegalArgumentException ex) {
                 showToast("Unsupported or unreadable barcode");
                 return;
@@ -116,21 +164,21 @@ public class Repository {
         );
     }
 
-    public LiveData<User> login(String username, String plainPassword) {
-        MutableLiveData<User> pass = new MutableLiveData<>();
+    public LiveData<LoginResult> login(String username, String plainPassword) {
+        MutableLiveData<LoginResult> pass = new MutableLiveData<>();
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
             if (user != null && user.isMustChange() && user.getResetExpires() != null && OffsetDateTime.now().isAfter(user.getResetExpires())) {
-                pass.postValue(null);
+                pass.postValue(new LoginResult(LoginResult.Code.EXPIRED, null));
                 return;
             }
             boolean ok = user != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
 
             if(ok){
                 Session.get().logIn(user, context);
-                pass.postValue(user);
+                pass.postValue(new LoginResult(LoginResult.Code.OK, user));
             } else {
-                pass.postValue(null);
+                pass.postValue(new LoginResult(LoginResult.Code.BAD_CREDENTIALS, null));
             }
         });
         return pass;
@@ -197,10 +245,6 @@ public class Repository {
         });
     }
 
-    private void showToast(String msg) {
-        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
-    }
-
     public LiveData<Boolean> changePassword(long userId, @NonNull String plainPwd) {
         MutableLiveData<Boolean> ok = new MutableLiveData<>();
         executor.execute(() -> {
@@ -212,5 +256,18 @@ public class Repository {
             }
         });
         return ok;
+    }
+
+    private @Nullable String canonicalOrNull(String raw) {
+        try {
+            return toCanonical(raw);
+        } catch (IllegalArgumentException ex) {
+            showToast("Unsupported barcode");
+            return null;
+        }
+    }
+
+    private void showToast(String msg) {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
     }
 }

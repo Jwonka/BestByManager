@@ -32,7 +32,7 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
             super(view);
             brand = view.findViewById(R.id.brand);
             productName = view.findViewById(R.id.product_name);
-            enteredBy = view.findViewById(R.id.username);
+            enteredBy = view.findViewById(R.id.entered_by);
             date = view.findViewById(R.id.expiration_date);
             quantity = view.findViewById(R.id.expired_quantity);
         }
@@ -51,7 +51,7 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
 
         String expDate = "Expires: " + results.expirationDate.format(FMT);
         String qty = "Quantity: " + results.quantity;
-        String name = "User: " + results.enteredBy;
+        String name = "Employee: " + results.enteredBy;
 
         holder.brand.setText(results.brand);
         holder.productName.setText(results.productName);

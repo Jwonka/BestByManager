@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.bestbymanager.R;
-import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends AppCompatActivity {

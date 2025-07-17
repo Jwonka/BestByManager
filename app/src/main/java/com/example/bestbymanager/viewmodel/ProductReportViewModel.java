@@ -5,13 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.data.pojo.ProductReportRow;
-import com.example.bestbymanager.utilities.BarcodeUtil;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 public class ProductReportViewModel extends AndroidViewModel {
@@ -29,29 +26,24 @@ public class ProductReportViewModel extends AndroidViewModel {
         String startString = savedState.get("startDate");
         String endString = savedState.get("endDate");
 
-        if (barcode != null && !barcode.isEmpty()) {
-            try {
-                barcode = BarcodeUtil.toCanonical(barcode);
-                if (startString != null && endString != null) {
-                    LocalDate start = parseOrToday(startString);
-                    LocalDate end = parseOrToday(endString);
-                    source = repository.getProductsByBarcodeAndDateRange(barcode, start, end);
-                } else {
-                    source= repository.getReportRowsByBarcode(barcode);
-                }
-            } catch (IllegalArgumentException ex) {
-                source = new MutableLiveData<>(Collections.emptyList());
+        if ("allProducts".equals(mode)) {
+            source = repository.getAllProducts();
+        } else if ("expired".equals(mode)) {
+            source = repository.getExpired(LocalDate.now());
+        } else if (barcode != null && !barcode.isEmpty()) {
+            if (startString != null && endString != null) {
+                LocalDate start = parseOrToday(startString);
+                LocalDate end = parseOrToday(endString);
+                source = repository.getProductsByBarcodeAndDateRange(barcode, start, end);
+            } else {
+                source= repository.getReportRowsByBarcode(barcode);
             }
-        } else {
-            if ("expired".equals(mode)) {
-                source = repository.getExpired(LocalDate.now());
-            } else if (startString != null && endString != null) {
+        } else if (startString != null && endString != null) {
                 LocalDate start = parseOrToday(startString);
                 LocalDate end = parseOrToday(endString);
                 source = repository.getExpiring(start, end);
-            } else {
-                source = repository.getExpiring(LocalDate.now(), LocalDate.now().plusDays(7));
-            }
+        } else {
+            source = repository.getExpiring(LocalDate.now(), LocalDate.now().plusDays(7));
         }
         this.report = source;
     }

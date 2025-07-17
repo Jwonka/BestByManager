@@ -1,6 +1,5 @@
 package com.example.bestbymanager.UI.activities;
 
-import static com.example.bestbymanager.utilities.BarcodeUtil.toCanonical;
 import static com.example.bestbymanager.utilities.LocalDateBinder.bindFutureDateField;
 import static com.example.bestbymanager.utilities.LocalDateBinder.format;
 import static com.example.bestbymanager.utilities.LocalDateBinder.parseOrToday;
@@ -23,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -104,6 +104,9 @@ public class ProductDetails extends AppCompatActivity {
         ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        TextView attribution = findViewById(R.id.image_attribution);
+        attribution.setLinkTextColor(ContextCompat.getColor(this, R.color.dark_green));
+
         brand = binding.editBrand;
         name = binding.editProductName;
         weight = binding.editWeight;
@@ -177,7 +180,6 @@ public class ProductDetails extends AppCompatActivity {
                         if (categories != null && !categories.isEmpty()) {
                             parts = categories.split("\\s*,\\s*");
                             if (parts.length > 0) {
-                                // assume the *first* part is the “main” category
                                 String primary = parts[0];
                                 int position = adapter.getPosition(primary);
                                 if (position >= 0) category.setSelection(position);
@@ -259,16 +261,7 @@ public class ProductDetails extends AppCompatActivity {
         });
     }
 
-    private void lookupByBarcode(String rawCode) {
-        String code;
-        try {
-            code = toCanonical(rawCode);
-            Log.d("BARCODE-LOOKUP", toCanonical(code));
-        } catch (IllegalArgumentException ex) {
-            toast("Unsupported or unreadable barcode");
-            return;
-        }
-
+    private void lookupByBarcode(String code) {
         Executors.newSingleThreadExecutor().execute(() -> {
             Product local = productViewModel.getRecentExpiringProduct(code);
             runOnUiThread(() -> {
@@ -420,7 +413,6 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void clearForm() {
-
         brand.setText("");
         name.setText("");
         weight.setText("");
@@ -456,20 +448,13 @@ public class ProductDetails extends AppCompatActivity {
         toSave.setExpirationDate(parseOrToday(editExp.getText().toString().trim()));
         toSave.setPurchaseDate(LocalDate.now());
         toSave.setUserID(currentUserId);
+        toSave.setBarcode(barcode.getText().toString().trim());
 
         if (thumbBlob == null && currentProduct != null) {
             thumbBlob = currentProduct.getThumbnail();
         }
 
         toSave.setThumbnail(thumbBlob);
-
-        try {
-            String canonical = toCanonical(barcode.getText().toString().trim());
-            toSave.setBarcode(canonical);
-        } catch (IllegalArgumentException ex) {
-            toast("Unsupported or unreadable barcode");
-            return;
-        }
 
         if (addNew && toSave.isExpired()) {
             toast("Cannot add a product that is already expired.");

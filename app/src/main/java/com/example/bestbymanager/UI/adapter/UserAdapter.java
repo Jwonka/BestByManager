@@ -25,7 +25,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         TextView username, fullname;
         UserViewHolder(View view) {
             super(view);
-            username = view.findViewById(R.id.username);
+            username = view.findViewById(R.id.entered_by);
             fullname = view.findViewById(R.id.full_name);
         }
     }
@@ -60,8 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override public int getNewListSize() { return newData.size(); }
 
             @Override public boolean areItemsTheSame(int oldPos, int newPos) {
-                return data.get(oldPos).getUserID()
-                        == newData.get(newPos).getUserID();
+                return data.get(oldPos).getUserID() == newData.get(newPos).getUserID();
             }
             @Override public boolean areContentsTheSame(int oldPos, int newPos) {
                 User a = data.get(oldPos);

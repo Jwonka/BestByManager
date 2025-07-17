@@ -6,6 +6,7 @@
     <string name="logout">Logout</string>
     <string name="register">Register</string>
     <string name="user_name">Username: </string>
+    <string name="full_name">Full Name: </string>
     <string name="password">Password: </string>
     <string name="search">Search</string>
     <string name="enter_user_name">Username</string>
@@ -15,6 +16,9 @@
     <string name="expiration_date">Expiration Date</string>
     <string name="expired_products">Expired Products</string>
     <string name="expired">Expired</string>
+    <string name="good_count">Good: </string>
+    <string name="summary">Total for the report: </string>
+    <string name="expired_count">Expired: </string>
     <string name="expiration">Expiration</string>
     <string name="product_report_list">Product Report List</string>
     <string name="product_report">Product Report</string>
@@ -30,7 +34,7 @@
     <string name="no_employees">No Employees</string>
     <string name="add_employee">Add Employee</string>
     <string name="add_product">Add Product</string>
-    <string name="clear_product">Clear</string>
+    <string name="clear">Clear</string>
     <string name="add_new_expiration">Add Expiring</string>
     <string name="switch_mode_desc">Update existing or Add new expiration</string>
     <string name="search_date_range">Search date range</string>
@@ -41,6 +45,8 @@
     <string name="deny_admin">Deny admin access</string>
     <string name="make_admin">Allow admin access</string>
     <string name="admin">Administrator</string>
+    <string name="admins">Administrators</string>
+    <string name="view_admins">View all administrators</string>
     <string name="search_employees">Select Employee</string>
     <string name="save_employee">Save User</string>
     <string name="save_admin">Save Admin</string>
@@ -50,7 +56,7 @@
     <string name="quantity">Quantity</string>
     <string name="product_name">Product Name</string>
     <string name="product">Product</string>
-    <string name="total">Total</string>
+    <string name="total">Total: </string>
     <string name="weight">Weight</string>
     <string name="brand">Brand</string>
     <string name="barcode">Barcode</string>
@@ -82,4 +88,5 @@
     <string name="share_with">Share with …</string>
     <string name="password_updated">Password updated.</string>
     <string name="password_update_failed">Could not change password.</string>
+    <string name="open_food_facts_image_credit">Product data/images provided by\n<a href="https://openfoodfacts.org">OpenFoodFacts.org</a> (ODbL / CC BY-SA)</string>
 </resources>

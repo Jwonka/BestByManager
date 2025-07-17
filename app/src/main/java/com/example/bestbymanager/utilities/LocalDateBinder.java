@@ -26,6 +26,9 @@ public final class LocalDateBinder {
 
     public static LocalDate parseOrToday(String s) {
         try {
+            if (s == null || s.trim().isEmpty()) {
+                return LocalDate.now();
+            }
             return LocalDate.parse(s, FMT);
         }
         catch (DateTimeParseException ex) {
@@ -41,7 +44,7 @@ public final class LocalDateBinder {
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
                     (picker, y, m, d) -> {
-                        LocalDate picked = LocalDate.of(y, m + 1, d); // month is 0-based
+                        LocalDate picked = LocalDate.of(y, m + 1, d);
                         field.setText(picked.format(FMT));
                     },
                     seed.getYear(),

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import androidx.preference.PreferenceManager;
 
+/** @noinspection unused*/
 public class Session {
     private static final Session INSTANCE = new Session();
     private volatile User current;
@@ -32,6 +33,7 @@ public class Session {
                  .apply();
     }
 
+    /** @noinspection unused*/
     public synchronized void logOut(Context context) { current = null; }
     public long currentUserID() { return uid.get(); }
     public boolean isLoggedOut() { return current == null; }

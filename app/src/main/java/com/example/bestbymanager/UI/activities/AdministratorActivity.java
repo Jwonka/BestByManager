@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.databinding.ActivityAdministratorBinding;
