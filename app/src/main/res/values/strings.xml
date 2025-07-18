@@ -89,4 +89,17 @@
     <string name="password_updated">Password updated.</string>
     <string name="password_update_failed">Could not change password.</string>
     <string name="open_food_facts_image_credit">Product data/images provided by\n<a href="https://openfoodfacts.org">OpenFoodFacts.org</a> (ODbL / CC BY-SA)</string>
+    <string name="about_best_by_manager">About Best By Manager</string>
+    <string name="paragraph_1">This application helps users manage food products, track expiration dates, and organize inventory to ensure food is safe to consume and reduce waste. It is designed for grocery stores, small businesses, and gas stations that want to maintain fresh, up-to-date stock.</string>
+    <string name="paragraph_2">Best By Manager uses data from Open Food Facts — a free, open, and crowdsourced food product database created by a non-profit community of volunteers around the world. Launched in 2012, Open Food Facts aims to make food information transparent and accessible for everyone.</string>
+    <string name="paragraph_3">I am grateful to the Open Food Facts team and contributors for providing this incredible resource.</string>
+    <string name="license_title">Licensing and Attribution</string>
+    <string name="license_bullets">• Product data is © Open Food Facts contributors and is available under the Open Database License (ODbL).\n\n• Product images are licensed under Creative Commons Attribution–ShareAlike (CC BY–SA 3.0).</string>
+    <string name="license_footer">All product data and images are sourced from Open Food Facts. You can learn more or contribute your own data at <a href="https://openfoodfacts.org">OpenFoodFacts.org</a>.</string>
+    <string name="dev_title">Developer Contact</string>
+    <string name="dev_info">App developed by Joshua Werlein</string>
+    <string name="dev_email">📧 Email: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></string>
+    <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-w-901241241/">linkedin.com/in/joshua-w-901241241</a></string>
+    <string name="disclaimer">This app is an independent project and is not affiliated with or endorsed by Open Food Facts.</string>
+    <string name="copyright">© 2025 Joshua Werlein. All rights reserved.</string>
 </resources>
