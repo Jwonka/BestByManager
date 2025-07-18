@@ -78,9 +78,11 @@ OR from the command line
 
 App‑level runtime permissions:
 
-- POST_NOTIFICATIONS  – send excursion reminders
+- 📷 `CAMERA` – required to take product photos using the device camera  
+- 📂 `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` – used to export inventory summaries (optional on Android 10+)
+- 🔔 `POST_NOTIFICATIONS` – used to display expiration reminders (required on Android 13+)
 
-- WRITE_EXTERNAL_STORAGE (optional, export share) – export schedule to a text file
+Note: Best By Manager does not request location, contacts, or any sensitive personal permissions. All data stays local to the device.
 
 ## Tech Stack & Architecture
 
