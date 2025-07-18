@@ -14,7 +14,9 @@
 
 [Build From Source](#build-from-source)
 
-[Requirements & Permissions](https://github.com/Jwonka/BestByManager#requirementspermissions)
+[Requirements](#requirements)
+
+[Permissions](#permissions)
 
 [Tech Stack & Architecture](https://github.com/Jwonka/BestByManager#techstackarchitecture)
 
@@ -67,16 +69,12 @@ Build with Android Studio Meerkat 2024.3.2
 OR from the command line
 ./gradlew assembleRelease
 
----
-
-## Requirements & Permissions
+## Requirements
 
 - ![API](https://img.shields.io/badge/API-27%20to%2035-blue) API 27 (Android 8.1 Oreo) ~ API 35 (Android 15, Vanilla Ice Cream)
-
-
 - Architecture ~ arm64‑v8a, armeabi‑v7a, x86_64
 
-App‑level runtime permissions:
+## Permissions
 
 - 📷 `CAMERA` – required to take product photos using the device camera  
 - 📂 `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` – used to export inventory summaries (optional on Android 10+)
