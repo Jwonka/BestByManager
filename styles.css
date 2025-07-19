@@ -104,13 +104,6 @@ h2 {
   margin: 1rem;
 }
 
-.section-block {
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
 p {
   font-size: clamp(1.1rem, 2.2vw, 2rem);
   line-height: 1.25;
@@ -136,6 +129,12 @@ ul li {
   margin: 0.65rem 0;
   font-size: clamp(0.9rem, 2vw, 1.8rem);
   padding-inline: 0.2rem;
+}
+
+li {
+  white-space: normal;
+  word-break: keep-all;
+  white-space: break-spaces;
 }
 
 a {
@@ -188,6 +187,50 @@ a.active {
   border-radius: 0.45rem;
 }
 
+.features,
+#features ul,
+#howto ul {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+}
+
+.section-block {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-block ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  list-style-position: inside;
+  padding: 0;
+  margin: 0 auto;
+  width: auto;
+  max-width: 100%;
+}
+
+.section-block ul li,
+#howto li,
+#features li {
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.section-block p,
+.section-block .center {
+  max-width: 1400px;
+  margin: 0 auto;
+  white-space: normal;
+  word-break: keep-word;
+  line-height: 1.5;
+}
+
 footer {
   display: flex;
   flex-direction: column;
@@ -238,7 +281,7 @@ footer a:hover {
   }
 
     ul {
-    max-width: 1000px;
+    max-width: 1400px;
   }
 }
 
