@@ -34,6 +34,47 @@ main {
   margin-inline: auto;
 }
 
+.navbar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  list-style: none;
+  margin: 0;
+  background: #111;
+  border-bottom: 2px solid #008000;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar li {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar a:hover,
+.navbar a:focus-visible {
+  background-color: #008000;
+  color: #fff;
+}
+
+.navbar a.active {
+  text-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 255, 0, 0.3);
+  border-bottom: 2px solid #008000;
+}
+
 h1 {
   margin: clamp(2rem, 5vh, 4rem) 1rem 1rem;
   margin-bottom: 1.25rem;
@@ -185,6 +226,20 @@ footer a:hover {
   }
   ul li { 
     font-size: clamp(0.7rem, 2.2vw, 1.4rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .navbar a {
+    padding: 0.6rem 0.8rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
   }
 }
 
