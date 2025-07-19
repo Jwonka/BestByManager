@@ -128,7 +128,8 @@ OR from the command line
 
 ## Permissions
 
-- 📷 `CAMERA` – required to take product photos using the device camera  
+- 📷 `CAMERA` – required to take product photos using the device camera
+- 🌐 `INTERNET` – required to fetch product info from Open Food Facts 
 - 📂 `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` – used to export inventory summaries (optional on Android 10+)
 - 🔔 `POST_NOTIFICATIONS` – used to display expiration reminders (required on Android 13+)
 
