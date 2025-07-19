@@ -72,3 +72,7 @@ Keep branch names concise and consistent:
     - feature/offline-mode
     - bugfix/date-picker-validation
     - refactor/productdao-tests
+      
+## 🙌 Acknowledgements
+
+Thanks for helping improve Best By Manager. Your support means fresher food and less waste for everyone!
