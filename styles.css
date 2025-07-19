@@ -39,19 +39,17 @@ main {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1.25rem;
-  padding: 1rem 0;
-  list-style: none;
-  margin: 0;
+  padding: 1rem 0.5rem;
   background: #111;
   border-bottom: 2px solid #008000;
   position: sticky;
   top: 0;
+  width: 100%;
   z-index: 1000;
 }
 
 .navbar li {
-  margin: 0;
-  padding: 0;
+  list-style: none;
 }
 
 .navbar a {
@@ -238,8 +236,8 @@ footer a:hover {
   }
 
   .navbar a {
-    padding: 0.6rem 0.8rem;
     font-size: clamp(1rem, 3vw, 1.3rem);
+    padding: 0.6rem 1rem;
   }
 }
 
