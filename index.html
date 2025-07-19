@@ -8,6 +8,16 @@
   <title>Best By Manager</title>
   </head>
    <body>
+    <nav>
+     <ul class="navbar">
+       <li><a href="index.html">Home</a></li>
+       <li><a href="#features">Features</a></li>
+       <li><a href="#howto">How It Works</a></li>
+       <li><a href="#download">Download</a></li>
+       <li><a href="#preview">Screenshots</a></li>
+       <li><a href="#contact">Contact</a></li>
+     </ul>
+    </nav>
     <div role="main">
      <main>
       <h1>Best By Manager</h1>
@@ -16,29 +26,46 @@
        Keep track of your fresh produce and products with the <strong>Best By Manager</strong>.
       </p>
       
-      <ul>
-       <li>
-        Check for expired products.
-       </li>
-       <li>
-        Manage inventory.
-       </li>
-       <li>
-        Search for produce or products that will expire soon.
-       </li>
-      </ul>
+      <section id="features">
+        <h2>What Can Best By Manager Do?</h2>
+        <ul class="features">
+          <li><strong>Scan barcodes</strong> to quickly identify food items</li>
+          <li><strong>Add products</strong> with expiration dates, categories, and quantities</li>
+          <li><strong>Track expiration</strong> by employee or category</li>
+          <li><strong>Get smart reports</strong> for products expiring soon</li>
+          <li><strong>Use the camera</strong> to snap product photos for easy ID</li>
+        </ul>
+      </section>
+     
+      <section id="howto">
+        <h2>How It Works</h2>
+        <p>1. Install the APK and launch the app<br>
+           2. Create the first user (automatically becomes the admin)<br>
+           3. Add inventory by tapping “Add Product” or scanning a barcode<br>
+           4. View reports and search by barcode, date, or employee<br>
+           5. Export or share expiration summaries as text</p>
+      </section>
+
+      <section id="preview">
+        <h2>App Preview</h2>
+        <div class="shots">
+          <img src="images/screen1.png" alt="Main screen" />
+          <img src="images/screen2.png" alt="Add product" />
+          <img src="images/screen3.png" alt="Reports" />
+        </div>
+      </section>
       
       <p class="center">
        Ready to try it?
       </p>
-      
-      <p class="center">
-       Get the latest APK: <a class="btn" href="https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk" aria-label="Download Best By Manager APK version 1.0.0" download="BestByManager-v1.0.0.apk">Download v1.0.0</a>
-      </p>
-      
-      <p class="center">
-       <em>Android will prompt you once to <q>allow installations from unknown sources.</q></em>
-      </p>
+
+      <section id="download">
+        <h2>Download</h2>
+        <p>
+          Get the latest APK: <a class="btn" href="https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk" aria-label="Download Best By Manager APK version 1.0.0" download="BestByManager-v1.0.0.apk">Download v1.0.0</a>
+        </p>
+        <p><em>Note: Android will prompt you once to allow unknown sources.</em></p>
+      </section>
  
       <p>
        The first account created becomes the <em>administrator</em>, gaining full control of all users.
@@ -47,16 +74,10 @@
        <p class="center">
        Learn more: <a class="btn" href="https://github.com/Jwonka/BestByManager/tree/main" target="_blank" rel="noopener" aria-label="View source code and documentation on GitHub">Repository</a>
       </p>
-      
-      <h2>App Preview</h2>
-      
-      <div class="shots">
-       
-      </div>
-      
-      <footer role="contentinfo">
-      <p><em>&copy; 2025 Joshua Werlein</em></p>
-      <p><em>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></em></p>
+      <footer id="contact">
+        <p><strong>&copy; 2025 Joshua Werlein</strong></p>
+        <p>📧 <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
+        <p>🔗 <a href="https://github.com/Jwonka/BestByManager">GitHub Repository</a></p>
       </footer>
      </main>
     </div>
