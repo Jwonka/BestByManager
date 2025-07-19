@@ -110,14 +110,12 @@ p {
   line-height: 1.25;
   margin: 1rem auto;
   width: 95%;
-  max-width: 1200px;
   padding-inline: 0.25rem;
 }
 
 ul {
   list-style: disc inside;
   width: 95%;
-  max-width: 1200px;
   margin: 1rem auto;
   padding: 0 0 1rem 0.5rem;
 }
