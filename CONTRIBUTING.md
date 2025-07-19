@@ -49,3 +49,26 @@ If that changes in the future, here are the basic contribution steps:
 - Use clear, descriptive variable names
 
 - Write concise, maintainable code
+  
+## ✅ Commit Messages
+
+Use clear and informative commit messages:
+
+- feat: add barcode lookup to product screen
+- fix: correct image rotation issue for photo capture
+- refactor: simplify report filtering logic
+
+## 📦 Branch Naming
+
+Keep branch names concise and consistent:
+
+- feature/ for new functionality
+
+- bugfix/ for fixes
+
+- refactor/ for code cleanup
+  
+  - Examples:
+    - feature/offline-mode
+    - bugfix/date-picker-validation
+    - refactor/productdao-tests
