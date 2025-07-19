@@ -191,9 +191,10 @@ a.active {
 #features ul,
 #howto ul {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding-left: 1.5rem;
+  padding-left: 2rem;
+  text-align: left;
 }
 
 .section-block {
@@ -217,18 +218,30 @@ a.active {
 .section-block ul li,
 #howto li,
 #features li {
-  white-space: nowrap;
-  text-align: center;
+  white-space: normal;
+  text-align: left;
   line-height: 1.5;
 }
 
 .section-block p,
 .section-block .center {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   white-space: normal;
   word-break: keep-word;
   line-height: 1.5;
+  padding: 0 1rem;
+}
+
+.centered-list-block {
+  max-width: 1000px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.centered-list-block ul {
+  padding-left: 1.5rem;
+  text-align: left;
 }
 
 footer {
