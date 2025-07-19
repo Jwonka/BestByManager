@@ -190,7 +190,7 @@ a.active {
 .features,
 #features ul,
 #howto ul,
-#intended ul{
+#intended-target ul{
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
@@ -219,7 +219,7 @@ a.active {
 .section-block ul li,
 #howto li,
 #features li,
-#intended li{
+#intended-target li{
   white-space: normal;
   text-align: left;
   line-height: 1.5;
