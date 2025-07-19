@@ -1,4 +1,8 @@
 # Best By Manager
+![Java](https://img.shields.io/badge/Java-17-green)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![API](https://img.shields.io/badge/API-27--35-blue)
+![Privacy: Local Only](https://img.shields.io/badge/Privacy-100%25%20Local-orange)
 
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
@@ -34,8 +38,9 @@
 
 [License](#license)
 
-## Features
+[Contributing](#contributing)
 
+## Features
 - 📦 **Inventory tracking** for all food products with brand, barcode, category, and expiration
 - 📷 **Photo capture support** for each product ![Camera: Local Only](https://img.shields.io/badge/Camera-Local%20Only-blue?style=flat-square&logo=camera&logoColor=white)
 - 📅 **Expiration reports** filtered by date range, barcode, or employee
@@ -64,25 +69,24 @@
 - View **User-Level Reports** (grouped product activity by each user)
 
 ## Usage Notes
+🛒 To add products, tap the **Add Product** button or navigate to the **Product Details** screen.
+- Users must fill in the following fields:
 
-🛒 To add products, tap the **Add Product** button or navigate to the Product Details screen.
-Users must fill in the following fields:
-
-- Brand
+  - Brand
+    
+  - Product name
   
-- Product name
-
-- Weight
-
-- Quantity
-
-- Expiration date
+  - Weight
   
-- Barcode
-
-- Category
-
-- (Optional) Isle and product image
+  - Quantity
+  
+  - Expiration date
+    
+  - Barcode
+  
+  - Category
+  
+  - (Optional) Isle and product image
 
 🔄 In the **Product Details** screen, users can either:
 
@@ -90,7 +94,7 @@ Users must fill in the following fields:
   
 - Or add a **new expiration date** for the same product by toggling the switch next to the **Save Product** button
 
-📋 All users can access Product Reports to view product data filtered by:
+📋 All users can access **Product Reports** from the **Product Search** screen to view product data filtered by:
 
 - Barcode
 
@@ -99,7 +103,6 @@ Users must fill in the following fields:
 - Expiration status (e.g., expired, expiring soon)
 
 ## Download
-
 **SHA256 checksum:** `app-release.apk`  
 **Size:** ~5.2 MB  
 
@@ -122,12 +125,10 @@ OR from the command line
 ./gradlew assembleRelease
 
 ## Requirements
-
 - ![API](https://img.shields.io/badge/API-27%20to%2035-blue) API 27 (Android 8.1 Oreo) ~ API 35 (Android 15, Vanilla Ice Cream)
 - Architecture ~ arm64‑v8a, armeabi‑v7a, x86_64
 
 ## Permissions
-
 - 📷 `CAMERA` – required to take product photos using the device camera
 - 🌐 `INTERNET` – required to fetch product info from Open Food Facts 
 - 📂 `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` – used to export inventory summaries (optional on Android 10+)
@@ -136,7 +137,6 @@ OR from the command line
 Note: Best By Manager does not request location, contacts, or any sensitive personal permissions. All data stays local to the device.
 
 ## Tech Stack & Architecture
-
 - Language: ![Java](https://img.shields.io/badge/Java-17-green) (Android Desugaring) 
 
 - UI: Jetpack ConstraintLayout, Material 3
@@ -148,7 +148,6 @@ Note: Best By Manager does not request location, contacts, or any sensitive pers
 - Build: Gradle 8, Android Plugin = 8.x
 
 ## Attribution
-
 This app uses data and product images from [Open Food Facts](https://openfoodfacts.org), a free and open database of food products created by a non-profit community of volunteers.
 
 - Product data is © Open Food Facts contributors and available under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).
@@ -157,12 +156,15 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 ## Testing Status
 🧪 All screens have been manually tested for scrollability, responsiveness, and crash-free usage on common Android phones and tablets.
 
+- Accessibility features (e.g. TalkBack) not yet verified.
+
 ## Known Issues
-- Some screens may not scroll well on very small devices (under 5").
+- Some screens may not scroll optimally on very small devices (< 5").
 - No automated testing suite (yet).
+- Cloud sync is not implemented, but may be added in a future version.
+- Product deletion is permanent (no undo).
 
 ## Privacy
-
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
 
 - 📷 The camera is only used to take product photos for local inventory tracking.
@@ -173,7 +175,11 @@ Best By Manager stores all data locally on your device. No personal or product d
 This ensures your inventory stays private and under your control at all times.
 
 ## License
-This project is licensed under the MIT ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) – see the [LICENSE](https://github.com/Jwonka/BestByManager/blob/main/LICENSE) file for details.
+This project is licensed under the MIT ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) – see the [LICENSE](https://github.com/Jwonka/BestByManager/blob/main/LICENSE) file for details.</br>
+You are free to use, modify, and distribute this application commercially or privately under the terms of the MIT License.
+
+## Contributing
+This project is currently not accepting outside contributions.</br> However, feel free to fork the repository, open issues, or suggest improvements. Bug reports are always welcome!
 
 > ⚡ Built in Wisconsin with 💚 for small businesses.
 
