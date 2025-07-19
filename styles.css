@@ -34,13 +34,20 @@ main {
   margin-inline: auto;
 }
 
+nav {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: #BBDEFB;
+}
+
 .navbar {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 1.5rem;
-  background: #BBDEFB; /* same as footer */
+  background: #BBDEFB;
   width: 100%;
   padding: 0.75rem 1rem;
   margin: 0;
@@ -56,7 +63,7 @@ main {
 }
 
 .navbar a {
-  color: #002D62; /* match footer hover color */
+  color: #002D62; 
   text-decoration: none;
   font-size: clamp(1rem, 2vw, 1.3rem);
   font-weight: 600;
@@ -174,7 +181,8 @@ footer {
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  width: 100%;
+  width: 100vw;
+  margin: 0;
   padding: 0.6rem;
   background: #BBDEFB;
   text-align: center;
