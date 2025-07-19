@@ -8,6 +8,10 @@
 
 [Preview](#preview)
 
+[Admin Setup](#admin-setup)
+
+[Usage Notes](#usage-notes)
+
 [Download](#download)
 
 [Quick Start Guide](#quick-start-guide)
@@ -45,6 +49,54 @@
 ## Preview
 
 <img/>
+
+## Admin Setup
+🧑‍💼 The first account created after installation is automatically granted **administrator** privileges.
+
+👥 Admins can add or edit users through the **Employee Details** screen.
+
+🔐 Admins have additional privileges to:
+
+- Add additional administrators
+  
+- Reset passwords for users
+
+- View **User-Level Reports** (grouped product activity by each user)
+
+## Usage Notes
+
+🛒 To add products, tap the **Add Product** button or navigate to the Product Details screen.
+Users must fill in the following fields:
+
+- Brand
+  
+- Product name
+
+- Weight
+
+- Quantity
+
+- Expiration date
+  
+- Barcode
+
+- Category
+
+- (Optional) Isle and product image
+
+🔄 In the **Product Details** screen, users can either:
+
+- Update an existing product
+  
+- Or add a **new expiration date** for the same product by toggling the switch next to the **Save Product** button
+
+📋 All users can access Product Reports to view product data filtered by:
+
+- Barcode
+
+- Date range
+
+- Expiration status (e.g., expired, expiring soon)
 
 ## Download
 
@@ -113,7 +165,8 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
 
 - 📷 The camera is only used to take product photos for local inventory tracking.
-- 🌐 The app fetches public product information from [Open Food Facts](https://openfoodfacts.org) using barcode lookup. No data is sent back to Open Food Facts or any third party.
+- 🌐 The app fetches public product information from [Open Food Facts](https://openfoodfacts.org) using barcode lookup.
+- 🔒 No data is sent back to Open Food Facts or any third party.
 - 🚫 There is no analytics, tracking, or cloud sync.
 
 This ensures your inventory stays private and under your control at all times.
