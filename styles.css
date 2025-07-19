@@ -104,6 +104,13 @@ h2 {
   margin: 1rem;
 }
 
+.section-block {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
 p {
   font-size: clamp(1.1rem, 2.2vw, 2rem);
   line-height: 1.25;
