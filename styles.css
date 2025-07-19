@@ -30,7 +30,6 @@ main {
   padding-inline: 1rem;
   padding-bottom: 0;
   width: 100%;
-  max-width: 1600px;
   margin-inline: auto;
 }
 
@@ -108,16 +107,22 @@ h2 {
 p {
   font-size: clamp(1.1rem, 2.2vw, 2rem);
   line-height: 1.25;
-  margin: 1rem auto;
   width: 95%;
   padding-inline: 0.25rem;
 }
 
 ul {
   list-style: disc inside;
+  text-align: left;
+  padding-left: 1rem;
   width: 95%;
   margin: 1rem auto;
   padding: 0 0 1rem 0.5rem;
+}
+
+p, ul {
+  max-width: none;
+  margin-inline: auto;
 }
   
 ul li { 
@@ -223,6 +228,10 @@ footer a:hover {
     grid-template-columns:repeat(3,1fr);
     max-width:1600px;
     margin-inline:auto;
+  }
+
+    ul {
+    max-width: 1000px;
   }
 }
 
