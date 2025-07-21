@@ -103,13 +103,13 @@
 - Expiration status (e.g., expired, expiring soon)
 
 ## Download
-**SHA256 checksum:** `app-release.apk`  
-**Size:** ~9,629 KB
+**SHA256 checksum:** `bestbymanager-v1.0.apk`  
+**Size:** ~9.4MB
 
 Android will prompt once to “Allow installs from unknown sources.” Accept to complete the installation.
 
 ## Quick Start Guide
-1. On your Android device,  download [`BestByManager‑v1.0apk`](https://github.com/Jwonka/BestByManager/releases/download/v1.0/bestbymanager-v1.0.apk).
+1. On your Android device,  download [`BestByManager‑v1.0apk`](https://github.com/Jwonka/BestByManager/releases/download/v1.0/bestbymanagerv1.0.apk).
 2. When prompted, allow your browser to install unknown apps **(one‑time toggle).**
 3. Tap the downloaded file to install.
 4. Launch **Best By Manager** from your app drawer.
