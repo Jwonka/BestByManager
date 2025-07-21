@@ -104,12 +104,12 @@
 
 ## Download
 **SHA256 checksum:** `app-release.apk`  
-**Size:** ~5.2 MB  
+**Size:** ~9,629 KB
 
 Android will prompt once to “Allow installs from unknown sources.” Accept to complete the installation.
 
 ## Quick Start Guide
-1. On your Android device,  download [`BestByManager‑v1.0.0.apk`](https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk).
+1. On your Android device,  download [`BestByManager‑v1.0apk`](https://github.com/Jwonka/BestByManager/releases/apk/v1.0/bestbymanager-v1.0.apk).
 2. When prompted, allow your browser to install unknown apps **(one‑time toggle).**
 3. Tap the downloaded file to install.
 4. Launch **Best By Manager** from your app drawer.
