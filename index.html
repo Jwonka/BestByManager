@@ -1,61 +1,84 @@
 <!DOCTYPE html>
- <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="styles.css" rel="stylesheet">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Best By Manager – Android app for tracking food product expiration and managing inventory for small businesses." />
+  <link href="styles.css" rel="stylesheet" />
   <title>Best By Manager</title>
-  </head>
-   <body>
-    <main>
-     <h1>Best By Manager</h1>
+</head>
+<body>
+  <nav>
+    <ul class="navbar">
+      <li><a class="active" href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </nav>
 
-     <p class="listHeadline">
-      Keep track of your fresh produce and products with the <strong>Best By Manager</strong>.
-     </p>
-     
-     <ul>
-      <li>
-       Check for expired products.
-      </li>
-      <li>
-       Manage inventory.
-      </li>
-      <li>
-       Search for produce or products that will expire soon.
-      </li>
-     </ul>
-     
-     <p class="center">
-      Ready to try it?
-     </p>
-     
-     <p class="center">
-      Get the latest APK: <a class="btn" href="https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk" aria-label="Download Best By Manager APK version 1.0.0" download="BestByManager-v1.0.0.apk">Download v1.0.0</a>
-     </p>
-     
-     <p class="center">
-      <em>Android will prompt you once to <q>allow installations from unknown sources.</q></em>
-     </p>
+  <main>
+    <h1>Best By Manager</h1>
 
-     <p>
-      The first account created becomes the <em>administrator</em>, gaining full control of all users.
-     </p>
+    <p class="listHeadline">Keep track of your fresh produce and products with <strong>Best By Manager</strong>.</p>
 
+    <section id="features">
+      <h2>What Can Best By Manager Do?</h2>
+      <ul>
+        <li><strong>Scan barcodes</strong> to quickly identify food items</li>
+        <li><strong>Add products</strong> with expiration dates, categories, and quantities</li>
+        <li><strong>Track expiration</strong> by employee or category</li>
+        <li><strong>Get smart reports</strong> for products expiring soon</li>
+        <li><strong>Use the camera</strong> to snap product photos for easy ID</li>
+      </ul>
+    </section>
+
+    <section id="howto">
+      <h2>How It Works</h2>
+        <ul class="features">
+          <li><strong>Install the APK</strong> and launch the app</li>
+          <li><strong>Create the first user</strong> – becomes the administrator automatically</li>
+          <li><strong>Add inventory</strong> via “Add Product” or by scanning a barcode</li>
+          <li><strong>Search and filter reports</strong> by barcode, date, or employee</li>
+          <li><strong>Export or share</strong> expiration summaries as plain text</li>
+        </ul>
+    </section>
+
+    <section id="preview">
+      <h2>App Preview</h2>
+      <div class="shots">
+        <img src="images/screen1.png" alt="Main screen" />
+        <img src="images/screen2.png" alt="Add product" />
+        <img src="images/screen3.png" alt="Reports" />
+      </div>
+    </section>
+
+    <section class="section-block">
+      <h2>Download</h2>
       <p class="center">
-      Learn more: <a class="btn" href="https://github.com/Jwonka/BestByManager/tree/main" target="_blank" rel="noopener" aria-label="View source code and documentation on GitHub">Repository</a>
-     </p>
-     
-     <h2>App Preview</h2>
-     
-     <div class="shots">
-      
-     </div>
-     
-     <footer>
-     <p><em>&copy; 2025 Joshua Werlein</em></p>
-     <p><em>Contact: <a href="mailto:jwerlei@wgu.com">jwerlei@wgu.com</a></em></p>
-     </footer>
-    </main>
-   </body>
- </html>
+        Get the latest APK:
+        <a class="btn" href="https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk" download>
+          Download v1.0.0
+        </a>
+      </p>
+      <p id="sources" class="center"><em>Note: Android will prompt you once to allow unknown sources.</em></p>
+    </section>
+
+    <section class="section-block">
+      <p>The first account created becomes the <em>administrator</em>, gaining full control of all users.</p>
+      <p class="center">
+        Learn more:
+        <a class="btn" href="https://github.com/Jwonka/BestByManager" target="_blank">Repository</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p><em>&copy; 2025 Joshua Werlein</em></p>
+    <p><em>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></em></p>
+    <p style="text-align: center; font-size: 1rem;">
+      This app uses public food data from <a href="https://openfoodfacts.org" target="_blank">Open Food Facts</a>, licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank">ODbL</a>.
+    </p>
+  </footer>
+</body>
+</html>
