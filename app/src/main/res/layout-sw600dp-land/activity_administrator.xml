@@ -5,43 +5,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/padding_l"
     android:background="@color/mint_green"
-    android:fitsSystemWindows="true"
     tools:context=".UI.activities.AdministratorActivity">
 
     <ImageView
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="@dimen/spacing_l"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
-        android:adjustViewBounds="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.65"
-        app:layout_constraintWidth_max="350dp"
-        app:layout_constraintHeight_max="350dp"
-        app:layout_constraintDimensionRatio="1:1"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.42"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHeight_max="500dp"
+        android:layout_marginEnd="@dimen/spacing_l" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/admin_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_s"
-        android:layout_marginEnd="@dimen/spacing_s"
-        android:layout_marginTop="@dimen/spacing_l"
-        android:layout_marginBottom="@dimen/spacing_xxxxl"
+        android:layout_marginStart="@dimen/spacing_m"
         app:cardBackgroundColor="@color/sky_blue"
         app:strokeColor="@color/black"
         app:strokeWidth="1dp"
         app:cardCornerRadius="0dp"
-        app:layout_constraintTop_toBottomOf="@id/grocery_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/grocery_icon"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintWidth_max="488dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="400dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -79,7 +75,6 @@
                 app:layout_constraintTop_toBottomOf="@id/employee_Details_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,7 +47,7 @@
     <string name="admin">Administrator</string>
     <string name="admins">Administrators</string>
     <string name="view_admins">View all administrators</string>
-    <string name="search_employees">Select Employee</string>
+    <string name="search_employees">Search by employee</string>
     <string name="save_employee">Save User</string>
     <string name="save_admin">Save Admin</string>
     <string name="save_product">Save Product</string>
@@ -61,8 +61,9 @@
     <string name="brand">Brand</string>
     <string name="barcode">Barcode</string>
     <string name="search_barcode">Search by barcode</string>
-    <string name="search_text">Search with a date range</string>
+    <string name="search_text">Search by date range</string>
     <string name="multiple_search_text">Search with barcode and dates</string>
+    <string name="multiple_employee_search_text">Search with barcode, dates, and user</string>
     <string name="view_expired">View expired or expiring this week</string>
     <string name="scan_barcode">Scan Barcode</string>
     <string name="category">Category</string>
@@ -99,7 +100,7 @@
     <string name="dev_title">Developer Contact</string>
     <string name="dev_info">App developed by Joshua Werlein</string>
     <string name="dev_email">📧 Email: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></string>
-    <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-w-901241241/">linkedin.com/in/joshua-w-901241241</a></string>
+    <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-w-901241241/">https://www.linkedin.com/in/joshua-w-901241241/</a></string>
     <string name="disclaimer">This app is an independent project and is not affiliated with or endorsed by Open Food Facts.</string>
     <string name="copyright">© 2025 Joshua Werlein. All rights reserved.</string>
 </resources>

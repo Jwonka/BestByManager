@@ -21,7 +21,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_max="488dp">
+        app:layout_constraintWidth_max="620dp"
+        tools:ignore="VisualLintBounds">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -227,7 +228,7 @@
                 android:id="@+id/spinner_category"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/row_height"
-                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/spacing_s"
                 android:layout_marginEnd="@dimen/spacing_xs"
                 android:minHeight="48dp"
                 android:padding="@dimen/padding_s"
@@ -245,7 +246,7 @@
                 android:id="@+id/spinner_isle"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/row_height"
-                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/spacing_s"
                 android:spinnerMode="dropdown"
                 android:popupBackground="@color/white"
                 android:dropDownSelector="@drawable/white_outlined_box"
@@ -283,7 +284,7 @@
                 android:id="@+id/image_attribution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/spacing_s"
                 android:text="@string/open_food_facts_image_credit"
                 android:textColor="@color/black"
                 android:textSize="12sp"
@@ -299,13 +300,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/spacing_l"
-                android:layout_marginStart="@dimen/padding_xxs"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_xl"
                 android:layout_marginEnd="@dimen/padding_xxs"
                 app:layout_constraintTop_toBottomOf="@id/image_attribution"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="VisualLintBounds">
 
                 <TextView
                     android:id="@+id/add_expiring_label"
@@ -331,22 +332,20 @@
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_xs"
                     android:layout_marginBottom="@dimen/spacing_xs"
+                    android:layout_marginStart="@dimen/padding_xs"
                     android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/save_product"
-                    tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+                    android:text="@string/save_product"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/clear_product_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_l"
                     android:layout_marginBottom="@dimen/spacing_xs"
+                    android:layout_marginStart="@dimen/spacing_l"
                     android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/clear"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    android:text="@string/clear"/>
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

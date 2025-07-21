@@ -37,6 +37,8 @@ public class User {
     public User(@NonNull String userName, @NonNull String hash) {
         this.userName = userName;
         this.hash = hash;
+        this.userName = userName;
+        this.hash = hash;
     }
 
     // Constructor for Room to read the database

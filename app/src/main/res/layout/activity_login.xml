@@ -82,6 +82,7 @@
                     android:hint="@string/enter_user_name"
                     android:textColorHint="@color/black"
                     android:textColor="@color/black"
+                    android:imeOptions="actionNext"
                     android:inputType="textPersonName"
                     android:textSize="20sp"
                     style="@style/CompactEditText"

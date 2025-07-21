@@ -111,6 +111,13 @@ public class ProductSearch extends AppCompatActivity {
         });
 
         binding.expiredButton.setOnClickListener(v -> showExpiredProducts());
+        binding.clearButton.setOnClickListener(v -> clearForm(binding));
+    }
+
+    private void clearForm(ActivityProductSearchBinding binding) {
+        binding.editBarcode.setText("");
+        binding.startDate.setText(R.string.start_date);
+        binding.endDate.setText(R.string.end_date);
     }
 
     private boolean ensureCameraPermission() {

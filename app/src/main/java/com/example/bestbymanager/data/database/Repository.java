@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -191,18 +192,24 @@ public class Repository {
             String hash = hash(plainPassword);
 
             User toInsert = new User(userName, hash);
+            toInsert.setFirstName("Default");
+            toInsert.setLastName("User");
             toInsert.setAdmin(isFirstUser);
-
-            long id = mUserDAO.insert(toInsert);
-            if (id > 0) {
-                User user = new User(userName, hash);
-                user.isAdmin = isFirstUser;
-                Session.get().logIn(user, context);
-                registered.postValue(user);
-            } else {
+            try {
+                long id = mUserDAO.insert(toInsert);
+                Log.d("DEBUG_INSERT", "Insert result: " + id);
+                if (id > 0) {
+                    User user = new User(userName, hash);
+                    user.isAdmin = isFirstUser;
+                    Session.get().logIn(user, context);
+                    registered.postValue(user);
+                } else {
+                    registered.postValue(null);
+                }
+            } catch (Exception e) {
+                Log.e("DEBUG_INSERT", "Insert crashed", e);
                 registered.postValue(null);
             }
-
         });
         return registered;
     }

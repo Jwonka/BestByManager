@@ -15,11 +15,11 @@
         android:layout_height="wrap_content"
         android:text="@string/about"
         android:textColor="@color/black"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:gravity="center"
         android:background="@color/gray"
-        android:padding="@dimen/padding_m"
+        android:padding="@dimen/padding_l"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -28,6 +28,7 @@
         android:id="@+id/about_card"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="@dimen/spacing_s"
         app:cardCornerRadius="0dp"
         app:cardBackgroundColor="@color/sky_blue"
         app:strokeColor="@color/black"
@@ -35,9 +36,7 @@
         app:layout_constraintTop_toBottomOf="@id/about_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="@dimen/spacing_s"
-        app:layout_constraintWidth_max="488dp">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -56,7 +55,7 @@
                     android:text="@string/about_best_by_manager"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:gravity="center"
                     android:layout_marginBottom="8dp" />
 
@@ -66,8 +65,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/paragraph_1"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="12dp" />
@@ -78,8 +77,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/paragraph_2"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="12dp" />
@@ -90,8 +89,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/paragraph_3"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="16dp" />
@@ -103,7 +102,7 @@
                     android:text="@string/license_title"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:gravity="center"
                     android:layout_marginBottom="8dp" />
 
@@ -113,8 +112,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/license_bullets"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_m"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="16dp" />
@@ -126,8 +125,8 @@
                     android:text="@string/license_footer"
                     android:autoLink="web"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="16dp" />
@@ -139,7 +138,7 @@
                     android:text="@string/dev_title"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:gravity="center"
                     android:layout_marginBottom="8dp" />
 
@@ -149,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/dev_info"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="4dp" />
@@ -162,7 +161,7 @@
                     android:autoLink="email"
                     android:linksClickable="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="8dp" />
@@ -175,7 +174,7 @@
                     android:autoLink="web"
                     android:linksClickable="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="16dp" />
@@ -186,8 +185,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/disclaimer"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp"
+                    android:textSize="18sp"
+                    android:lineSpacingExtra="6dp"
                     android:paddingStart="@dimen/spacing_s"
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="@dimen/spacing_l" />
@@ -198,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/copyright"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:gravity="center"
                     android:layout_marginBottom="8dp" />
 

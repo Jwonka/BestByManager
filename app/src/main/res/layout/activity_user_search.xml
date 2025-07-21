@@ -13,7 +13,7 @@
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_s"
+        android:layout_marginTop="40dp"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
         android:adjustViewBounds="true"
@@ -29,7 +29,7 @@
         android:id="@+id/employee_search_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_s"
+        android:layout_marginTop="@dimen/spacing_l"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginEnd="@dimen/spacing_xs"
         app:cardBackgroundColor="@color/sky_blue"
@@ -71,7 +71,7 @@
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:imeOptions="actionDone"
                     tools:ignore="TextContrastCheck"/>
@@ -105,7 +105,7 @@
                     android:minHeight="@dimen/row_height"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:imeOptions="actionDone"
                     tools:ignore="TextContrastCheck"/>
@@ -118,9 +118,9 @@
                 android:text="@string/search_text"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_s"
+                android:layout_marginTop="@dimen/spacing_xs"
                 app:layout_constraintTop_toBottomOf="@id/barcode_input_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -148,6 +148,21 @@
                 app:layout_constraintStart_toEndOf="@id/start_date"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <TextView
+                android:id="@+id/multiple_employee_search_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/multiple_employee_search_text"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_s"
+                app:layout_constraintTop_toBottomOf="@id/start_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/search_button"
                 style="@style/LightGreenPill"
@@ -155,10 +170,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/search"
                 android:contentDescription="@string/search_date_range"
-                app:layout_constraintTop_toBottomOf="@id/start_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_s"/>
+                android:layout_marginTop="@dimen/spacing_s"
+                app:layout_constraintTop_toBottomOf="@id/multiple_employee_search_label"
+                app:layout_constraintStart_toEndOf="@id/clear_button"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/clear_button"
@@ -166,10 +181,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/clear"
-                app:layout_constraintTop_toBottomOf="@id/search_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_s"/>
+                android:layout_marginTop="@dimen/spacing_xs"
+                app:layout_constraintTop_toBottomOf="@id/multiple_employee_search_label"
+                app:layout_constraintEnd_toStartOf="@id/search_button"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
                 android:id="@+id/admin_label"
@@ -178,9 +193,9 @@
                 android:text="@string/view_admins"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_s"
+                android:layout_marginTop="@dimen/spacing_xs"
                 app:layout_constraintTop_toBottomOf="@id/clear_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
