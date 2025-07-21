@@ -53,7 +53,21 @@
 
 ## Preview
 
-<img/>
+<div align="center">
+  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 👤 Employee Search</h3>
+  <img src="images/homeScreen.png" alt="Home Screen" width="300" height="500"/>
+  <img src="images/productSearch.png" alt="Product Search" width="300" height="500"/>
+  <img src="images/employeeSearch.png" alt="Employee Search" width="300" height="500"/>
+</div>
+
+<br/>
+
+<div align="center">
+  <h3>📦 Product List &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
+  <img src="images/productList.png" alt="Product List" width="300" height="500"/>
+  <img src="images/productDetails.png" alt="Product Details" width="300" height="500"/>
+  <img src="images/productReport.png" alt="Product Report" width="300" height="500"/>
+</div>
 
 ## Admin Setup
 🧑‍💼 The first account created after installation is automatically granted **administrator** privileges.
