@@ -55,9 +55,9 @@
 
 <div align="center">
   <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 👤 Employee Search</h3>
-  <img src="images/homeScreen.png" alt="Home Screen" width="300" height="500"/>
-  <img src="images/productSearch.png" alt="Product Search" width="300" height="500"/>
-  <img src="images/employeeSearch.png" alt="Employee Search" width="300" height="500"/>
+  <img src="images/homeScreen.png" alt="Home Screen" width="250" height="450"/>
+  <img src="images/productSearch.png" alt="Product Search" width="250" height="450"/>
+  <img src="images/employeeSearch.png" alt="Employee Search" width="250" height="450"/>
 </div>
 
 <br/>
