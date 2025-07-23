@@ -64,9 +64,9 @@
 
 <div align="center">
   <h3>📦 Product List &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
-  <img src="images/productList.png" alt="Product List" width="280" height="480"/>
-  <img src="images/productDetails.png" alt="Product Details" width="280" height="480"/>
-  <img src="images/productReport.png" alt="Product Report" width="280" height="480"/>
+  <img src="images/productList.png" alt="Product List" width="250" height="450"/>
+  <img src="images/productDetails.png" alt="Product Details" width="250" height="450"/>
+  <img src="images/productReport.png" alt="Product Report" width="250" height="450"/>
 </div>
 
 ## Admin Setup
