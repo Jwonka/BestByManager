@@ -54,20 +54,35 @@
 ## Preview
 
 <div align="center">
-  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 👤 Employee Search</h3>
-  <img src="images/homeScreen.png" alt="Home Screen" width="250" height="450"/>
-  <img src="images/productSearch.png" alt="Product Search" width="250" height="450"/>
-  <img src="images/employeeSearch.png" alt="Employee Search" width="250" height="450"/>
+  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search</h3>
+  <a href="images/homeScreen.png">
+    <img src="images/homeScreen.png" width="300" height="500" alt="🏠 Home Screen">
+  </a>
+  <a href="images/productSearch.png">
+    <img src="images/productSearch.png" width="300" height="500" alt="🔍 Product Search">
+  </a>
 </div>
-
-<br/>
 
 <div align="center">
-  <h3>📦 Product List &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
-  <img src="images/productList.png" alt="Product List" width="250" height="450"/>
-  <img src="images/productDetails.png" alt="Product Details" width="250" height="450"/>
-  <img src="images/productReport.png" alt="Product Report" width="250" height="450"/>
+  <h3>👤 Employee Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📦 Product List</h3>
+  <a href="images/employeeSearch.png">
+    <img src="images/employeeSearch.png" width="300" height="500" alt="👤 Employee Search">
+  </a>
+  <a href="images/productList.png">
+    <img src="images/productList.png" width="300" height="500" alt="📦 Product List">
+  </a>
 </div>
+
+<div align="center">
+  <h3>📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
+  <a href="images/productDetails.png">
+    <img src="images/productDetails.png" width="300" height="500" alt="📋 Product Details">
+  </a>
+  <a href="images/productReport.png">
+    <img src="images/productReport.png" width="300" height="500" alt="📈 Product Report">
+  </a>
+</div>
+
 
 ## Admin Setup
 🧑‍💼 The first account created after installation is automatically granted **administrator** privileges.
