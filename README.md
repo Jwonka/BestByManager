@@ -54,7 +54,7 @@
 ## Preview
 
 <div align="center">
-  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search</h3>
+  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  🔍 Product Search</h3>
   <a href="images/homeScreen.png">
     <img src="images/homeScreen.png" width="300" height="500" alt="🏠 Home Screen">
   </a>
@@ -64,7 +64,7 @@
 </div>
 
 <div align="center">
-  <h3>👤 Employee Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📦 Product List</h3>
+  <h3>👤 Employee Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📦 Product List</h3>
   <a href="images/employeeSearch.png">
     <img src="images/employeeSearch.png" width="300" height="500" alt="👤 Employee Search">
   </a>
@@ -74,7 +74,7 @@
 </div>
 
 <div align="center">
-  <h3>📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
+  <h3>📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  📈 Product Report</h3>
   <a href="images/productDetails.png">
     <img src="images/productDetails.png" width="300" height="500" alt="📋 Product Details">
   </a>
