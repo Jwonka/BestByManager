@@ -329,7 +329,7 @@ nav, footer {
   }
 
   .navbar a {
-    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-size: clamp(0.75rem, 2.5vw, 1rem);
     padding: 0.6rem 1rem;
   }
 }
