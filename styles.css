@@ -17,6 +17,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   background: #000;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   font-family: Arial, Helvetica, sans-serif;
   color: #fff;
 }
@@ -39,7 +41,6 @@ nav {
   padding: 0;
   background: #BBDEFB;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
 }
 
 .navbar {
@@ -256,7 +257,6 @@ footer {
   padding: 0.6rem;
   background: #BBDEFB;
   text-align: center;
-  box-sizing: border-box;
 }
 
 footer p {
@@ -276,6 +276,13 @@ footer a {
 
 footer a:hover {
   color: #002D62;
+}
+
+nav, footer {
+  box-sizing: border-box;
+  box-sizing: border-box;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 @media (min-width: 1400px) {
