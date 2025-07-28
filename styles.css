@@ -55,6 +55,7 @@ nav {
   padding: 0.75rem 1rem;
   list-style: none;
   position: sticky;
+  inset-inline: 0;
   top: 0;
   z-index: 1000;
   box-sizing: border-box;
@@ -279,7 +280,10 @@ footer a:hover {
 }
 
 nav, footer {
-  box-sizing: border-box;
+  position: relative;
+  left: 50%;
+  margin-left: -50vw;
+  width: 100vw;
   box-sizing: border-box;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
