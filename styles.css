@@ -23,15 +23,15 @@ body {
 }
 
 main {
-  flex: 1 0 auto;
+  flex: 1;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-inline: 1rem;
   padding-bottom: 0;
-  width: 100%;
-  margin-inline: auto;
+  max-width: 100%; 
+  margin: 0;  
   box-sizing: border-box;
 }
 
