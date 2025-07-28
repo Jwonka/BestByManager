@@ -315,14 +315,14 @@ footer a:hover {
 
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 1rem;
   }
 
   .navbar a {
-    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
     padding: 0.6rem 1rem;
   }
 }
