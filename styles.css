@@ -49,7 +49,7 @@ nav {
   flex-wrap: wrap;
   gap: 1.5rem;
   background: #BBDEFB;
-  width: 100%;
+  width: auto;
   margin: 0 auto;
   padding: 0.75rem 1rem;
   list-style: none;
