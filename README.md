@@ -53,7 +53,36 @@
 
 ## Preview
 
-<img/>
+<div align="center">
+  <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search</h3>
+  <a href="images/homeScreen.png">
+    <img src="images/homeScreen.png" width="300" height="500" alt="🏠 Home Screen">
+  </a>
+  <a href="images/productSearch.png">
+    <img src="images/productSearch.png" width="300" height="500" alt="🔍 Product Search">
+  </a>
+</div>
+
+<div align="center">
+  <h3>👤 Employee Search &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📦 Product List</h3>
+  <a href="images/employeeSearch.png">
+    <img src="images/employeeSearch.png" width="300" height="500" alt="👤 Employee Search">
+  </a>
+  <a href="images/productList.png">
+    <img src="images/productList.png" width="300" height="500" alt="📦 Product List">
+  </a>
+</div>
+
+<div align="center">
+  <h3>📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
+  <a href="images/productDetails.png">
+    <img src="images/productDetails.png" width="300" height="500" alt="📋 Product Details">
+  </a>
+  <a href="images/productReport.png">
+    <img src="images/productReport.png" width="300" height="500" alt="📈 Product Report">
+  </a>
+</div>
+
 
 ## Admin Setup
 🧑‍💼 The first account created after installation is automatically granted **administrator** privileges.
@@ -103,13 +132,13 @@
 - Expiration status (e.g., expired, expiring soon)
 
 ## Download
-**SHA256 checksum:** `app-release.apk`  
-**Size:** ~5.2 MB  
+**SHA256 checksum:** `bestbymanager-v1.0.apk`  
+**Size:** ~9.4MB
 
 Android will prompt once to “Allow installs from unknown sources.” Accept to complete the installation.
 
 ## Quick Start Guide
-1. On your Android device,  download [`BestByManager‑v1.0.0.apk`](https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk).
+1. On your Android device,  👉 [Download / Donate on itch.io](https://jwonka2.itch.io/best-by-manager).
 2. When prompted, allow your browser to install unknown apps **(one‑time toggle).**
 3. Tap the downloaded file to install.
 4. Launch **Best By Manager** from your app drawer.

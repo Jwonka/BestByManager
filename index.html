@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Best By Manager – Android app for tracking food product expiration and managing inventory for small businesses." />
   <link href="styles.css" rel="stylesheet" />
+  <script src="https://static.itch.io/api.js"></script>
   <title>Best By Manager</title>
 </head>
 <body>
@@ -20,7 +21,7 @@
   <main>
     <h1>Best By Manager</h1>
 
-    <p class="listHeadline">Keep track of your fresh produce and products with <strong>Best By Manager</strong>.</p>
+    <p class="listHeadline">Keep food safe and shelves stocked with <strong>Best By Manager</strong> 🧊 – expiration tracking made simple.</p>
 
     <section id="features">
       <h2>What Can Best By Manager Do?</h2>
@@ -47,9 +48,12 @@
     <section id="preview">
       <h2>App Preview</h2>
       <div class="shots">
-        <img src="images/screen1.png" alt="Main screen" />
-        <img src="images/screen2.png" alt="Add product" />
-        <img src="images/screen3.png" alt="Reports" />
+        <img src="images/homeScreen.png" alt="Home Screen" />
+        <img src="images/productSearch.png" alt="Product Search" />
+        <img src="images/employeeSearch.png" alt="Employee Search" />
+        <img src="images/productList.png" alt="Product List" />
+        <img src="images/productDetails.png" alt="Product Details" />
+        <img src="images/productReport.png" alt="Product Report" />
       </div>
     </section>
 
@@ -57,9 +61,7 @@
       <h2>Download</h2>
       <p class="center">
         Get the latest APK:
-        <a class="btn" href="https://github.com/Jwonka/BestByManager/releases/download/v1.0.0/app-release.apk" download>
-          Download v1.0.0
-        </a>
+         <button id="buy-bbm" class="btn">Download on itch.io</button>
       </p>
       <p id="sources" class="center"><em>Note: Android will prompt you once to allow unknown sources.</em></p>
     </section>
@@ -80,5 +82,13 @@
       This app uses public food data from <a href="https://openfoodfacts.org" target="_blank">Open Food Facts</a>, licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank">ODbL</a>.
     </p>
   </footer>
+  <script>
+    Itch.attachBuyButton(document.getElementById('buy-bbm'), {
+      user: 'jwonka2',
+      game: 'best-by-manager',
+      width: 650,
+      height: 400
+    });
+</script>
 </body>
 </html>
