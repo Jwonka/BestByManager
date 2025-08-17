@@ -8,7 +8,6 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/spacing_s"
     android:layout_marginHorizontal="@dimen/spacing_xs"
-    android:fitsSystemWindows="true"
     app:cardBackgroundColor="@color/sky_blue"
     app:cardCornerRadius="12dp"
     app:strokeColor="@color/black"

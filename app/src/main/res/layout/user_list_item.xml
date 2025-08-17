@@ -9,8 +9,7 @@
     app:cardBackgroundColor="@color/sky_blue"
     app:cardCornerRadius="24dp"
     app:strokeColor="@color/black"
-    app:strokeWidth="1dp"
-    android:fitsSystemWindows="true">
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

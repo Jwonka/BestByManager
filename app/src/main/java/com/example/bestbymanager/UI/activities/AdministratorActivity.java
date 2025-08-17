@@ -4,6 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
 import com.example.bestbymanager.databinding.ActivityAdministratorBinding;
@@ -14,8 +21,22 @@ public class AdministratorActivity extends BaseAdminActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.admin);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityAdministratorBinding binding = ActivityAdministratorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        final View rootView = binding.getRoot();
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            }
+        });
 
         binding.employeeListButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdministratorActivity.this, UserList.class);

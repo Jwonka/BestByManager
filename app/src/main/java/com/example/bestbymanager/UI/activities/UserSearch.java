@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.authentication.BaseAdminActivity;
@@ -46,8 +52,22 @@ public class UserSearch  extends BaseAdminActivity {
         super.onCreate(savedInstanceState);
         repository = new Repository(getApplication());
         setTitle(R.string.employee_search);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityUserSearchBinding binding = ActivityUserSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        final View rootView = binding.getRoot();
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            }
+        });
 
         ProductDatabaseBuilder.getDatabase(this);
 
