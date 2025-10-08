@@ -169,10 +169,7 @@ public class Repository {
         MutableLiveData<LoginResult> pass = new MutableLiveData<>();
         executor.execute(() -> {
             User user = mUserDAO.findByUsername(username);
-            if (user != null && user.isMustChange() && user.getResetExpires() != null && OffsetDateTime.now().isAfter(user.getResetExpires())) {
-                pass.postValue(new LoginResult(LoginResult.Code.EXPIRED, null));
-                return;
-            }
+
             boolean ok = user != null
                     && !user.getHash().isEmpty()
                     && BCrypt.checkpw(plainPassword, user.getHash());

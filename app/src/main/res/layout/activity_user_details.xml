@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mint_green"
+    android:fitsSystemWindows="true"
+    android:animateLayoutChanges="true"
     tools:context=".UI.activities.UserDetails">
 
     <com.google.android.material.card.MaterialCardView
@@ -154,6 +156,7 @@
                 android:layout_marginBottom="@dimen/spacing_s"
                 android:layout_marginStart="@dimen/padding_xxs"
                 android:layout_marginEnd="@dimen/padding_xxs"
+                android:paddingBottom="@dimen/spacing_s"
                 app:layout_constraintTop_toBottomOf="@id/image_preview"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -193,6 +196,7 @@
                     app:layout_constraintStart_toEndOf="@id/admin_toggle"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/clear_employee_button"
                     tools:ignore="DuplicateSpeakableTextCheck"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -206,7 +210,8 @@
                     android:paddingHorizontal="@dimen/padding_s"
                     app:layout_constraintTop_toBottomOf="@id/save_user_button"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/clear_employee_button"/>
+                    app:layout_constraintEnd_toStartOf="@id/clear_employee_button"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/clear_employee_button"
@@ -219,7 +224,8 @@
                     android:text="@string/clear"
                     app:layout_constraintStart_toEndOf="@id/generate_temp_pwd"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/save_user_button"/>
+                    app:layout_constraintTop_toBottomOf="@id/save_user_button"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

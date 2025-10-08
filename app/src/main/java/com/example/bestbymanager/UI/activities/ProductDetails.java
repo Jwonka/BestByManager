@@ -3,6 +3,7 @@ package com.example.bestbymanager.UI.activities;
 import static com.example.bestbymanager.utilities.LocalDateBinder.bindFutureDateField;
 import static com.example.bestbymanager.utilities.LocalDateBinder.format;
 import static com.example.bestbymanager.utilities.LocalDateBinder.parseOrToday;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -57,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.concurrent.Executors;
+
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -450,11 +452,23 @@ public class ProductDetails extends AppCompatActivity {
         modeSwitch.setEnabled(false);
     }
 
+    private boolean isValidBarcode(String code) {
+        if (code == null) return false;
+        // Allow EAN-8, EAN-13, UPC-A (12), GTIN-14 (14). Adjust as needed.
+        return code.matches("\\d{8}|\\d{12}|\\d{13}|\\d{14}");
+    }
+
     private void saveProduct() {
         if (!validForm()) { return; }
         boolean addNew = modeSwitch.isChecked() && modeSwitch.isEnabled();
 
         long currentUserId = Session.get().currentUserID();
+
+        String barcodeTxt = barcode.getText().toString().trim();
+        if (!isValidBarcode(barcodeTxt)) {
+            toast("Unsupported or unreadable barcode.");
+            return;
+        }
 
         Product toSave = (addNew || currentProduct == null) ? new Product() : currentProduct;
 

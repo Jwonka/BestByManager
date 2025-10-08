@@ -90,4 +90,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (Session.get().requiresPasswordReset()) {
+            Intent i = new Intent(this, ResetPasswordActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
+    }
 }

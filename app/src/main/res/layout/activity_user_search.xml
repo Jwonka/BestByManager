@@ -39,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/grocery_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_max="488dp"
         tools:ignore="VisualLintBounds">
 
@@ -209,6 +210,7 @@
                 app:layout_constraintTop_toBottomOf="@id/admin_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:maxLines="1"
                 android:layout_marginTop="@dimen/spacing_xs"/>
 
