@@ -230,11 +230,14 @@ public class Repository {
     public LiveData<User> addUser(User user, @NonNull String plainPassword) {
         MutableLiveData<User> result = new MutableLiveData<>();
         executor.execute(() -> {
-            user.setHash(hash(plainPassword));
+            String hash = hash(plainPassword);
+            user.setHash(hash);
 
             long id = mUserDAO.insert(user);
             if (id > 0) {
                 user.setUserID(id);
+                OffsetDateTime expires = OffsetDateTime.now().plusHours(24);
+                mUserDAO.updatePassword(id, hash, expires, /*mustChange=*/true);
                 result.postValue(user);
             } else {
                 result.postValue(null);

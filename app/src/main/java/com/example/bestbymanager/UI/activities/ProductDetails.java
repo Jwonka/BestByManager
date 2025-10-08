@@ -57,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -68,6 +69,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductDetails extends AppCompatActivity {
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
     private ProductDetailsViewModel productViewModel;
     private static final String TAG = "ProductDetails";
     private static final int REQ_CAMERA = 10;
@@ -283,7 +285,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void lookupByBarcode(String code) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        io.execute(() -> {
             Product local = productViewModel.getRecentExpiringProduct(code);
             runOnUiThread(() -> {
                 if (local != null) {
@@ -570,6 +572,10 @@ public class ProductDetails extends AppCompatActivity {
         return true;
     }
 
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        io.shutdown();
+    }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }
 
