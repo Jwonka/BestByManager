@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.bestbymanager.UI.authentication.ResetPasswordAction;
+import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.databinding.ActivityResetPasswordBinding;
 
@@ -19,6 +20,7 @@ public class ResetPasswordActivity  extends AppCompatActivity {
 
     @Override protected void onCreate(Bundle s) {
         super.onCreate(s);
+        Session.get().preload(this);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityResetPasswordBinding binding = ActivityResetPasswordBinding.inflate(getLayoutInflater());

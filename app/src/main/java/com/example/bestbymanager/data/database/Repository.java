@@ -173,14 +173,30 @@ public class Repository {
                 pass.postValue(new LoginResult(LoginResult.Code.EXPIRED, null));
                 return;
             }
-            boolean ok = user != null && !user.getHash().isEmpty() && BCrypt.checkpw(plainPassword, user.getHash());
+            boolean ok = user != null
+                    && !user.getHash().isEmpty()
+                    && BCrypt.checkpw(plainPassword, user.getHash());
 
-            if(ok){
-                Session.get().logIn(user, context);
-                pass.postValue(new LoginResult(LoginResult.Code.OK, user));
-            } else {
+            if (!ok) {
                 pass.postValue(new LoginResult(LoginResult.Code.BAD_CREDENTIALS, null));
+                return;
             }
+
+            // Force password reset if flagged (regardless of expiry window)
+            if (user.isMustChange()) {
+                // Reject password resets after 24 hours
+                OffsetDateTime until = user.getResetExpires();
+                if (until != null && OffsetDateTime.now().isAfter(until)) {
+                    pass.postValue(LoginResult.expired());
+                    return;
+                }
+                // Temp is still valid → must go to ResetPassword (no full session yet)
+                pass.postValue(LoginResult.mustReset(user));
+                return;
+            }
+
+            Session.get().logIn(user, context);
+            pass.postValue(new LoginResult(LoginResult.Code.OK, user));
         });
         return pass;
     }

@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mint_green"
+    android:fitsSystemWindows="true"
     tools:context=".UI.activities.ProductSearch">
 
     <ImageView
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
         android:adjustViewBounds="true"
@@ -28,7 +29,7 @@
         android:id="@+id/employee_search_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_l"
+        android:layout_marginTop="@dimen/spacing_m"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginEnd="@dimen/spacing_xs"
         app:cardBackgroundColor="@color/sky_blue"

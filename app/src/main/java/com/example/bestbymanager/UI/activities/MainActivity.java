@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Session.get().preload(this);
         setTitle(R.string.main_screen);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);

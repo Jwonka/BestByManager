@@ -38,58 +38,65 @@
 
         <activity
             android:name=".UI.activities.UserReport"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:parentActivityName=".UI.activities.UserSearch" />
         <activity
             android:name=".UI.activities.UserSearch"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:parentActivityName=".UI.activities.AdministratorActivity" />
         <activity
             android:name=".UI.activities.UserDetails"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.UserList" />
         <activity
             android:name=".UI.activities.UserList"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.AdministratorActivity" />
         <activity
             android:name=".UI.activities.AboutActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.MainActivity" />
         <activity
             android:name=".UI.activities.AdministratorActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.MainActivity" />
         <activity
             android:name=".UI.activities.ProductSearch"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.MainActivity" />
         <activity
             android:name=".UI.activities.ProductDetails"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.ProductList" />
         <activity
             android:name=".UI.activities.ProductList"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:parentActivityName=".UI.activities.MainActivity" />
         <activity
             android:name=".UI.activities.ProductReport"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:parentActivityName=".UI.activities.ProductSearch" />
         <activity
             android:name=".UI.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"/>
         <activity
             android:name=".UI.activities.ResetPasswordActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"/>
         <activity
             android:name=".UI.activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

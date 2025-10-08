@@ -21,6 +21,7 @@ import com.example.bestbymanager.R;
 import com.example.bestbymanager.UI.authentication.AuthenticationAction;
 import com.example.bestbymanager.UI.authentication.LoginAction;
 import com.example.bestbymanager.UI.authentication.RegisterAction;
+import com.example.bestbymanager.UI.authentication.Session;
 import com.example.bestbymanager.data.database.Repository;
 import com.example.bestbymanager.databinding.ActivityLoginBinding;
 import com.google.android.material.button.MaterialButton;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Session.get().preload(this);
         if (Build.VERSION.SDK_INT >= 33 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                         != PackageManager.PERMISSION_GRANTED) {

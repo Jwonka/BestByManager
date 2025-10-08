@@ -34,6 +34,7 @@ public class ResetPasswordAction extends AuthenticationAction {
             .observe((LifecycleOwner) context, success -> {
                 if (Boolean.TRUE.equals(success)) {
                     Toast.makeText(context, "Password updated.", Toast.LENGTH_SHORT).show();
+                    Session.get().clearResetRequirement();
                     context.startActivity(new Intent(context, MainActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 } else {

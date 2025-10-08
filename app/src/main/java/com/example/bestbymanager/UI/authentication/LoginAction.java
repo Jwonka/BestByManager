@@ -19,6 +19,7 @@ public class LoginAction extends AuthenticationAction {
     @Override
     protected void performAuthorization(String name, String plainPassword) {
         repository.login(name, plainPassword).observe((LifecycleOwner) context, loginResult -> {
+            if(loginResult == null) { return; }
             switch (loginResult.code) {
                 case OK:
                     User user = loginResult.user;
@@ -27,19 +28,26 @@ public class LoginAction extends AuthenticationAction {
                             Toast.makeText(context, "Session not set!", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
-                        if (user.isMustChange()) {
-                            Intent reset = new Intent(context, ResetPasswordActivity.class).putExtra("userID", user.getUserID());
-                            context.startActivity(reset);
-                            ((Activity) context).finish();
-                            return;
-                        }
                         enterApp(user);
+                        break;
+                    }
+
+                    case MUST_RESET: {
+                        // valid temp → limited session so Reset screen knows the user
+                        if (loginResult.user != null) {
+                            Session.get().startLimited(loginResult.user.getUserID());
+
+                            Intent i = new Intent(context, ResetPasswordActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            i.putExtra("userId", loginResult.user.getUserID());
+                            context.startActivity(i);
+                        }
                         break;
                     }
 
                 case EXPIRED:
                     Toast.makeText(context, "Temporary password has expired.  Ask an admin for a new one.", Toast.LENGTH_SHORT).show();
+                    Session.get().logOut(context);
                     break;
 
                 case BAD_CREDENTIALS:
