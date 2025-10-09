@@ -38,8 +38,16 @@ public class ResetPasswordActivity  extends AppCompatActivity {
             }
         });
 
-        long userID = getIntent().getLongExtra("userID", -1);
-        if (userID < 0) { finish(); return; }
+        long userID = getIntent().getLongExtra("userId", -1);
+        if (userID < 0) {
+            Long sid = Session.get().userId();
+            if (sid != null && sid > 0) {
+                userID = sid;
+            } else {
+                finish();
+                return;
+            }
+        }
 
         Repository repository = new Repository(getApplication());
 

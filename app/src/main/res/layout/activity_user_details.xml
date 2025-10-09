@@ -22,7 +22,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_max="488dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -159,8 +158,7 @@
                 android:paddingBottom="@dimen/spacing_s"
                 app:layout_constraintTop_toBottomOf="@id/image_preview"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
                     android:id="@+id/administrator_label"

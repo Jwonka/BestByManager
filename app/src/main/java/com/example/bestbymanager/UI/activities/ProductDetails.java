@@ -454,10 +454,12 @@ public class ProductDetails extends AppCompatActivity {
         modeSwitch.setEnabled(false);
     }
 
-    private boolean isValidBarcode(String code) {
+    private boolean isBarcodePlausible(String code) {
         if (code == null) return false;
-        // Allow EAN-8, EAN-13, UPC-A (12), GTIN-14 (14). Adjust as needed.
-        return code.matches("\\d{8}|\\d{12}|\\d{13}|\\d{14}");
+        String c = code.trim();
+        if (!c.matches("\\d+")) return false;
+        // Accept common EAN/UPC lengths; tighten as you need:
+        return c.length() == 8 || c.length() == 12 || c.length() == 13 || c.length() == 14;
     }
 
     private void saveProduct() {
@@ -467,7 +469,7 @@ public class ProductDetails extends AppCompatActivity {
         long currentUserId = Session.get().currentUserID();
 
         String barcodeTxt = barcode.getText().toString().trim();
-        if (!isValidBarcode(barcodeTxt)) {
+        if (!isBarcodePlausible(barcodeTxt)) {
             toast("Unsupported or unreadable barcode.");
             return;
         }

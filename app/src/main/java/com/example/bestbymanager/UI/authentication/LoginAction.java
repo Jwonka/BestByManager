@@ -41,6 +41,8 @@ public class LoginAction extends AuthenticationAction {
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             i.putExtra("userId", loginResult.user.getUserID());
                             context.startActivity(i);
+                        }else {
+                            Toast.makeText(context, "Login error. Please try again.", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     }
