@@ -1,5 +1,5 @@
 # Best By Manager
-![Java](https://img.shields.io/badge/Java-17-green)
+![Java](https://img.shields.io/badge/Java-11-green)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![API](https://img.shields.io/badge/API-27--35-blue)
 ![Privacy: Local Only](https://img.shields.io/badge/Privacy-100%25%20Local-orange)
@@ -166,7 +166,7 @@ OR from the command line
 Note: Best By Manager does not request location, contacts, or any sensitive personal permissions. All data stays local to the device.
 
 ## Tech Stack & Architecture
-- Language: ![Java](https://img.shields.io/badge/Java-17-green) (Android Desugaring) 
+- Language: ![Java](https://img.shields.io/badge/Java-11-green) (Android Desugaring) 
 
 - UI: Jetpack ConstraintLayout, Material 3
 
