@@ -212,9 +212,15 @@ public class Repository {
                 long id = mUserDAO.insert(toInsert);
                 Log.d("DEBUG_INSERT", "Insert result: " + id);
                 if (id > 0) {
-                    toInsert.setUserID(id);
-                    Session.get().logIn(toInsert, context);
-                    registered.postValue(toInsert);
+                    User sessionUser = new User();
+                    sessionUser.setUserID(id);
+                    sessionUser.setUserName(userName);
+                    sessionUser.setHash(hash);
+                    sessionUser.setAdmin(isFirstUser);
+                    sessionUser.setFirstName(toInsert.getFirstName());
+                    sessionUser.setLastName(toInsert.getLastName());
+                    Session.get().logIn(sessionUser, context);
+                    registered.postValue(sessionUser);
                 } else {
                     registered.postValue(null);
                 }
