@@ -1,6 +1,6 @@
 [versions]
 exif = "1.4.1"
-agp = "8.11.2"
+agp = "8.13.1"
 converterGson = "3.0.0"
 coreVersion = "3.5.3"
 glide = "4.16.0"

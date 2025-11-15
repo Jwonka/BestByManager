@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RoomWarnings;
 import androidx.room.Transaction;
 import androidx.room.Update;
 import com.example.bestbymanager.data.entities.User;
@@ -61,10 +62,11 @@ public interface UserDAO {
 
     @Query("SELECT * FROM user WHERE isAdmin = 1")
     LiveData<List<User>> loadAdmins();
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT userID, userName, firstName, lastName FROM user WHERE isAdmin = 1")
     LiveData<List<UserReportRow>> getAdmins();
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -80,7 +82,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY totalCount DESC")
     LiveData<List<UserReportRow>> getEntriesByDateRange(LocalDate from, LocalDate to, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -96,7 +98,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY totalCount DESC")
     LiveData<List<UserReportRow>> getEntriesByBarcode(String barcode, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -112,7 +114,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
     LiveData<List<UserReportRow>> getEntriesForEmployeeAndBarcode(long userID, String barcode, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -128,7 +130,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
     LiveData<List<UserReportRow>> getEntriesForEmployeeInRange(long userID, LocalDate from, LocalDate to, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -144,7 +146,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY MIN(product.expirationDate)")
     LiveData<List<UserReportRow>> getEntriesByBarcodeForEmployeeInRange(long userID, String barcode, LocalDate from, LocalDate to, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -160,7 +162,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
     LiveData<List<UserReportRow>> getEntriesByBarcodeForRange(String barcode, LocalDate from, LocalDate to, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
@@ -176,7 +178,7 @@ public interface UserDAO {
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
     LiveData<List<UserReportRow>> getEntriesByEmployee(long userID, LocalDate today);
-
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
             "user.firstName AS firstName, " +
