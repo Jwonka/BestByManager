@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = 'com.example.bestbymanager'
+    namespace = 'com.bestbymanager.app'
     compileSdk = 36
 
     defaultConfig {
-        applicationId "com.example.bestbymanager"
+        applicationId "com.bestbymanager.app"
         minSdk = 27
         //noinspection OldTargetApi
         targetSdk = 35

@@ -1,0 +1,75 @@
+package com.bestbymanager.app.UI.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import com.bestbymanager.app.R;
+import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
+import com.bestbymanager.app.databinding.ActivityAdministratorBinding;
+
+public class AdministratorActivity extends BaseAdminActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTitle(R.string.admin);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        ActivityAdministratorBinding binding = ActivityAdministratorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        final View rootView = binding.getRoot();
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            }
+        });
+
+        binding.employeeListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserList.class);
+            startActivity(intent);
+        });
+
+        binding.employeeDetailsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserDetails.class);
+            startActivity(intent);
+        });
+
+        binding.employeeSearchButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdministratorActivity.this, UserSearch.class);
+            startActivity(intent);
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_administrator_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        } else if (item.getItemId() == R.id.mainScreen) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}
