@@ -11,6 +11,12 @@
         android:id="@+id/productList"/>
 
     <item
+        android:id="@+id/discardProduct"
+        android:title="@string/discard_product"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="never" />
+
+    <item
         android:title="@string/delete_product"
         android:id="@+id/deleteProduct"
         android:icon="@drawable/ic_delete"

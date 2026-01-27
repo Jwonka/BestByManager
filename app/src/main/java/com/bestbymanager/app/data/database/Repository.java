@@ -1,5 +1,6 @@
 package com.bestbymanager.app.data.database;
 
+import com.bestbymanager.app.data.entities.DiscardEvent;
 import static com.bestbymanager.app.utilities.BarcodeUtil.toCanonical;
 import static com.bestbymanager.app.utilities.PasswordUtil.hash;
 import android.app.Application;
@@ -112,6 +113,21 @@ public class Repository {
     public LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String raw, LocalDate from, LocalDate to) {
         String code = canonicalOrNull(raw);
         return code == null ? emptyLiveData() : mProductDAO.getProductsByBarcodeAndDateRange(code, from, to);
+    }
+    public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long userId) {
+        executor.execute(() -> {
+            if (quantity <= 0) {
+                showToast("Discard quantity must be > 0.");
+                return;
+            }
+            DiscardEvent event = new DiscardEvent(productID, userId, quantity, reason, LocalDate.now());
+            boolean ok = mProductDAO.discardProduct(event);
+            if (!ok) {
+                showToast("Not enough on-hand quantity to discard.");
+            } else {
+                showToast("Discard recorded.");
+            }
+        });
     }
     public void insertProduct(Product product) { executor.execute(() -> {
         try {

@@ -3,7 +3,8 @@ package com.bestbymanager.app.UI.activities;
 import static com.bestbymanager.app.utilities.LocalDateBinder.bindFutureDateField;
 import static com.bestbymanager.app.utilities.LocalDateBinder.format;
 import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
-
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -307,7 +308,15 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.deleteProduct).setVisible(currentProduct != null);
+        boolean hasProduct = currentProduct != null;
+        menu.findItem(R.id.deleteProduct).setVisible(hasProduct);
+
+        // show discard only when product exists AND is expired AND qty > 0
+        MenuItem discard = menu.findItem(R.id.discardProduct);
+        if (discard != null) {
+            boolean showDiscard = hasProduct && currentProduct.isExpired() && currentProduct.getQuantity() > 0;
+            discard.setVisible(showDiscard);
+        }
         return true;
     }
 
@@ -328,6 +337,13 @@ public class ProductDetails extends AppCompatActivity {
             Intent intent = new Intent(this, ProductList.class);
             startActivity(intent);
             return true;
+        } else if (item.getItemId() == R.id.discardProduct) {
+            if (currentProduct == null) {
+                toast("No product loaded.");
+                return true;
+            }
+            showDiscardDialog(currentProduct);
+            return true;
         } else if (item.getItemId() == R.id.deleteProduct) {
             if (currentProduct != null) {
                 productViewModel.delete(currentProduct);
@@ -340,6 +356,43 @@ public class ProductDetails extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDiscardDialog(@NonNull Product product) {
+        View v = getLayoutInflater().inflate(R.layout.dialog_discard_expired, null);
+
+        TextInputEditText qtyEt = v.findViewById(R.id.discard_quantity);
+        TextInputEditText reasonEt = v.findViewById(R.id.discard_reason);
+
+        qtyEt.setText(String.valueOf(product.getQuantity()));
+
+        new AlertDialog.Builder(this)
+                .setTitle("Discard expired item")
+                .setView(v)
+                .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
+                .setPositiveButton(R.string.discard_confirm, (d, which) -> {
+                    String qtyTxt = qtyEt.getText() == null ? "" : qtyEt.getText().toString().trim();
+                    int qty;
+                    try {
+                        qty = Integer.parseInt(qtyTxt);
+                    } catch (NumberFormatException ex) {
+                        toast("Invalid quantity.");
+                        return;
+                    }
+                    if (qty <= 0) { toast("Discard quantity must be > 0."); return; }
+                    if (qty > product.getQuantity()) { toast("Cannot discard more than on-hand."); return; }
+
+                    String reason = reasonEt.getText() == null ? null : reasonEt.getText().toString().trim();
+                    if (reason != null && reason.isEmpty()) reason = null;
+
+                    Long userId = Session.get().currentUserID();
+                    productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
+
+                    // optimistic UI: reduce displayed qty so it feels immediate
+                    int newQty = product.getQuantity() - qty;
+                    quantity.setText(String.valueOf(newQty));
+                })
+                .show();
     }
 
     private boolean ensureCameraPermission() {

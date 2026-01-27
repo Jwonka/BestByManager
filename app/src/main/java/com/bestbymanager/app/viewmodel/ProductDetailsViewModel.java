@@ -2,6 +2,7 @@ package com.bestbymanager.app.viewmodel;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -44,4 +45,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
     public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(code); }
     public void delete(Product product) { repository.deleteProduct(product); }
     public void fetchProduct(String barcode, Callback<ProductResponse> cb) { repository.fetchProduct(barcode, cb); }
+    public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long userId) {
+        repository.discardExpiredProduct(productID, quantity, reason, userId);
+    }
 }
