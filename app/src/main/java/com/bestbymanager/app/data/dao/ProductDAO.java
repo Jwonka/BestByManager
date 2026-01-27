@@ -6,9 +6,13 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
+
+import com.bestbymanager.app.data.entities.DiscardEvent;
 import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,12 +43,37 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE expirationDate BETWEEN :from AND :selected ORDER BY expirationDate ASC")
     LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected);
 
+    // --- Discard support (Option A: event log) ---
+
+    @Insert
+    long insertDiscardEvent(DiscardEvent event);
+
+    // only decrements if enough on-hand exists
+    @Query("UPDATE product SET quantity = quantity - :quantity " +
+            "WHERE productID = :productID AND quantity >= :quantity")
+    int decrementQuantity(long productID, int quantity);
+
+    @Transaction
+    default boolean discardProduct(DiscardEvent event) {
+        // guard against 0/negative qty
+        if (event == null || event.getQuantity() <= 0) return false;
+
+        int updated = decrementQuantity(event.getProductID(), event.getQuantity());
+        if (updated == 0) return false;
+
+        insertDiscardEvent(event);
+        return true;
+    }
+
+    // --- Report queries (include discardedQuantity) ---
+
     @Query("SELECT product.productID, " +
             "product.brand, " +
             "product.productName, " +
             "product.expirationDate, " +
             "product.purchaseDate, " +
             "product.quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
             "user.userName AS enteredBy " +
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
@@ -52,13 +81,14 @@ public interface ProductDAO {
             "ORDER BY expirationDate DESC, brand")
     LiveData<List<ProductReportRow>> getExpired(LocalDate cutoff);
 
-    @Query("SELECT product.productId AS productID, "  +
-            "product.brand AS brand, "      +
+    @Query("SELECT product.productId AS productID, " +
+            "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
             "product.purchaseDate AS purchaseDate, " +
-            "product.quantity AS quantity, "   +
-            "user.userName AS enteredBy, "   +
+            "product.quantity AS quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
             "FROM product " +
@@ -66,27 +96,30 @@ public interface ProductDAO {
             "WHERE expirationDate BETWEEN :from AND :selected " +
             "ORDER BY expirationDate ASC, brand")
     LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected);
-    @Query("SELECT product.productId AS productID, "  +
-                    "product.brand AS brand, "      +
-                    "product.productName AS productName, " +
-                    "product.expirationDate AS expirationDate, " +
-                    "product.purchaseDate AS purchaseDate, " +
-                    "product.quantity AS quantity, "   +
-                    "user.userName AS enteredBy, "   +
-                    "product.barcode AS barcode, " +
-                    "product.category AS category " +
-                    "FROM product " +
-                    "JOIN user ON product.userID = user.userID " +
-                    "ORDER BY product.expirationDate ASC")
-    List<ProductReportRow> getReportRows();
 
-    @Query("SELECT product.productId AS productID, "  +
-            "product.brand AS brand, "      +
+    @Query("SELECT product.productId AS productID, " +
+            "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
             "product.purchaseDate AS purchaseDate, " +
-            "product.quantity AS quantity, "   +
-            "user.userName AS enteredBy, "   +
+            "product.quantity AS quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "user.userName AS enteredBy, " +
+            "product.barcode AS barcode, " +
+            "product.category AS category " +
+            "FROM product " +
+            "JOIN user ON product.userID = user.userID " +
+            "ORDER BY product.expirationDate ASC")
+    List<ProductReportRow> getReportRows();
+
+    @Query("SELECT product.productId AS productID, " +
+            "product.brand AS brand, " +
+            "product.productName AS productName, " +
+            "product.expirationDate AS expirationDate, " +
+            "product.purchaseDate AS purchaseDate, " +
+            "product.quantity AS quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
             "FROM product " +
@@ -101,11 +134,12 @@ public interface ProductDAO {
             "product.expirationDate, " +
             "product.purchaseDate, " +
             "product.quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
             "FROM product " +
-            "JOIN   user ON product.userID = user.userID " +
+            "JOIN user ON product.userID = user.userID " +
             "WHERE barcode = :barcode " +
             "AND expirationDate BETWEEN :from AND :to " +
             "ORDER BY expirationDate ASC")
@@ -117,6 +151,7 @@ public interface ProductDAO {
             "product.expirationDate AS expirationDate, " +
             "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, " +
+            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
@@ -125,4 +160,3 @@ public interface ProductDAO {
             "ORDER BY product.productName ASC, product.expirationDate ASC")
     LiveData<List<ProductReportRow>> getAllProducts();
 }
-
