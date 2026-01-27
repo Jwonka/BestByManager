@@ -15,12 +15,13 @@ public class UserReportRow {
     public String brand;
 
     public String productName;
-    @Nullable
-    public Integer expiredCount;
-    @Nullable
-    public Integer goodCount;
-    @Nullable
-    public Integer totalCount;
+
+    @Nullable public Integer expiredCount;
+    @Nullable public Integer goodCount;
+    @Nullable public Integer totalCount;
+
+    @Nullable public Integer discardedCount; // NEW
+
     @Ignore public boolean isFooter;
     @Ignore public boolean isHeader;
 }

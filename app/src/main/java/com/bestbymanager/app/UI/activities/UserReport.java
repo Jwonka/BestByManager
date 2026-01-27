@@ -145,17 +145,21 @@ public class UserReport extends BaseAdminActivity {
                 sb.append("-------------------------------------------------------\n");
             } else if (r.isFooter) {
                 if (currentUser != null) {
+                    int discarded = r.discardedCount == null ? 0 : r.discardedCount;
                     sb.append("------------------- Summary -------------------\n");
                     sb.append("Total Good: ").append(r.goodCount).append("\n");
                     sb.append("Total Expired: ").append(r.expiredCount).append("\n");
+                    sb.append("Total Discarded: ").append(discarded).append("\n");
                     sb.append("Grand Total: ").append(r.totalCount).append("\n");
                     sb.append("============================\n\n");
                 }
             } else {
+                int discarded = r.discardedCount == null ? 0 : r.discardedCount;
                 sb.append("Product: ").append(r.productName).append("\n");
                 sb.append("Brand: ").append(r.brand).append("\n");
                 sb.append("Good: ").append(r.goodCount).append("\n");
                 sb.append("Expired: ").append(r.expiredCount).append("\n");
+                sb.append("Discarded: ").append(discarded).append("\n");
                 sb.append("Total: ").append(r.totalCount).append("\n\n");
             }
         }
