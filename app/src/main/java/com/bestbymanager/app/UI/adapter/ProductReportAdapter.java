@@ -4,11 +4,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
+
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +23,19 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
     public List<ProductReportRow> getCurrentProductList() { return data; }
 
     public interface OnRowClick { void onRowClick(long productID); }
+    public interface OnRowLongClick { void onRowLongClick(ProductReportRow row); }
+
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     private final List<ProductReportRow> data = new ArrayList<>();
-    private final OnRowClick listener;
+    private final OnRowClick clickListener;
+    private final OnRowLongClick longClickListener; // nullable
 
-    public ProductReportAdapter(OnRowClick l){ this.listener = l; }
+    public ProductReportAdapter(OnRowClick clickListener, OnRowLongClick longClickListener) {
+        this.clickListener = clickListener;
+        this.longClickListener = longClickListener;
+    }
+
     public static class ReportViewHolder extends RecyclerView.ViewHolder {
         TextView brand, productName, enteredBy, date, quantity;
         ReportViewHolder(View view) {
@@ -47,25 +57,35 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
 
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
-        ProductReportRow results = data.get(position);
+        ProductReportRow r = data.get(position);
 
-        String expDate = "Expires: " + results.expirationDate.format(FMT);
-        String qty = "Quantity: " + results.quantity;
-        String name = "Employee: " + results.enteredBy;
+        String expDate = "Expires: " + r.expirationDate.format(FMT);
+        int discarded = r.discardedQuantity == null ? 0 : r.discardedQuantity;
+        String qty = "On-hand: " + r.quantity + " • Discarded: " + discarded;
+        String name = "Employee: " + r.enteredBy;
 
-        holder.brand.setText(results.brand);
-        holder.productName.setText(results.productName);
+        holder.brand.setText(r.brand);
+        holder.productName.setText(r.productName);
         holder.enteredBy.setText(name);
         holder.date.setText(expDate);
         holder.quantity.setText(qty);
 
-        holder.itemView.setOnClickListener(vacation1 -> listener.onRowClick(results.productID));
+        holder.itemView.setOnClickListener(v -> clickListener.onRowClick(r.productID));
+
+        if (longClickListener != null) {
+            holder.itemView.setOnLongClickListener(v -> {
+                longClickListener.onRowLongClick(r);
+                return true;
+            });
+        } else {
+            holder.itemView.setOnLongClickListener(null);
+        }
     }
+
     @Override
     public int getItemCount() { return data.size(); }
 
     public void setReportList(List<ProductReportRow> incoming) {
-
         final List<ProductReportRow> newData = incoming == null ? Collections.emptyList() : incoming;
 
         DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -78,10 +98,11 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
                 ProductReportRow a = data.get(oldPos);
                 ProductReportRow b = newData.get(newPos);
                 return a.quantity == b.quantity &&
+                        Objects.equals(a.discardedQuantity, b.discardedQuantity) &&
                         a.expirationDate.equals(b.expirationDate) &&
-                        Objects.equals(a.brand,       b.brand) &&
+                        Objects.equals(a.brand, b.brand) &&
                         Objects.equals(a.productName, b.productName) &&
-                        Objects.equals(a.enteredBy,   b.enteredBy);
+                        Objects.equals(a.enteredBy, b.enteredBy);
             }
         });
 

@@ -2,6 +2,7 @@ package com.bestbymanager.app.data.pojo;
 
 import androidx.room.RoomWarnings;
 import java.time.LocalDate;
+
 @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
 public class ProductReportRow {
     public long productID;
@@ -10,9 +11,14 @@ public class ProductReportRow {
     public String productName;
     public LocalDate expirationDate;
     public LocalDate purchaseDate;
+
     public int quantity;
+
+    public Integer discardedQuantity;
+
     public String enteredBy;
-    public String    barcode;
+    public String barcode;
+
     /** @noinspection unused*/
-    public String    category;
+    public String category;
 }

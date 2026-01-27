@@ -1,23 +1,30 @@
 package com.bestbymanager.app.viewmodel;
 
 import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
+
 import android.app.Application;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
+
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class ProductReportViewModel extends AndroidViewModel {
     private final LiveData<List<ProductReportRow>> report;
+    private final Repository repository;
+
     public LiveData<List<ProductReportRow>> getReport() { return report; }
 
     public ProductReportViewModel(@NonNull Application app, @NonNull SavedStateHandle savedState) {
         super(app);
-        Repository repository = new Repository(app);
+        repository = new Repository(app);
 
         LiveData<List<ProductReportRow>> source;
 
@@ -36,15 +43,20 @@ public class ProductReportViewModel extends AndroidViewModel {
                 LocalDate end = parseOrToday(endString);
                 source = repository.getProductsByBarcodeAndDateRange(barcode, start, end);
             } else {
-                source= repository.getReportRowsByBarcode(barcode);
+                source = repository.getReportRowsByBarcode(barcode);
             }
         } else if (startString != null && endString != null) {
-                LocalDate start = parseOrToday(startString);
-                LocalDate end = parseOrToday(endString);
-                source = repository.getExpiring(start, end);
+            LocalDate start = parseOrToday(startString);
+            LocalDate end = parseOrToday(endString);
+            source = repository.getExpiring(start, end);
         } else {
             source = repository.getExpiring(LocalDate.now(), LocalDate.now().plusDays(7));
         }
+
         this.report = source;
+    }
+
+    public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long userId) {
+        repository.discardExpiredProduct(productID, quantity, reason, userId);
     }
 }
