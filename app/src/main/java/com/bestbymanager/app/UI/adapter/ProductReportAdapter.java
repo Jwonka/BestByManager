@@ -31,6 +31,10 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
     private final OnRowClick clickListener;
     private final OnRowLongClick longClickListener; // nullable
 
+    public ProductReportAdapter(OnRowClick clickListener) {
+        this(clickListener, null);
+    }
+
     public ProductReportAdapter(OnRowClick clickListener, OnRowLongClick longClickListener) {
         this.clickListener = clickListener;
         this.longClickListener = longClickListener;

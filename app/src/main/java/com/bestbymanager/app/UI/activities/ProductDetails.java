@@ -391,7 +391,9 @@ public class ProductDetails extends AppCompatActivity {
 
                     // optimistic UI: reduce displayed qty so it feels immediate
                     int newQty = product.getQuantity() - qty;
+                    currentProduct = product;
                     quantity.setText(String.valueOf(newQty));
+                    invalidateOptionsMenu();
                 })
                 .show();
     }

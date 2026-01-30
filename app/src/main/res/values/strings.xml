@@ -103,7 +103,7 @@
     <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-w-901241241/">https://www.linkedin.com/in/joshua-w-901241241/</a></string>
     <string name="disclaimer">This app is an independent project and is not affiliated with or endorsed by Open Food Facts.</string>
     <string name="copyright">© 2025 Joshua Werlein. All rights reserved.</string>
-    <string name="discard_product">Discard…</string>
+    <string name="discard_product">Discard Product</string>
     <string name="discard_quantity">Discard quantity</string>
     <string name="discard_reason_optional">Reason (optional)</string>
     <string name="discard_confirm">Discard</string>

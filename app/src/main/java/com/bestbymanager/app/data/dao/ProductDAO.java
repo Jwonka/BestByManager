@@ -81,7 +81,7 @@ public interface ProductDAO {
             "ORDER BY expirationDate DESC, brand")
     LiveData<List<ProductReportRow>> getExpired(LocalDate cutoff);
 
-    @Query("SELECT product.productId AS productID, " +
+    @Query("SELECT product.productID AS productID, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
@@ -97,7 +97,7 @@ public interface ProductDAO {
             "ORDER BY expirationDate ASC, brand")
     LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected);
 
-    @Query("SELECT product.productId AS productID, " +
+    @Query("SELECT product.productID AS productID, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
@@ -112,7 +112,7 @@ public interface ProductDAO {
             "ORDER BY product.expirationDate ASC")
     List<ProductReportRow> getReportRows();
 
-    @Query("SELECT product.productId AS productID, " +
+    @Query("SELECT product.productID AS productID, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +
@@ -145,7 +145,7 @@ public interface ProductDAO {
             "ORDER BY expirationDate ASC")
     LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String barcode, LocalDate from, LocalDate to);
 
-    @Query("SELECT product.productId AS productID, " +
+    @Query("SELECT product.productID AS productID, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
             "product.expirationDate AS expirationDate, " +

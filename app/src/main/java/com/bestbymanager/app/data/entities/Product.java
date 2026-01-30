@@ -13,7 +13,13 @@ import java.util.Arrays;
 
 /** @noinspection NotNullFieldNotInitialized, unused */
 @Entity(tableName = "product",
-        indices    = @Index(value = "userID"),
+        indices = {
+                @Index(value = "userID"),
+                @Index(value = {"expirationDate", "brand"}),
+                @Index(value = {"barcode", "expirationDate"}),
+                @Index(value = {"userID", "expirationDate"}),
+                @Index(value = {"productName", "expirationDate"})
+        },
         foreignKeys = @ForeignKey(
                 entity = User.class,
                 parentColumns = "userID",
