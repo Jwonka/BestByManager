@@ -118,7 +118,7 @@ public class Product {
     public void setImageUri(String imageUri) { this.imageUri = imageUri; }
     public byte[] getThumbnail() { return thumbnail; }
     public void setThumbnail(byte[] thumbnail) { this.thumbnail = thumbnail; }
-    public boolean isExpired() { return expirationDate.isBefore(LocalDate.now()); }
+    public boolean isExpired() { return !expirationDate.isAfter(LocalDate.now()); }
 
     @NonNull
     @Override
