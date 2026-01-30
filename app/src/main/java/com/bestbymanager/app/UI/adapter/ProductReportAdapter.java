@@ -65,7 +65,7 @@ public class ProductReportAdapter extends RecyclerView.Adapter<ProductReportAdap
 
         String expDate = "Expires: " + r.expirationDate.format(FMT);
         int discarded = r.discardedQuantity == null ? 0 : r.discardedQuantity;
-        String qty = "On-hand: " + r.quantity + " • Discarded: " + discarded;
+        String qty = "Qty: " + r.quantity + " • Discarded: " + discarded;
         String name = "Employee: " + r.enteredBy;
 
         holder.brand.setText(r.brand);
