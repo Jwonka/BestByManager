@@ -16,6 +16,7 @@ public class ProductReportRow {
 
     public Integer discardedQuantity;
 
+    public String lastDiscardNote;
     public String enteredBy;
     public String barcode;
 

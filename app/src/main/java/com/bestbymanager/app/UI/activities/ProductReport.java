@@ -69,11 +69,16 @@ public class ProductReport extends AppCompatActivity {
         ).get(ProductReportViewModel.class);
 
         String mode = getIntent().getStringExtra("mode");
-        boolean allowDiscard = "expired".equals(mode);
 
         prAdapter = new ProductReportAdapter(
                 id -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", id)),
-                allowDiscard ? row -> showDiscardDialog(row, prViewModel) : null
+                row -> {
+                    // allow discard only if expired OR today, and qty > 0
+                    boolean expiredOrToday = !row.expirationDate.isAfter(java.time.LocalDate.now());
+                    if (!expiredOrToday) { Toast.makeText(this, "Not expired yet.", Toast.LENGTH_SHORT).show(); return; }
+                    if (row.quantity <= 0) { Toast.makeText(this, "No on-hand quantity to discard.", Toast.LENGTH_SHORT).show(); return; }
+                    showDiscardDialog(row, prViewModel);
+                }
         );
 
         binding.reportRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -149,6 +154,7 @@ public class ProductReport extends AppCompatActivity {
             sb.append("Expiration Date: ").append(r.expirationDate).append("\n");
             sb.append("Quantity: ").append(r.quantity).append("\n");
             sb.append("Discarded: ").append(discarded).append("\n");
+            if (r.lastDiscardNote != null) sb.append("Discard Note: ").append(r.lastDiscardNote).append("\n");
             sb.append("Entered By: ").append(r.enteredBy).append("\n");
             sb.append("-------------------------------------------------------\n\n");
         }
@@ -213,24 +219,21 @@ public class ProductReport extends AppCompatActivity {
         String barcode = in.getStringExtra("barcode");
         String start = in.getStringExtra("startDate");
         String end = in.getStringExtra("endDate");
+        String allProducts = in.getStringExtra("allProducts");
 
         if ("expired".equals(mode)) return "Expired Products Report";
         if ("expiring".equals(mode)) return "Products Expiring Soon";
-        if ("allProducts".equals(mode)) return "All Products – Full Inventory";
+        if (allProducts != null || "allProducts".equals(mode)) return "All Products – Full Inventory";
 
         if (barcode != null && start == null && end == null) {
             String name = rows.isEmpty() ? barcode : rows.get(0).productName;
             return "Product Report - " + name;
         }
-
-        if (barcode == null && start != null && end != null)
-            return "Product Report (" + start + " to " + end + ")";
-
+        if (barcode == null && start != null && end != null) return "Product Report (" + start + " to " + end + ")";
         if (barcode != null && start != null && end != null) {
             String name = rows.isEmpty() ? barcode : rows.get(0).productName;
             return "Product Report – " + name + " (" + start + " to " + end + ")";
         }
-
         return "Product Report";
     }
 }

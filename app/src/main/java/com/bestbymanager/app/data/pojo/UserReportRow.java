@@ -16,6 +16,8 @@ public class UserReportRow {
 
     public String productName;
 
+    public String lastDiscardNote;
+
     @Nullable public Integer expiredCount;
     @Nullable public Integer goodCount;
     @Nullable public Integer totalCount;

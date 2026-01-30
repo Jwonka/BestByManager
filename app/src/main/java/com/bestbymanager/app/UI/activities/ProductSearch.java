@@ -167,8 +167,7 @@ public class ProductSearch extends AppCompatActivity {
             if (list == null || list.isEmpty()) {
                 toast("No products in the database.");
             } else {
-                Intent intent = new Intent(this, ProductReport.class).putExtra("mode", "allProducts");
-                startActivity(intent);
+                 startActivity(new Intent(this, ProductReport.class).putExtra("allProducts", "1"));
             }
         });
     }
@@ -178,8 +177,7 @@ public class ProductSearch extends AppCompatActivity {
             if (list == null || list.isEmpty()) {
                 toast("No products in the database for that barcode.");
             } else {
-                Intent intent = new Intent(this, ProductReport.class).putExtra("barcode", barcode);
-                startActivity(intent);
+                 startActivity(new Intent(this, ProductReport.class).putExtra("barcode", barcode));
             }
         });
     }
@@ -189,7 +187,7 @@ public class ProductSearch extends AppCompatActivity {
             if (list == null || list.isEmpty()) {
                 toast("No products in the database for that date range.");
             } else {
-                Intent intent = new Intent(ProductSearch.this, ProductReport.class)
+                Intent intent = new Intent(this, ProductReport.class)
                         .putExtra("startDate", format(start))
                         .putExtra("endDate", format(end));
                 if (expiringSoon) { intent.putExtra("mode", "expiring"); }
@@ -203,9 +201,7 @@ public class ProductSearch extends AppCompatActivity {
             if (list == null || list.isEmpty()) {
                 toast("No expired products in the database.");
             } else {
-                Intent intent = new Intent(ProductSearch.this, ProductReport.class)
-                        .putExtra("mode", "expired");
-                startActivity(intent);
+                startActivity(new Intent(this, ProductReport.class).putExtra("mode", "expired"));
             }
         });
     }

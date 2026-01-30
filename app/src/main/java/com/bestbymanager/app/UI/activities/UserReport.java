@@ -150,6 +150,7 @@ public class UserReport extends BaseAdminActivity {
                     sb.append("Total Good: ").append(r.goodCount).append("\n");
                     sb.append("Total Expired: ").append(r.expiredCount).append("\n");
                     sb.append("Total Discarded: ").append(discarded).append("\n");
+                    if (r.lastDiscardNote != null) sb.append("Discard Note: ").append(r.lastDiscardNote).append("\n");
                     sb.append("Grand Total: ").append(r.totalCount).append("\n");
                     sb.append("============================\n\n");
                 }
@@ -160,6 +161,7 @@ public class UserReport extends BaseAdminActivity {
                 sb.append("Good: ").append(r.goodCount).append("\n");
                 sb.append("Expired: ").append(r.expiredCount).append("\n");
                 sb.append("Discarded: ").append(discarded).append("\n");
+                if (r.lastDiscardNote != null) sb.append("Discard Note: ").append(r.lastDiscardNote).append("\n");
                 sb.append("Total: ").append(r.totalCount).append("\n\n");
             }
         }

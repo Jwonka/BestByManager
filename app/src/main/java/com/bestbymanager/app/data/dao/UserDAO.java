@@ -87,7 +87,18 @@ public interface UserDAO {
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
-            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount " +
+            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE   product.expirationDate BETWEEN :from AND :to " +
@@ -111,7 +122,18 @@ public interface UserDAO {
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
-            "            AND p2.barcode = :barcode), 0) AS discardedCount " +
+            "            AND p2.barcode = :barcode), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE   product.barcode = :barcode " +
@@ -135,7 +157,18 @@ public interface UserDAO {
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
-            "            AND p2.barcode = :barcode), 0) AS discardedCount " +
+            "            AND p2.barcode = :barcode), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID " +
@@ -159,7 +192,18 @@ public interface UserDAO {
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
-            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount " +
+            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
@@ -184,7 +228,18 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode " +
-            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount " +
+            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
@@ -209,7 +264,18 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode " +
-            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount " +
+            "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND product.expirationDate BETWEEN :from AND :to " +
@@ -232,7 +298,18 @@ public interface UserDAO {
             "          JOIN product p2 ON p2.productID = de.productID " +
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
-            "            AND p2.productName = product.productName), 0) AS discardedCount " +
+            "            AND p2.productName = product.productName), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM    user user " +
             "JOIN    product product  ON product.userID = user.userID " +
             "WHERE user.userID = :userID " +
@@ -255,7 +332,18 @@ public interface UserDAO {
             "          JOIN product p2 ON p2.productID = de.productID " +
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
-            "            AND p2.productName = product.productName), 0) AS discardedCount " +
+            "            AND p2.productName = product.productName), 0) AS discardedCount, " +
+            "COALESCE((\n" +
+            "  SELECT de.reason\n" +
+            "  FROM discard_event de\n" +
+            "  JOIN product p2 ON p2.productID = de.productID\n" +
+            "  WHERE p2.userID = user.userID\n" +
+            "    AND p2.brand = product.brand\n" +
+            "    AND p2.productName = product.productName\n" +
+            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
+            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
+            "  LIMIT 1\n" +
+            "), NULL) AS lastDiscardNote " +
             "FROM user user " +
             "JOIN product product ON product.userID = user.userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +

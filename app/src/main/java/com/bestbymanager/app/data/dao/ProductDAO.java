@@ -74,6 +74,7 @@ public interface ProductDAO {
             "product.purchaseDate, " +
             "product.quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy " +
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
@@ -88,6 +89,7 @@ public interface ProductDAO {
             "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
@@ -104,6 +106,7 @@ public interface ProductDAO {
             "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
@@ -119,6 +122,7 @@ public interface ProductDAO {
             "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
@@ -135,6 +139,7 @@ public interface ProductDAO {
             "product.purchaseDate, " +
             "product.quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
@@ -152,6 +157,7 @@ public interface ProductDAO {
             "product.purchaseDate AS purchaseDate, " +
             "product.quantity AS quantity, " +
             "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
+            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
             "user.userName AS enteredBy, " +
             "product.barcode AS barcode, " +
             "product.category AS category " +
