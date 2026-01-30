@@ -26,11 +26,11 @@
             android:textSize="16sp"
             android:textColor="@color/black" />
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
 
             <TextView
                 android:id="@+id/footer_good_total"
@@ -59,8 +59,9 @@
                 android:id="@+id/footer_discarded_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Discarded: 0" />
+                android:textColor="@color/black"
+                android:text="@string/discarded" />
 
-        </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -107,5 +107,6 @@
     <string name="discard_quantity">Discard quantity</string>
     <string name="discard_reason_optional">Reason (optional)</string>
     <string name="discard_confirm">Discard</string>
+    <string name="discarded">Discarded: 0</string>
     <string name="cancel">Cancel</string>
 </resources>

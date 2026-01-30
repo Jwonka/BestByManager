@@ -147,7 +147,7 @@ public class ProductReport extends AppCompatActivity {
             sb.append("Barcode: ").append(r.barcode).append("\n");
             sb.append("Purchase Date: ").append(r.purchaseDate).append("\n");
             sb.append("Expiration Date: ").append(r.expirationDate).append("\n");
-            sb.append("On-hand: ").append(r.quantity).append("\n");
+            sb.append("Quantity: ").append(r.quantity).append("\n");
             sb.append("Discarded: ").append(discarded).append("\n");
             sb.append("Entered By: ").append(r.enteredBy).append("\n");
             sb.append("-------------------------------------------------------\n\n");

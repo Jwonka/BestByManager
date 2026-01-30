@@ -35,11 +35,13 @@
 
         <TextView
             android:id="@+id/product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="22sp"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,23 +62,29 @@
 
         <TextView
             android:id="@+id/expiration_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_m"
             android:textColor="@color/black"
             android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/expired_quantity"
             app:layout_constraintTop_toBottomOf="@id/product_name"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/expired_quantity"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_m"
             android:textColor="@color/black"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_name"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="end"
+            app:layout_constraintBaseline_toBaselineOf="@id/expiration_date"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -56,4 +56,5 @@ dependencies {
     implementation libs.zxing.core
     implementation(libs.exifinterface)
     implementation libs.preference
+    implementation libs.flexbox
 }
