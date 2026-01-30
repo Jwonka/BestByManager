@@ -97,6 +97,7 @@ public class ProductDetails extends AppCompatActivity {
             i.putExtra("deepLink", getIntent());
             startActivity(i);
             finish();
+            return;
         }
 
         if (s != null) {
@@ -520,9 +521,18 @@ public class ProductDetails extends AppCompatActivity {
 
     private void saveProduct() {
         if (!validForm()) { return; }
+
         boolean addNew = modeSwitch.isChecked() && modeSwitch.isEnabled();
 
         long currentUserId = Session.get().currentUserID();
+
+        if (currentUserId <= 0) {
+            Intent i = new Intent(this, LoginActivity.class);
+            i.putExtra("deepLink", getIntent());
+            startActivity(i);
+            finish();
+            return;
+        }
 
         String barcodeTxt = barcode.getText().toString().trim();
         if (!isBarcodePlausible(barcodeTxt)) {
