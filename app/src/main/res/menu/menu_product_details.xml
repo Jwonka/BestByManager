@@ -23,6 +23,11 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/discardExpired"
+        android:title="Discard…"
+        app:showAsAction="never" />
+
+    <item
         android:title="@string/main_screen"
         android:id="@+id/mainScreen"
         android:icon="@drawable/ic_home"

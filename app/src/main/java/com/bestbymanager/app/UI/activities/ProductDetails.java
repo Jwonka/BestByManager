@@ -60,7 +60,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import android.text.TextUtils;
+import com.bestbymanager.app.databinding.DialogDiscardExpiredBinding;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -309,7 +310,9 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean hasProduct = currentProduct != null;
-        menu.findItem(R.id.deleteProduct).setVisible(hasProduct);
+        
+        MenuItem delete = menu.findItem(R.id.deleteProduct);
+        if (delete != null) delete.setVisible(hasProduct);
 
         // show discard only when product exists AND is expired AND qty > 0
         MenuItem discard = menu.findItem(R.id.discardProduct);
