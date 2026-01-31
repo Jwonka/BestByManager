@@ -50,27 +50,27 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
     public static final Migration MIGRATION_16_17 = new Migration(16, 17) {
         @Override
         public void migrate(SupportSQLiteDatabase db) {
-            // Create new product table with epochDay INTEGER for LocalDate columns
+            db.execSQL("PRAGMA foreign_keys=OFF");
+
             db.execSQL(
                     "CREATE TABLE IF NOT EXISTS `product_new` (" +
                             "`productID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                             "`userID` INTEGER NOT NULL," +
                             "`brand` TEXT," +
                             "`productName` TEXT NOT NULL," +
-                            "`expirationDate` INTEGER NOT NULL," + // epochDay
+                            "`expirationDate` INTEGER NOT NULL," +
                             "`quantity` INTEGER NOT NULL," +
                             "`weight` TEXT," +
                             "`barcode` TEXT," +
                             "`category` INTEGER NOT NULL," +
                             "`isle` INTEGER NOT NULL," +
-                            "`purchaseDate` INTEGER," + // epochDay nullable
+                            "`purchaseDate` INTEGER," +
                             "`imageUri` TEXT," +
                             "`thumbnail` BLOB," +
                             "FOREIGN KEY(`userID`) REFERENCES `user`(`userID`) ON UPDATE NO ACTION ON DELETE CASCADE" +
                             ")"
             );
 
-            // Convert TEXT 'YYYY-MM-DD' to epochDay. If it's already INTEGER, keep it.
             db.execSQL(
                     "INSERT INTO `product_new` (" +
                             "`productID`,`userID`,`brand`,`productName`,`expirationDate`,`quantity`,`weight`,`barcode`,`category`,`isle`,`purchaseDate`,`imageUri`,`thumbnail`" +
@@ -99,9 +99,11 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_barcode_expirationDate` ON `product` (`barcode`, `expirationDate`)");
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_userID_expirationDate` ON `product` (`userID`, `expirationDate`)");
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_productName_expirationDate` ON `product` (`productName`, `expirationDate`)");
+
+            db.execSQL("PRAGMA foreign_keys=ON");
+            db.execSQL("PRAGMA foreign_key_check");
         }
     };
-
     public static ProductDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ProductDatabaseBuilder.class) {
