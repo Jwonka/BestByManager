@@ -51,57 +51,62 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase db) {
             db.execSQL("PRAGMA foreign_keys=OFF");
+            db.beginTransaction();
+            try {
+                db.execSQL(
+                        "CREATE TABLE IF NOT EXISTS `product_new` (" +
+                                "`productID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                                "`userID` INTEGER NOT NULL," +
+                                "`brand` TEXT," +
+                                "`productName` TEXT NOT NULL," +
+                                "`expirationDate` INTEGER NOT NULL," +
+                                "`quantity` INTEGER NOT NULL," +
+                                "`weight` TEXT," +
+                                "`barcode` TEXT," +
+                                "`category` INTEGER NOT NULL," +
+                                "`isle` INTEGER NOT NULL," +
+                                "`purchaseDate` INTEGER," +
+                                "`imageUri` TEXT," +
+                                "`thumbnail` BLOB," +
+                                "FOREIGN KEY(`userID`) REFERENCES `user`(`userID`) ON UPDATE NO ACTION ON DELETE CASCADE" +
+                                ")"
+                );
 
-            db.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `product_new` (" +
-                            "`productID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                            "`userID` INTEGER NOT NULL," +
-                            "`brand` TEXT," +
-                            "`productName` TEXT NOT NULL," +
-                            "`expirationDate` INTEGER NOT NULL," +
-                            "`quantity` INTEGER NOT NULL," +
-                            "`weight` TEXT," +
-                            "`barcode` TEXT," +
-                            "`category` INTEGER NOT NULL," +
-                            "`isle` INTEGER NOT NULL," +
-                            "`purchaseDate` INTEGER," +
-                            "`imageUri` TEXT," +
-                            "`thumbnail` BLOB," +
-                            "FOREIGN KEY(`userID`) REFERENCES `user`(`userID`) ON UPDATE NO ACTION ON DELETE CASCADE" +
-                            ")"
-            );
+                db.execSQL(
+                        "INSERT INTO `product_new` (" +
+                                "`productID`,`userID`,`brand`,`productName`,`expirationDate`,`quantity`,`weight`,`barcode`,`category`,`isle`,`purchaseDate`,`imageUri`,`thumbnail`" +
+                                ") " +
+                                "SELECT " +
+                                "productID, userID, brand, productName, " +
+                                "CASE " +
+                                "WHEN typeof(expirationDate)='text' THEN CAST(julianday(expirationDate) - 2440587.5 AS INTEGER) " +
+                                "ELSE expirationDate " +
+                                "END, " +
+                                "quantity, weight, barcode, category, isle, " +
+                                "CASE " +
+                                "WHEN purchaseDate IS NULL THEN NULL " +
+                                "WHEN typeof(purchaseDate)='text' THEN CAST(julianday(purchaseDate) - 2440587.5 AS INTEGER) " +
+                                "ELSE purchaseDate " +
+                                "END, " +
+                                "imageUri, thumbnail " +
+                                "FROM `product`"
+                );
 
-            db.execSQL(
-                    "INSERT INTO `product_new` (" +
-                            "`productID`,`userID`,`brand`,`productName`,`expirationDate`,`quantity`,`weight`,`barcode`,`category`,`isle`,`purchaseDate`,`imageUri`,`thumbnail`" +
-                            ") " +
-                            "SELECT " +
-                            "productID, userID, brand, productName, " +
-                            "CASE " +
-                            "WHEN typeof(expirationDate)='text' THEN CAST(julianday(expirationDate) - 2440587.5 AS INTEGER) " +
-                            "ELSE expirationDate " +
-                            "END, " +
-                            "quantity, weight, barcode, category, isle, " +
-                            "CASE " +
-                            "WHEN purchaseDate IS NULL THEN NULL " +
-                            "WHEN typeof(purchaseDate)='text' THEN CAST(julianday(purchaseDate) - 2440587.5 AS INTEGER) " +
-                            "ELSE purchaseDate " +
-                            "END, " +
-                            "imageUri, thumbnail " +
-                            "FROM `product`"
-            );
+                db.execSQL("DROP TABLE `product`");
+                db.execSQL("ALTER TABLE `product_new` RENAME TO `product`");
 
-            db.execSQL("DROP TABLE `product`");
-            db.execSQL("ALTER TABLE `product_new` RENAME TO `product`");
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_userID` ON `product` (`userID`)");
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_expirationDate_brand` ON `product` (`expirationDate`, `brand`)");
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_barcode_expirationDate` ON `product` (`barcode`, `expirationDate`)");
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_userID_expirationDate` ON `product` (`userID`, `expirationDate`)");
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_productName_expirationDate` ON `product` (`productName`, `expirationDate`)");
 
-            db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_userID` ON `product` (`userID`)");
-            db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_expirationDate_brand` ON `product` (`expirationDate`, `brand`)");
-            db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_barcode_expirationDate` ON `product` (`barcode`, `expirationDate`)");
-            db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_userID_expirationDate` ON `product` (`userID`, `expirationDate`)");
-            db.execSQL("CREATE INDEX IF NOT EXISTS `index_product_productName_expirationDate` ON `product` (`productName`, `expirationDate`)");
-
-            db.execSQL("PRAGMA foreign_keys=ON");
-            db.execSQL("PRAGMA foreign_key_check");
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+                db.execSQL("PRAGMA foreign_keys=ON");
+                db.execSQL("PRAGMA foreign_key_check");
+            }
         }
     };
     public static ProductDatabaseBuilder getDatabase(final Context context) {
