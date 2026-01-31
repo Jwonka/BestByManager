@@ -96,14 +96,8 @@ public final class BarcodeUtil {
      *   • drop one leading 0 from UPC-A-derived codes
      */
     public static String displayCode(String canonical) {
-        if (canonical.length() == 13) {
-            if (canonical.startsWith("00000")) {          // EAN-8
-                return canonical.substring(6);
-            }
-            if (canonical.startsWith("0")) {              // UPC-A
-                return canonical.substring(1);
-            }
-        }
+        if (canonical == null) return "";
+        if (canonical.length() == 13 && canonical.startsWith("0")) { return canonical.substring(1); }
         return canonical;
     }
 }
