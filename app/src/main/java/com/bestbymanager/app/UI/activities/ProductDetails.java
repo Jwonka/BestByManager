@@ -546,7 +546,12 @@ public class ProductDetails extends AppCompatActivity {
         final boolean isCreate = (currentProduct == null);
         final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
 
-        Product toSave = isCreate || addNewExpiration ? new Product() : currentProduct;
+        Product toSave;
+        if (isCreate || addNewExpiration) {
+            toSave = new Product();
+        } else {
+            toSave = currentProduct;
+        }
 
         toSave.setProductName(name.getText().toString().trim());
         toSave.setBrand(brand.getText().toString().trim());
@@ -580,8 +585,8 @@ public class ProductDetails extends AppCompatActivity {
         }
 
         productViewModel.save(toSave);
-        modeSwitch.setEnabled(true);
-        modeSwitch.setChecked(true);
+        modeSwitch.setEnabled(currentProduct != null || !isCreate);
+        modeSwitch.setChecked(false);
         toast(name.getText().toString().trim() + " saved.");
     }
 
