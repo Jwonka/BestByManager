@@ -33,7 +33,6 @@ public class UserReport extends BaseAdminActivity {
     private static final String EXTRA_BARCODE      = "barcode";
     private static final String EXTRA_ALL_ENTRIES  = "allEntries";
     private static final String EXTRA_USER         = "user";
-
     private static final String MODE_ALL_ENTRIES         = "allEntries";
     private static final String MODE_RANGE               = "range";
     private static final String MODE_USER                = "user";
@@ -162,23 +161,27 @@ public class UserReport extends BaseAdminActivity {
             } else if (r.isFooter) {
                 if (currentUser != null) {
                     int discarded = r.discardedCount == null ? 0 : r.discardedCount;
+                    int lots = r.lotCount == null ? 0 : r.lotCount;
+
                     sb.append("------------------- Summary -------------------\n");
-                    sb.append("Total Good: ").append(r.goodCount).append("\n");
-                    sb.append("Total Expired: ").append(r.expiredCount).append("\n");
-                    sb.append("Total Discarded: ").append(discarded).append("\n");
+                    sb.append("Good Units: ").append(r.goodCount).append("\n");
+                    sb.append("Expired Units: ").append(r.expiredCount).append("\n");
+                    sb.append("Discarded Units: ").append(discarded).append("\n");
                     if (r.lastDiscardNote != null) sb.append("Discard Note: ").append(r.lastDiscardNote).append("\n");
-                    sb.append("Grand Total: ").append(r.totalCount).append("\n");
+                    sb.append("Total Units: ").append(r.totalCount).append(" (Lots: ").append(lots).append(")\n");
                     sb.append("============================\n\n");
                 }
             } else {
                 int discarded = r.discardedCount == null ? 0 : r.discardedCount;
+                int lots = r.lotCount == null ? 0 : r.lotCount;
+
                 sb.append("Product: ").append(r.productName).append("\n");
                 sb.append("Brand: ").append(r.brand).append("\n");
-                sb.append("Good: ").append(r.goodCount).append("\n");
-                sb.append("Expired: ").append(r.expiredCount).append("\n");
-                sb.append("Discarded: ").append(discarded).append("\n");
+                sb.append("Good Units: ").append(r.goodCount).append("\n");
+                sb.append("Expired Units: ").append(r.expiredCount).append("\n");
+                sb.append("Discarded Units: ").append(discarded).append("\n");
                 if (r.lastDiscardNote != null) sb.append("Discard Note: ").append(r.lastDiscardNote).append("\n");
-                sb.append("Total: ").append(r.totalCount).append("\n\n");
+                sb.append("Total Units: ").append(r.totalCount).append(" (Lots: ").append(lots).append(")\n\n");
             }
         }
 

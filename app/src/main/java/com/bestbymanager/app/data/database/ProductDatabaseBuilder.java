@@ -14,7 +14,7 @@ import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 17, exportSchema = false)
+@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 18, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
@@ -109,6 +109,33 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
             }
         }
     };
+
+    public static final Migration MIGRATION_17_18 = new Migration(17, 18) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            // remap old category indices to new indices
+            db.execSQL(
+                    "UPDATE product SET category = CASE category " +
+                            "WHEN 0 THEN 0 " +
+                            "WHEN 1 THEN 1 " +
+                            "WHEN 2 THEN 2 " +
+                            "WHEN 3 THEN 3 " +
+                            "WHEN 4 THEN 6 " +   // Candy
+                            "WHEN 5 THEN 14 " +  // Snacks
+                            "WHEN 6 THEN 4 " +   // Canned Goods
+                            "WHEN 7 THEN 11 " +  // Packaged Meals
+                            "WHEN 8 THEN 7 " +   // Condiments
+                            "WHEN 9 THEN 8 " +   // Dairy
+                            "WHEN 10 THEN 9 " +  // Deli
+                            "WHEN 11 THEN 10 " + // Frozen
+                            "WHEN 12 THEN 12 " + // Produce
+                            "WHEN 13 THEN 13 " + // Personal Care
+                            "WHEN 14 THEN 15 " + // Tobacco
+                            "ELSE category END"
+            );
+        }
+    };
+
     public static ProductDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ProductDatabaseBuilder.class) {
@@ -120,7 +147,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             )
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
-                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17)
+                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18)
                             .build();
                 }
             }

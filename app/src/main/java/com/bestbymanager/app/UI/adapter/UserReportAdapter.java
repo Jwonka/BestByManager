@@ -50,7 +50,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             product = view.findViewById(R.id.row_product_name);
             good = view.findViewById(R.id.row_good_count);
             expired = view.findViewById(R.id.row_expired_count);
-            discarded = view.findViewById(R.id.row_discarded_count); // NEW id in XML
+            discarded = view.findViewById(R.id.row_discarded_count);
             total = view.findViewById(R.id.row_total_count);
         }
     }
@@ -62,7 +62,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             title = view.findViewById(R.id.footer_title);
             good = view.findViewById(R.id.footer_good_total);
             expired = view.findViewById(R.id.footer_expired_total);
-            discarded = view.findViewById(R.id.footer_discarded_total); // NEW id in XML
+            discarded = view.findViewById(R.id.footer_discarded_total);
             total = view.findViewById(R.id.footer_total);
         }
     }
@@ -100,6 +100,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         UserReportRow item = data.get(position);
 
         int discarded = item.discardedCount == null ? 0 : item.discardedCount;
+        int lots = item.lotCount == null ? 0 : item.lotCount;
 
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).fullName.setText("Employee: " + item.firstName + " " + item.lastName);
@@ -112,7 +113,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             rowHolder.good.setText("Good: " + item.goodCount);
             rowHolder.expired.setText("Expired: " + item.expiredCount);
             rowHolder.discarded.setText("Discarded: " + discarded);
-            rowHolder.total.setText("Total: " + item.totalCount);
+            rowHolder.total.setText("Total Units: " + item.totalCount + " • Lots: " + lots);
             rowHolder.itemView.setOnClickListener(v -> listener.onRowClick(item.userID));
 
         } else if (holder instanceof FooterViewHolder) {
@@ -121,7 +122,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             footHolder.good.setText("Good: " + item.goodCount);
             footHolder.expired.setText("Expired: " + item.expiredCount);
             footHolder.discarded.setText("Discarded: " + discarded);
-            footHolder.total.setText("Total: " + item.totalCount);
+            footHolder.total.setText("Total Units: " + item.totalCount + " • Lots: " + lots);
         }
     }
 
@@ -152,14 +153,16 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             newData.addAll(groupRows);
 
+
             UserReportRow footer = new UserReportRow();
             footer.isFooter = true;
             footer.userID = sample.userID;
             footer.userName = sample.userName;
             footer.goodCount = groupRows.stream().mapToInt(r -> r.goodCount != null ? r.goodCount : 0).sum();
             footer.expiredCount = groupRows.stream().mapToInt(r -> r.expiredCount != null ? r.expiredCount : 0).sum();
-            footer.totalCount = groupRows.stream().mapToInt(r -> r.totalCount != null ? r.totalCount : 0).sum();
             footer.discardedCount = groupRows.stream().mapToInt(r -> r.discardedCount != null ? r.discardedCount : 0).sum();
+            footer.totalCount = groupRows.stream().mapToInt(r -> r.totalCount != null ? r.totalCount : 0).sum();
+            footer.lotCount = groupRows.stream().mapToInt(r -> r.lotCount != null ? r.lotCount : 0).sum();
             newData.add(footer);
         }
 
@@ -185,8 +188,9 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         && Objects.equals(a.productName, b.productName)
                         && Objects.equals(a.goodCount, b.goodCount)
                         && Objects.equals(a.expiredCount, b.expiredCount)
-                        && Objects.equals(a.totalCount, b.totalCount)
                         && Objects.equals(a.discardedCount, b.discardedCount)
+                        && Objects.equals(a.totalCount, b.totalCount)
+                        && Objects.equals(a.lotCount, b.lotCount)
                         && a.isHeader == b.isHeader
                         && a.isFooter == b.isFooter;
             }

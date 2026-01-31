@@ -49,19 +49,25 @@
                 android:textColor="@color/black" />
 
             <TextView
+                android:id="@+id/footer_discarded_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/discarded"
+                android:textColor="@color/black" />
+        </com.google.android.flexbox.FlexboxLayout>
+        
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <TextView
                 android:id="@+id/footer_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/total"
                 android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/footer_discarded_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="@string/discarded" />
-
         </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

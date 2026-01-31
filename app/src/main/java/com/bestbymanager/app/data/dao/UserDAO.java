@@ -9,11 +9,9 @@ import androidx.room.Query;
 import androidx.room.RoomWarnings;
 import androidx.room.Transaction;
 import androidx.room.Update;
-
 import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.data.pojo.UserReportRow;
 import com.bestbymanager.app.utilities.PasswordUtil;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -70,7 +68,6 @@ public interface UserDAO {
     LiveData<List<UserReportRow>> getAdmins();
 
     // ===== Reports (now include discardedCount) =====
-
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
@@ -78,9 +75,17 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND de.createdAt BETWEEN :from AND :to), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -88,20 +93,20 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
-            "WHERE   product.expirationDate BETWEEN :from AND :to " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
+            "WHERE product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY totalCount DESC")
     LiveData<List<UserReportRow>> getEntriesByDateRange(LocalDate from, LocalDate to, LocalDate today);
@@ -113,9 +118,17 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND p2.barcode = :barcode), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -123,20 +136,20 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
-            "WHERE   product.barcode = :barcode " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
+            "WHERE product.barcode = :barcode " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY totalCount DESC")
     LiveData<List<UserReportRow>> getEntriesByBarcode(String barcode, LocalDate today);
@@ -148,9 +161,17 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND p2.barcode = :barcode), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -158,19 +179,19 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
@@ -183,9 +204,17 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND de.createdAt BETWEEN :from AND :to), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -193,19 +222,19 @@ public interface UserDAO {
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName " +
             "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
             "WHERE user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
@@ -218,9 +247,18 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND p2.barcode = :barcode " +
+            "             AND de.createdAt BETWEEN :from AND :to), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -229,19 +267,19 @@ public interface UserDAO {
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode " +
             "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
             "FROM user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
+            "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY MIN(product.expirationDate)")
@@ -254,9 +292,18 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName " +
+            "             AND p2.barcode = :barcode " +
+            "             AND de.createdAt BETWEEN :from AND :to), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
@@ -265,19 +312,19 @@ public interface UserDAO {
             "            AND p2.productName = product.productName " +
             "            AND p2.barcode = :barcode " +
             "            AND de.createdAt BETWEEN :from AND :to), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
@@ -290,28 +337,35 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
-            "FROM    user user " +
-            "JOIN    product product  ON product.userID = user.userID " +
+            "FROM user user " +
+            "JOIN product product ON product.userID = user.userID " +
             "WHERE user.userID = :userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
             "ORDER BY product.expirationDate ASC")
@@ -324,25 +378,32 @@ public interface UserDAO {
             "user.lastName AS lastName, " +
             "product.brand AS brand, " +
             "product.productName AS productName, " +
-            "SUM(CASE WHEN product.expirationDate < :today THEN 1 ELSE 0 END) AS expiredCount, " +
-            "SUM(CASE WHEN product.expirationDate >= :today THEN 1 ELSE 0 END) AS goodCount, " +
-            "COUNT(*) AS totalCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate < :today THEN product.quantity ELSE 0 END), 0) AS expiredCount, " +
+            "COALESCE(SUM(CASE WHEN product.expirationDate >= :today THEN product.quantity ELSE 0 END), 0) AS goodCount, " +
+            "COUNT(*) AS lotCount, " +
+            "(COALESCE(SUM(product.quantity), 0) + " +
+            " COALESCE((SELECT SUM(de.quantity) " +
+            "           FROM discard_event de " +
+            "           JOIN product p2 ON p2.productID = de.productID " +
+            "           WHERE p2.userID = user.userID " +
+            "             AND p2.brand = product.brand " +
+            "             AND p2.productName = product.productName), 0)) AS totalCount, " +
             "COALESCE((SELECT SUM(de.quantity) " +
             "          FROM discard_event de " +
             "          JOIN product p2 ON p2.productID = de.productID " +
             "          WHERE p2.userID = user.userID " +
             "            AND p2.brand = product.brand " +
             "            AND p2.productName = product.productName), 0) AS discardedCount, " +
-            "COALESCE((\n" +
-            "  SELECT de.reason\n" +
-            "  FROM discard_event de\n" +
-            "  JOIN product p2 ON p2.productID = de.productID\n" +
-            "  WHERE p2.userID = user.userID\n" +
-            "    AND p2.brand = product.brand\n" +
-            "    AND p2.productName = product.productName\n" +
-            "    AND de.reason IS NOT NULL AND de.reason != ''\n" +
-            "  ORDER BY de.createdAt DESC, de.id DESC\n" +
-            "  LIMIT 1\n" +
+            "COALESCE(( " +
+            "  SELECT de.reason " +
+            "  FROM discard_event de " +
+            "  JOIN product p2 ON p2.productID = de.productID " +
+            "  WHERE p2.userID = user.userID " +
+            "    AND p2.brand = product.brand " +
+            "    AND p2.productName = product.productName " +
+            "    AND de.reason IS NOT NULL AND de.reason != '' " +
+            "  ORDER BY de.createdAt DESC, de.id DESC " +
+            "  LIMIT 1 " +
             "), NULL) AS lastDiscardNote " +
             "FROM user user " +
             "JOIN product product ON product.userID = user.userID " +

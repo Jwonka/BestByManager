@@ -7,23 +7,18 @@ public class UserReportRow {
     public long userID;
 
     public String userName;
-
     public String firstName;
-
     public String lastName;
 
     public String brand;
 
     public String productName;
-
     public String lastDiscardNote;
-
     @Nullable public Integer expiredCount;
     @Nullable public Integer goodCount;
     @Nullable public Integer totalCount;
-
-    @Nullable public Integer discardedCount; // NEW
-
+    @Nullable public Integer discardedCount;
+    @Nullable public Integer lotCount;
     @Ignore public boolean isFooter;
     @Ignore public boolean isHeader;
 }
