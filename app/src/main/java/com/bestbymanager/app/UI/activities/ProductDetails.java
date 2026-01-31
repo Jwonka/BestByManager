@@ -560,7 +560,7 @@ public class ProductDetails extends AppCompatActivity {
             return;
         }
 
-        int qtyParsed = Integer.parseInt(quantity.getText().toString().trim());
+        int qtyParsed = parseQtyInt(quantity.getText().toString().trim());
 
         Product toSave = (isCreate || addNewExpiration) ? new Product() : currentProduct;
 
@@ -611,81 +611,47 @@ public class ProductDetails extends AppCompatActivity {
         }));
     }
 
+    private static int parseQtyInt(String qtyTxt) {
+        // validForm already enforced 0..999_999_999
+        return (int) Long.parseLong(qtyTxt);
+    }
+
     private boolean validForm(boolean isCreate) {
         String nameTxt = name.getText().toString().trim();
-        if (nameTxt.isEmpty()) {
-            name.requestFocus();
-            toast("Please enter a product name.");
-            return false;
-        }
+        if (nameTxt.isEmpty()) { name.requestFocus(); toast("Please enter a product name."); return false; }
 
         String brandTxt = brand.getText().toString().trim();
-        if (brandTxt.isEmpty()) {
-            brand.requestFocus();
-            toast("Please enter a brand.");
-            return false;
-        }
+        if (brandTxt.isEmpty()) { brand.requestFocus(); toast("Please enter a brand."); return false;}
 
         String expTxt = editExp.getText().toString().trim();
-        if (expTxt.isEmpty()) {
-            editExp.requestFocus();
-            toast("Please select an expiration date.");
-            return false;
-        }
+        if (expTxt.isEmpty()) { editExp.requestFocus(); toast("Please select an expiration date."); return false; }
 
         String qtyTxt = quantity.getText().toString().trim();
-        if (qtyTxt.isEmpty()) {
-            quantity.requestFocus();
-            toast("Please enter a quantity.");
-            return false;
-        }
-        int qty;
+        if (qtyTxt.isEmpty()) { quantity.requestFocus(); toast("Please enter a quantity."); return false; }
+
+        long qtyLong;
         try {
-            qty = Integer.parseInt(qtyTxt);
+            qtyLong = Long.parseLong(qtyTxt);
         } catch (NumberFormatException e) {
             quantity.requestFocus();
             toast("Quantity must be a non-negative integer.");
             return false;
         }
 
-        if (qty < 0) {
-            quantity.requestFocus();
-            toast("Quantity must be 0 or more.");
-            return false;
-        }
+        if (qtyLong < 0) { quantity.requestFocus(); toast("Quantity must be 0 or more."); return false; }
 
-        if (qty > 999_999_999) {
-            quantity.requestFocus();
-            toast("Quantity must be 999999999 or less.");
-            return false;
-        }
+        if (qtyLong > 999_999_999L) { quantity.requestFocus(); toast("Quantity must be 999999999 or less."); return false; }
 
-        if (isCreate && qty == 0) {
-            quantity.requestFocus();
-            toast("Quantity must be greater than 0 when creating a new product.");
-            return false;
-        }
+        if (isCreate && qtyLong == 0) { quantity.requestFocus(); toast("Quantity must be greater than 0 when creating a new product."); return false; }
 
         String weightTxt = weight.getText().toString().trim();
-        if (weightTxt.isEmpty()) {
-            weight.requestFocus();
-            toast("Please enter a weight.");
-            return false;
-        }
+        if (weightTxt.isEmpty()) { weight.requestFocus(); toast("Please enter a weight."); return false; }
 
         String barcodeTxt = barcode.getText().toString().trim();
-        if (barcodeTxt.isEmpty()) {
-            barcode.requestFocus();
-            toast("Please enter a barcode.");
-            return false;
-        }
+        if (barcodeTxt.isEmpty()) { barcode.requestFocus(); toast("Please enter a barcode."); return false; }
 
         int categoryPosition = category.getSelectedItemPosition();
-        if (categoryPosition == 0) {
-            category.requestFocus();
-            toast("Please select a category.");
-            return false;
-        }
+        if (categoryPosition == 0) { category.requestFocus(); toast("Please select a category."); return false; }
 
         return true;
     }
