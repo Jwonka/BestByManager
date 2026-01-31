@@ -138,54 +138,36 @@ public class Repository {
             return -1L;
         }
 
-        long id = mProductDAO.insert(product);
+        long id = mProductDAO.insert(product); // IGNORE -> -1 on conflict
         if (id == -1L) {
+            // Conflict: product already exists for this barcode (likely unique constraint)
+            Product existing = mProductDAO.getLatestByBarcodeForUser(product.getUserID(), product.getBarcode());
+            if (existing != null) return existing.getProductID();
             showToast("Product already exists.");
             return -1L;
         }
 
         product.setProductID(id);
-        AlarmScheduler.scheduleAlarm(
-                context,
-                product.getExpirationDate(),
-                product.getProductID(),
-                product.getProductName() + " expires today."
-        );
+        AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), id,
+                product.getProductName() + " expires today.");
         return id;
     }
 
-
-    public void insertProduct(Product product) { executor.execute(() -> {
+    public int updateProductBlocking(Product product) {
         try {
             product.setBarcode(toCanonical(product.getBarcode()));
         } catch (IllegalArgumentException ex) {
             showToast("Unsupported or unreadable barcode");
-            return;
+            return 0;
         }
-        long id = mProductDAO.insert(product);
-            if (id == -1) {
-                showToast("Product already exists.");
-            } else {
-                product.setProductID(id);
-                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(), product.getProductName() + " expires today.");
-            }
-        });
-    }
-    public void updateProduct(Product product) { executor.execute(() -> {
-            try {
-                product.setBarcode(toCanonical(product.getBarcode()));
-            } catch (IllegalArgumentException ex) {
-                showToast("Unsupported or unreadable barcode");
-                return;
-            }
-            int rows = mProductDAO.updateProduct(product);
-            if (rows == 0) {
-                showToast("Error - conflict on barcode or ID.");
-            }  else {
-                AlarmScheduler.cancelAlarm(context, product.getProductID());
-                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(), product.getProductName() + " expires today.");
-            }
-        });
+
+        int rows = mProductDAO.updateProduct(product);
+        if (rows > 0) {
+            AlarmScheduler.cancelAlarm(context, product.getProductID());
+            AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(),
+                    product.getProductName() + " expires today.");
+        }
+        return rows;
     }
     public void deleteProduct(Product product) { executor.execute(() -> {
             int rows = mProductDAO.deleteProduct(product);

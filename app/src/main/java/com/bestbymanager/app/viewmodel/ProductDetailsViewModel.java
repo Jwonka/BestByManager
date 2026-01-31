@@ -24,6 +24,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
 
     public LiveData<Product> getProduct() { return product; }
 
+    public interface SaveCallback { void onResult(long idOrNeg1); }
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public ProductDetailsViewModel(@NonNull Application app, SavedStateHandle handle) {
@@ -41,14 +42,17 @@ public class ProductDetailsViewModel extends AndroidViewModel {
         });
     }
 
-    public void save(Product product) {
+    public void save(Product product, SaveCallback cb) {
         executor.execute(() -> {
+            long out;
             if (product.getProductID() == 0L) {
-                long id = repository.insertProductBlocking(product);
-                if (id > 0) product.setProductID(id);
+                out = repository.insertProductBlocking(product); // returns existing ID on conflict
+                if (out > 0) product.setProductID(out);
             } else {
-                repository.updateProduct(product);
+                int rows = repository.updateProductBlocking(product);
+                out = rows > 0 ? product.getProductID() : -1L;
             }
+            cb.onResult(out);
         });
     }
     public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(code); }

@@ -165,4 +165,10 @@ public interface ProductDAO {
             "JOIN user ON user.userID = product.userID " +
             "ORDER BY product.productName ASC, product.expirationDate ASC")
     LiveData<List<ProductReportRow>> getAllProducts();
+
+    @Query("SELECT * FROM product, " +
+            "WHERE userID = :userId AND barcode = :barcode, " +
+            "ORDER BY expirationDate DESC, " +
+            "LIMIT 1")
+    Product getLatestByBarcodeForUser(long userId, String barcode);
 }

@@ -599,11 +599,30 @@ public class ProductDetails extends AppCompatActivity {
             }
         }
 
-        productViewModel.save(toSave);
-        currentProduct = toSave;
-        modeSwitch.setEnabled(true);
-        modeSwitch.setChecked(false);
-        toast(name.getText().toString().trim() + " saved.");
+        productViewModel.save(toSave, id -> runOnUiThread(() -> {
+            if (id <= 0) {
+                toast("Save failed.");
+                return;
+            }
+
+            // id is either the newly inserted rowId OR the existing rowId on conflict
+            if (toSave.getProductID() == id) {
+                // normal create/update
+                currentProduct = toSave;
+                populateForm(toSave); // refresh UI + enables switch/menu consistently
+            } else {
+                // conflict: switch UI to edit the existing record
+                toSave.setProductID(id);
+                // simplest: load from DB via barcode (already works and avoids exposing SavedStateHandle)
+                lookupByBarcode(barcodeTxt);
+                // OR if you expose the SavedStateHandle live id, set it here instead
+                // productViewModel.setProductId(id);
+            }
+
+            modeSwitch.setEnabled(true);
+            modeSwitch.setChecked(false);
+            toast(name.getText().toString().trim() + " saved.");
+        }));
     }
 
     private boolean validForm() {
