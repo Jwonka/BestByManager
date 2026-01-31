@@ -10,10 +10,11 @@
         <item>Condiments</item>
         <item>Dairy</item>
         <item>Deli</item>
-        <item>Meat</item>
+        <item>Frozen</item>
         <item>Produce</item>
         <item>Personal Care</item>
         <item>Snacks</item>
+        <item>Tobacco</item>
     </string-array>
     <string-array name="isles">
         <item>Isle</item>
