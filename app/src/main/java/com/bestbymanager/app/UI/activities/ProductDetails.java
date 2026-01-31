@@ -115,7 +115,7 @@ public class ProductDetails extends AppCompatActivity {
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        super.setContentView(binding.getRoot());
 
         final View rootView = binding.getRoot();
 
@@ -540,10 +540,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void saveProduct() {
-        if (!validForm()) { return; }
-
         long currentUserId = Session.get().currentUserID();
-
         if (currentUserId <= 0) {
             Intent i = new Intent(this, LoginActivity.class);
             i.putExtra("deepLink", getIntent());
@@ -552,32 +549,31 @@ public class ProductDetails extends AppCompatActivity {
             return;
         }
 
+        final boolean isCreate = (currentProduct == null);
+        final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
+
+        if (!validForm(isCreate)) return;
+
         String barcodeTxt = barcode.getText().toString().trim();
         if (!isBarcodePlausible(barcodeTxt)) {
             toast("Unsupported or unreadable barcode.");
             return;
         }
 
-        final boolean isCreate = (currentProduct == null);
-        final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
+        int qtyParsed = Integer.parseInt(quantity.getText().toString().trim());
 
-        Product toSave;
-        if (isCreate || addNewExpiration) {
-            toSave = new Product();
-        } else {
-            toSave = currentProduct;
-        }
+        Product toSave = (isCreate || addNewExpiration) ? new Product() : currentProduct;
 
         toSave.setProductName(name.getText().toString().trim());
         toSave.setBrand(brand.getText().toString().trim());
         toSave.setWeight(weight.getText().toString().trim());
-        toSave.setQuantity(Integer.parseInt(quantity.getText().toString().trim()));
+        toSave.setQuantity(qtyParsed);
         toSave.setCategory(category.getSelectedItemPosition());
         toSave.setIsle(isle.getSelectedItemPosition());
         toSave.setExpirationDate(parseOrToday(editExp.getText().toString().trim()));
         toSave.setPurchaseDate(LocalDate.now());
         toSave.setUserID(currentUserId);
-        toSave.setBarcode(barcode.getText().toString().trim());
+        toSave.setBarcode(barcodeTxt);
 
         if (thumbBlob == null && currentProduct != null) {
             thumbBlob = currentProduct.getThumbnail();
@@ -592,31 +588,21 @@ public class ProductDetails extends AppCompatActivity {
         // only applies when editing an existing product (not create, not add-new-expiration)
         if (!isCreate && !addNewExpiration && toSave.isExpired()) {
             int oldQty = currentProduct.getQuantity();
-            int newQty = Integer.parseInt(quantity.getText().toString().trim());
-            if (newQty > oldQty) {
+            if (qtyParsed > oldQty) {
                 toast("Product expired. Quantity can only be reduced.");
                 return;
             }
         }
 
         productViewModel.save(toSave, id -> runOnUiThread(() -> {
-            if (id <= 0) {
-                toast("Save failed.");
-                return;
-            }
+            if (id <= 0) { toast("Save failed."); return; }
 
-            // id is either the newly inserted rowId OR the existing rowId on conflict
             if (toSave.getProductID() == id) {
-                // normal create/update
                 currentProduct = toSave;
-                populateForm(toSave); // refresh UI + enables switch/menu consistently
+                populateForm(toSave);
             } else {
-                // conflict: switch UI to edit the existing record
                 toSave.setProductID(id);
-                // simplest: load from DB via barcode (already works and avoids exposing SavedStateHandle)
                 lookupByBarcode(barcodeTxt);
-                // OR if you expose the SavedStateHandle live id, set it here instead
-                // productViewModel.setProductId(id);
             }
 
             modeSwitch.setEnabled(true);
@@ -625,7 +611,7 @@ public class ProductDetails extends AppCompatActivity {
         }));
     }
 
-    private boolean validForm() {
+    private boolean validForm(boolean isCreate) {
         String nameTxt = name.getText().toString().trim();
         if (nameTxt.isEmpty()) {
             name.requestFocus();
@@ -656,10 +642,27 @@ public class ProductDetails extends AppCompatActivity {
         int qty;
         try {
             qty = Integer.parseInt(qtyTxt);
-            if (qty < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             quantity.requestFocus();
             toast("Quantity must be a non-negative integer.");
+            return false;
+        }
+
+        if (qty < 0) {
+            quantity.requestFocus();
+            toast("Quantity must be 0 or more.");
+            return false;
+        }
+
+        if (qty > 999_999_999) {
+            quantity.requestFocus();
+            toast("Quantity must be 999999999 or less.");
+            return false;
+        }
+
+        if (isCreate && qty == 0) {
+            quantity.requestFocus();
+            toast("Quantity must be greater than 0 when creating a new product.");
             return false;
         }
 
