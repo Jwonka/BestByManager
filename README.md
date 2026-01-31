@@ -6,6 +6,9 @@
 
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
+## Status
+🚀 **Android app in closed beta on Google Play**
+
 ## Table of Contents
 
 [Features](#features)
@@ -16,7 +19,7 @@
 
 [Usage Notes](#usage-notes)
 
-[Download](#download)
+[Installation](#installation)
 
 [Quick Start Guide](#quick-start-guide)
 
@@ -33,6 +36,8 @@
 [Testing Status](#testing-status)
 
 [Known Issues](#known-issues)
+
+[Migrations](#migrations)
 
 [Privacy](#privacy)
 
@@ -131,11 +136,19 @@
 
 - Expiration status (e.g., expired, expiring soon)
 
-## Download
+## Installation
+
+### Google Play (Closed Beta)
+The app is currently available through Google Play's closed beta testing program.
+
+### APK Sideload
+- 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
+- GitHub Releases (coming soon)
+
 **SHA256 checksum:** `bestbymanager-v1.0.apk`  
 **Size:** ~9.4MB
 
-Android will prompt once to “Allow installs from unknown sources.” Accept to complete the installation.
+Android will prompt once to "Allow installs from unknown sources." Accept to complete the installation.
 
 ## Quick Start Guide
 1. On your Android device,  👉 [Download / Donate on itch.io](https://jwonka2.itch.io/best-by-manager).
@@ -192,6 +205,9 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 - No automated testing suite (yet).
 - Cloud sync is not implemented, but may be added in a future version.
 - Product deletion is permanent (no undo).
+
+## Migrations
+Recent releases include database migrations. Play Store updates are required to test migrations properly—sideloaded APKs may skip intermediate versions.
 
 ## Privacy
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
