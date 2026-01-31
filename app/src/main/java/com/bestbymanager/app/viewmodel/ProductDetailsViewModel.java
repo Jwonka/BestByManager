@@ -11,6 +11,10 @@ import androidx.lifecycle.Transformations;
 import com.bestbymanager.app.data.api.ProductResponse;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.entities.Product;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import retrofit2.Callback;
 
 public class ProductDetailsViewModel extends AndroidViewModel {
@@ -19,6 +23,8 @@ public class ProductDetailsViewModel extends AndroidViewModel {
     private final LiveData<Product> product;
 
     public LiveData<Product> getProduct() { return product; }
+
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     public ProductDetailsViewModel(@NonNull Application app, SavedStateHandle handle) {
         super(app);
@@ -36,11 +42,14 @@ public class ProductDetailsViewModel extends AndroidViewModel {
     }
 
     public void save(Product product) {
-        if (product.getProductID() == 0) {
-            repository.insertProduct(product);
-        } else {
-            repository.updateProduct(product);
-        }
+        executor.execute(() -> {
+            if (product.getProductID() == 0L) {
+                long id = repository.insertProductBlocking(product);
+                if (id > 0) product.setProductID(id);
+            } else {
+                repository.updateProduct(product);
+            }
+        });
     }
     public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(code); }
     public void delete(Product product) { repository.deleteProduct(product); }

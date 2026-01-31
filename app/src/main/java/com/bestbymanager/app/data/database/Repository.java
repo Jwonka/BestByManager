@@ -129,6 +129,32 @@ public class Repository {
             }
         });
     }
+
+    public long insertProductBlocking(Product product) {
+        try {
+            product.setBarcode(toCanonical(product.getBarcode()));
+        } catch (IllegalArgumentException ex) {
+            showToast("Unsupported or unreadable barcode");
+            return -1L;
+        }
+
+        long id = mProductDAO.insert(product);
+        if (id == -1L) {
+            showToast("Product already exists.");
+            return -1L;
+        }
+
+        product.setProductID(id);
+        AlarmScheduler.scheduleAlarm(
+                context,
+                product.getExpirationDate(),
+                product.getProductID(),
+                product.getProductName() + " expires today."
+        );
+        return id;
+    }
+
+
     public void insertProduct(Product product) { executor.execute(() -> {
         try {
             product.setBarcode(toCanonical(product.getBarcode()));

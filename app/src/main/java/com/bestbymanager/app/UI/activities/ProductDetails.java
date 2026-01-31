@@ -600,7 +600,8 @@ public class ProductDetails extends AppCompatActivity {
         }
 
         productViewModel.save(toSave);
-        modeSwitch.setEnabled(currentProduct != null || !isCreate);
+        currentProduct = toSave;
+        modeSwitch.setEnabled(true);
         modeSwitch.setChecked(false);
         toast(name.getText().toString().trim() + " saved.");
     }
