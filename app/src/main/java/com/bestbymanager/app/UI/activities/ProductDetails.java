@@ -316,7 +316,7 @@ public class ProductDetails extends AppCompatActivity {
         // show discard only when product exists AND is expired AND qty > 0
         MenuItem discard = menu.findItem(R.id.discardProduct);
         if (discard != null) {
-            boolean showDiscard = hasProduct && currentProduct.isExpired() && currentProduct.getQuantity() > 0;
+            boolean showDiscard = hasProduct && currentProduct.isDiscardable() && currentProduct.getQuantity() > 0;
             discard.setVisible(showDiscard);
         }
         return true;
@@ -387,7 +387,7 @@ public class ProductDetails extends AppCompatActivity {
                     String reason = reasonEt.getText() == null ? null : reasonEt.getText().toString().trim();
                     if (reason != null && reason.isEmpty()) reason = null;
 
-                    Long userId = Session.get().currentUserID();
+                    long userId = Session.get().currentUserID();
                     productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate
@@ -522,8 +522,6 @@ public class ProductDetails extends AppCompatActivity {
     private void saveProduct() {
         if (!validForm()) { return; }
 
-        boolean addNew = modeSwitch.isChecked() && modeSwitch.isEnabled();
-
         long currentUserId = Session.get().currentUserID();
 
         if (currentUserId <= 0) {
@@ -540,7 +538,10 @@ public class ProductDetails extends AppCompatActivity {
             return;
         }
 
-        Product toSave = (addNew || currentProduct == null) ? new Product() : currentProduct;
+        final boolean isCreate = (currentProduct == null);
+        final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
+
+        Product toSave = isCreate || addNewExpiration ? new Product() : currentProduct;
 
         toSave.setProductName(name.getText().toString().trim());
         toSave.setBrand(brand.getText().toString().trim());
@@ -559,13 +560,14 @@ public class ProductDetails extends AppCompatActivity {
 
         toSave.setThumbnail(thumbBlob);
 
-        if (addNew && toSave.isExpired()) {
+        if (isCreate && toSave.isExpired()) {
             toast("Cannot add a product that is already expired.");
             return;
         }
-        if (!addNew && toSave.isExpired()) {
-            int oldQty   = currentProduct.getQuantity();
-            int newQty   = Integer.parseInt(quantity.getText().toString().trim());
+        // only applies when editing an existing product (not create, not add-new-expiration)
+        if (!isCreate && !addNewExpiration && toSave.isExpired()) {
+            int oldQty = currentProduct.getQuantity();
+            int newQty = Integer.parseInt(quantity.getText().toString().trim());
             if (newQty > oldQty) {
                 toast("Product expired. Quantity can only be reduced.");
                 return;

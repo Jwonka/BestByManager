@@ -11,6 +11,7 @@ public abstract class BaseAdminActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Session.get().preload(this);
         if (!Session.get().currentUserIsAdmin()) {
             Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class)

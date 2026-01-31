@@ -45,14 +45,30 @@ public class Session {
 
     /** @noinspection unused*/
     public synchronized void logOut(Context context) {
-        ensureSessionSp(context);
+        Context app = context.getApplicationContext();
+
+        // clear in-memory
         current = null;
         this.userId = null;
         this.mustResetPassword = false;
-        save();
+        uid.set(UNKNOWN_ID);
+        userName.set("");
+        admin.set(false);
+
+        // clear bestby_session
+        ensureSessionSp(app);
+        sessionSP.edit().clear().apply();
+
+        // clear default prefs (current_user_*)
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(app);
+        sp.edit()
+                .remove(PREF_KEY_ID)
+                .remove(PREF_KEY_NAME)
+                .remove(PREF_KEY_ADM)
+                .apply();
     }
     public long currentUserID() { return uid.get(); }
-    public boolean isLoggedOut() { return current == null; }
+    public boolean isLoggedOut() { return currentUserID() <= 0; }
     public String currentUserName() { return userName.get(); }
     public boolean currentUserIsAdmin() { return admin.get(); }
 
