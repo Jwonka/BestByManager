@@ -94,7 +94,8 @@ public class ProductDetails extends AppCompatActivity {
         super.onCreate(s);
         if (Session.get().isLoggedOut()) {
             Intent i = new Intent(this, LoginActivity.class);
-            i.putExtra("deepLink", getIntent());
+            i.putExtra("deeplinkProductId", getIntent().getLongExtra("productID", -1L));
+            i.putExtra("fromNotification", getIntent().getBooleanExtra("fromNotification", false));
             startActivity(i);
             finish();
             return;
@@ -285,6 +286,12 @@ public class ProductDetails extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        return true;
+    }
+
     private void lookupByBarcode(String code) {
         io.execute(() -> {
             Product local = productViewModel.getRecentExpiringProduct(code);
@@ -324,10 +331,7 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
+       if (item.getItemId() == R.id.mainScreen) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             return true;
@@ -388,6 +392,7 @@ public class ProductDetails extends AppCompatActivity {
                     if (reason != null && reason.isEmpty()) reason = null;
 
                     long userId = Session.get().currentUserID();
+                    Log.d("DISCARD", "ProductDetails discard uid=" + userId);
                     productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate

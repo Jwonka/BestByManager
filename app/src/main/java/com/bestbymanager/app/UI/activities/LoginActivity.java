@@ -1,6 +1,7 @@
 package com.bestbymanager.app.UI.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -38,6 +39,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Session.get().preload(this);
+        if (!Session.get().isLoggedOut() && !Session.get().requiresPasswordReset()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
         if (Build.VERSION.SDK_INT >= 33 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -71,15 +77,18 @@ public class LoginActivity extends AppCompatActivity {
         registerAction = new RegisterAction(this, binding.userNameInput, binding.passwordInput, repository);
 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        boolean firstRun = !prefs.getBoolean(KEY_FIRST_RUN_DONE, false);
+        final boolean[] firstRun = { !prefs.getBoolean(KEY_FIRST_RUN_DONE, false) };
 
         MaterialButton button = binding.loginButton;
 
-        if (firstRun) {
+        if (firstRun[0]) {
             button.setText(R.string.register);
             button.setOnClickListener(v -> {
                 registerAction.run();
                 prefs.edit().putBoolean(KEY_FIRST_RUN_DONE, true).apply();
+                firstRun[0] = false; // important: fixes “IME still runs login”
+                button.setText(R.string.login);
+                button.setOnClickListener(x -> loginAction.run());
             });
         } else {
             button.setText(R.string.login);
@@ -87,8 +96,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         binding.passwordInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                loginAction.run();
+            boolean imeDone = actionId == EditorInfo.IME_ACTION_DONE;
+            boolean enter = event != null
+                    && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    && event.getAction() == KeyEvent.ACTION_DOWN;
+
+            if (imeDone || enter) {
+                if (firstRun[0]) registerAction.run();
+                else loginAction.run();
                 return true;
             }
             return false;

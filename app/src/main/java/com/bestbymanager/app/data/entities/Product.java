@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class Product {
     @PrimaryKey(autoGenerate = true)
     private long productID;
-    @ColumnInfo(defaultValue = "1")
+
     public long userID;
     private String brand;
     @NonNull

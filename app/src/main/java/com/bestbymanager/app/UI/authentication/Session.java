@@ -18,7 +18,7 @@ public class Session {
     private static final String PREF_KEY_ID   = "current_user_id";
     private static final String PREF_KEY_NAME = "current_user_name";
     private static final String PREF_KEY_ADM  = "current_user_admin";
-    private static final long   UNKNOWN_ID    = 1L;
+    private static final long   UNKNOWN_ID    = -1L;
     private final AtomicLong uid = new AtomicLong(UNKNOWN_ID);
     private final AtomicReference<String> userName = new AtomicReference<>("");
     private final AtomicBoolean admin = new AtomicBoolean(false);
@@ -91,7 +91,7 @@ public class Session {
         if (sessionSP == null) return;
         if (sessionSP.contains(K_USER)) {
             long v = sessionSP.getLong(K_USER, -1L);
-            this.userId = (v >= 0) ? v : null;
+            this.userId = (v > 0) ? v : null;
         } else {
             this.userId = null;
         }

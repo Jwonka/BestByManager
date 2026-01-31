@@ -36,7 +36,7 @@ public class NotificationHelper {
 
         Intent open = new Intent(context, ProductDetails.class)
                 .putExtra("productID", productID)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                .putExtra("fromNotification", true);
 
         PendingIntent content = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(open)

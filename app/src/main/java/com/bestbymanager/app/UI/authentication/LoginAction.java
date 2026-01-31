@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.lifecycle.LifecycleOwner;
 import com.bestbymanager.app.UI.activities.MainActivity;
+import com.bestbymanager.app.UI.activities.ProductDetails;
 import com.bestbymanager.app.UI.activities.ResetPasswordActivity;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.entities.User;
@@ -60,11 +61,21 @@ public class LoginAction extends AuthenticationAction {
     }
 
     private void enterApp(User user) {
-        Intent deep = ((Activity) context).getIntent().getParcelableExtra("deepLink");
-        Intent target = deep != null ? deep : new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Activity a = (Activity) context;
+
+        boolean fromNotif = a.getIntent().getBooleanExtra("fromNotification", false);
+        long pid = a.getIntent().getLongExtra("deeplinkProductId", -1L);
+
+        Intent target;
+        if (fromNotif && pid > 0) {
+            target = new Intent(context, ProductDetails.class)
+                    .putExtra("productID", pid);
+        } else {
+            target = new Intent(context, MainActivity.class);
+        }
+
+        target.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(target);
-        String welcome = user.isAdmin ? "Welcome administrator " + user.getUserName() : "Welcome " + user.getUserName();
-        Toast.makeText(context, welcome, Toast.LENGTH_SHORT).show();
-        ((Activity) context).finish();
+        a.finish();
     }
 }
