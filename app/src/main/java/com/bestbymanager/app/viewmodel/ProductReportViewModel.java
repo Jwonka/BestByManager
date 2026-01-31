@@ -33,7 +33,11 @@ public class ProductReportViewModel extends AndroidViewModel {
         String startString = savedState.get("startDate");
         String endString = savedState.get("endDate");
 
-        if ("allProducts".equals(mode)) {
+        // Optional flag to force "all products" without relying on mode string
+        Boolean allProductsFlag = savedState.get("allProducts");
+        boolean allProducts = Boolean.TRUE.equals(allProductsFlag);
+
+        if ("allProducts".equals(mode) || allProducts) {
             source = repository.getAllProducts();
         } else if ("expired".equals(mode)) {
             source = repository.getExpired(LocalDate.now());

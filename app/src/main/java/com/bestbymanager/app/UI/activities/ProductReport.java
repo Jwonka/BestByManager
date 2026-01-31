@@ -33,6 +33,13 @@ import com.bestbymanager.app.viewmodel.ProductReportViewModel;
 import java.util.List;
 
 public class ProductReport extends AppCompatActivity {
+    private static final String EXTRA_START_DATE  = "startDate";
+    private static final String EXTRA_END_DATE    = "endDate";
+    private static final String EXTRA_MODE        = "mode";
+    private static final String EXTRA_BARCODE     = "barcode";
+    private static final String EXTRA_ALL_PRODUCTS= "allProducts";
+    private boolean emptyToastShown = false;
+
     private ProductReportAdapter prAdapter;
 
     @Override
@@ -45,35 +52,28 @@ public class ProductReport extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         final View rootView = binding.getRoot();
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
+        Intent in = getIntent();
         Bundle args = new Bundle();
-        args.putString("startDate", getIntent().getStringExtra("startDate"));
-        args.putString("endDate", getIntent().getStringExtra("endDate"));
-        args.putString("mode", getIntent().getStringExtra("mode"));
-        args.putString("barcode", getIntent().getStringExtra("barcode"));
-        args.putString("allProducts", getIntent().getStringExtra("allProducts"));
+        args.putString(EXTRA_START_DATE, in.getStringExtra(EXTRA_START_DATE));
+        args.putString(EXTRA_END_DATE, in.getStringExtra(EXTRA_END_DATE));
+        args.putString(EXTRA_MODE, in.getStringExtra(EXTRA_MODE));
+        args.putString(EXTRA_BARCODE, in.getStringExtra(EXTRA_BARCODE));
+        args.putBoolean(EXTRA_ALL_PRODUCTS, in.getBooleanExtra(EXTRA_ALL_PRODUCTS, false));
 
         ProductReportViewModel prViewModel = new ViewModelProvider(
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
         ).get(ProductReportViewModel.class);
 
-        String mode = getIntent().getStringExtra("mode");
-
         prAdapter = new ProductReportAdapter(
                 id -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", id)),
                 row -> {
-                    // allow discard only if expired OR today, and qty > 0
                     boolean expiredOrToday = !row.expirationDate.isAfter(java.time.LocalDate.now());
                     if (!expiredOrToday) { Toast.makeText(this, "Not expired yet.", Toast.LENGTH_SHORT).show(); return; }
                     if (row.quantity <= 0) { Toast.makeText(this, "No on-hand quantity to discard.", Toast.LENGTH_SHORT).show(); return; }
@@ -84,7 +84,15 @@ public class ProductReport extends AppCompatActivity {
         binding.reportRecycler.setLayoutManager(new LinearLayoutManager(this));
         binding.reportRecycler.setAdapter(prAdapter);
 
-        prViewModel.getReport().observe(this, prAdapter::setReportList);
+        prViewModel.getReport().observe(this, rows -> {
+            prAdapter.setReportList(rows);
+
+            if ((rows == null || rows.isEmpty()) && !emptyToastShown) {
+                emptyToastShown = true;
+                Toast.makeText(this, "No results.", Toast.LENGTH_SHORT).show();
+                finish(); // returns to ProductSearch so report doesn't open if empty
+            }
+        });
     }
 
     @Override

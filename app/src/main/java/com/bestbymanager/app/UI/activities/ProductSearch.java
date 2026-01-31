@@ -37,14 +37,20 @@ import com.journeyapps.barcodescanner.ScanContract;
 
 public class ProductSearch extends AppCompatActivity {
     private static final int REQ_CAMERA = 42;
-    private Repository repository;
+    private static final String EXTRA_START_DATE  = "startDate";
+    private static final String EXTRA_END_DATE    = "endDate";
+    private static final String EXTRA_MODE        = "mode";
+    private static final String EXTRA_BARCODE     = "barcode";
+    private static final String EXTRA_ALL_PRODUCTS= "allProducts";
+    private static final String MODE_ALL_PRODUCTS = "allProducts";
+    private static final String MODE_EXPIRED      = "expired";
+    private static final String MODE_EXPIRING     = "expiring";
+
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        repository = new Repository(getApplication());
         setTitle(R.string.product_search);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -52,24 +58,16 @@ public class ProductSearch extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         final View rootView = binding.getRoot();
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
         ProductDatabaseBuilder.getDatabase(this);
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) {
-                String rawCode = result.getContents();
-                binding.editBarcode.setText(rawCode);
-            }
+            if (result.getContents() != null) binding.editBarcode.setText(result.getContents());
         });
 
         binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
@@ -100,36 +98,69 @@ public class ProductSearch extends AppCompatActivity {
         binding.searchButton.setOnClickListener(v -> {
             String startDateString = stripString(binding.startDate);
             String endDateString = stripString(binding.endDate);
-            String barcode = TextUtils.isEmpty(binding.editBarcode.getText()) ? "" : binding.editBarcode.getText().toString().trim();
-            boolean hasBarcode   = !barcode.isEmpty();
-            boolean hasDateRange = !startDateString.equals("Start Date") && !endDateString.equals("End Date");
-            LocalDate start = parseOrToday(startDateString);
-            LocalDate end = parseOrToday(endDateString);
 
+            String barcode = TextUtils.isEmpty(binding.editBarcode.getText())
+                    ? ""
+                    : binding.editBarcode.getText().toString().trim();
+
+            boolean hasBarcode = !barcode.isEmpty();
+            boolean hasDateRange =
+                    !startDateString.equals(getString(R.string.start_date)) &&
+                            !endDateString.equals(getString(R.string.end_date));
+
+            // Empty search => All products
             if (!hasBarcode && !hasDateRange) {
-                showAllProducts();
+                startActivity(new Intent(this, ProductReport.class)
+                        .putExtra(EXTRA_MODE, MODE_ALL_PRODUCTS)
+                        // backward-compat for existing VM/label checks
+                        .putExtra(EXTRA_ALL_PRODUCTS, true));
+                return;
             }
 
-            if (hasBarcode && !hasDateRange) {
-                showProductsForBarcode(barcode);
-            } else if (hasBarcode && hasDateRange) {
-                showProductsForBarcodeAndDate(barcode, start, end);
-            } else {
-                if (end.isBefore(start)) {
-                    toast("End date must be after the start date.");
-                    return;
-                }
-                showProductsForDateRange(start, end, false);
+            // Date parsing only if user actually picked dates
+            LocalDate start = hasDateRange ? parseOrToday(startDateString) : null;
+            LocalDate end   = hasDateRange ? parseOrToday(endDateString) : null;
+
+            if (hasDateRange && end.isBefore(start)) {
+                toast("End date must be after the start date.");
+                return;
             }
+
+            // Barcode only
+            if (hasBarcode && !hasDateRange) {
+                startActivity(new Intent(this, ProductReport.class)
+                        .putExtra(EXTRA_BARCODE, barcode));
+                return;
+            }
+
+            // Barcode + date range
+            if (hasBarcode) {
+                startActivity(new Intent(this, ProductReport.class)
+                        .putExtra(EXTRA_BARCODE, barcode)
+                        .putExtra(EXTRA_START_DATE, format(start))
+                        .putExtra(EXTRA_END_DATE, format(end)));
+                return;
+            }
+
+            // Date range only
+            startActivity(new Intent(this, ProductReport.class)
+                    .putExtra(EXTRA_START_DATE, format(start))
+                    .putExtra(EXTRA_END_DATE, format(end)));
         });
 
         binding.expiringSoonButton.setOnClickListener(v -> {
             LocalDate today = LocalDate.now();
             LocalDate sevenDaysLater = today.plusDays(7);
-            showProductsForDateRange(today, sevenDaysLater,true);
+            startActivity(new Intent(this, ProductReport.class)
+                    .putExtra(EXTRA_MODE, MODE_EXPIRING)
+                    .putExtra(EXTRA_START_DATE, format(today))
+                    .putExtra(EXTRA_END_DATE, format(sevenDaysLater)));
         });
 
-        binding.expiredButton.setOnClickListener(v -> showExpiredProducts());
+        binding.expiredButton.setOnClickListener(v ->
+                startActivity(new Intent(this, ProductReport.class)
+                        .putExtra(EXTRA_MODE, MODE_EXPIRED)));
+
         binding.clearButton.setOnClickListener(v -> clearForm(binding));
     }
 
@@ -160,64 +191,6 @@ public class ProductSearch extends AppCompatActivity {
             opts.setOrientationLocked(true);
             barcodeLauncher.launch(opts);
         }
-    }
-
-    private void showAllProducts() {
-        repository.getAllProducts().observe(this, list -> {
-            if (list == null || list.isEmpty()) {
-                toast("No products in the database.");
-            } else {
-                 startActivity(new Intent(this, ProductReport.class).putExtra("allProducts", "1"));
-            }
-        });
-    }
-
-    private void showProductsForBarcode(String barcode) {
-        repository.getProductsByBarcode(barcode).observe(this, list -> {
-            if (list == null || list.isEmpty()) {
-                toast("No products in the database for that barcode.");
-            } else {
-                 startActivity(new Intent(this, ProductReport.class).putExtra("barcode", barcode));
-            }
-        });
-    }
-
-    private void showProductsForDateRange(LocalDate start, LocalDate end, boolean expiringSoon) {
-        repository.getProductsByDateRange(start, end).observe(this, list -> {
-            if (list == null || list.isEmpty()) {
-                toast("No products in the database for that date range.");
-            } else {
-                Intent intent = new Intent(this, ProductReport.class)
-                        .putExtra("startDate", format(start))
-                        .putExtra("endDate", format(end));
-                if (expiringSoon) { intent.putExtra("mode", "expiring"); }
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void showExpiredProducts() {
-        repository.getExpired(LocalDate.now()).observe(this, list -> {
-            if (list == null || list.isEmpty()) {
-                toast("No expired products in the database.");
-            } else {
-                startActivity(new Intent(this, ProductReport.class).putExtra("mode", "expired"));
-            }
-        });
-    }
-
-    private void showProductsForBarcodeAndDate(String barcode, LocalDate start, LocalDate end) {
-        repository.getProductsByBarcodeAndDateRange(barcode, start, end)
-            .observe(this, list -> {
-                if (list == null || list.isEmpty()) {
-                    toast("No matching products found.");
-                } else {
-                    startActivity(new Intent(this, ProductReport.class)
-                            .putExtra("barcode", barcode)
-                            .putExtra("startDate", format(start))
-                            .putExtra("endDate",   format(end)));
-                }
-            });
     }
 
     @Override

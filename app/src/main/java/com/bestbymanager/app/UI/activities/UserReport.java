@@ -27,6 +27,23 @@ import java.util.List;
 import java.util.Objects;
 
 public class UserReport extends BaseAdminActivity {
+    private static final String EXTRA_START_DATE   = "startDate";
+    private static final String EXTRA_END_DATE     = "endDate";
+    private static final String EXTRA_MODE         = "mode";
+    private static final String EXTRA_BARCODE      = "barcode";
+    private static final String EXTRA_ALL_ENTRIES  = "allEntries";
+    private static final String EXTRA_USER         = "user";
+
+    private static final String MODE_ALL_ENTRIES         = "allEntries";
+    private static final String MODE_RANGE               = "range";
+    private static final String MODE_USER                = "user";
+    private static final String MODE_RANGE_USER           = "range-user";
+    private static final String MODE_BARCODE             = "barcode";
+    private static final String MODE_BARCODE_USER         = "barcode-user";
+    private static final String MODE_BARCODE_RANGE        = "barcode-range";
+    private static final String MODE_BARCODE_RANGE_USER   = "barcode-range-user";
+    private static final String MODE_UNKNOWN              = "unknown";
+
     private UserReportAdapter userAdapter;
 
     @Override
@@ -50,13 +67,15 @@ public class UserReport extends BaseAdminActivity {
             }
         });
 
+        // Build args ONCE, using the same keys the ViewModel reads from SavedStateHandle
+        Intent intent = getIntent();
         Bundle args = new Bundle();
-        args.putString("startDate", getIntent().getStringExtra("startDate"));
-        args.putString("endDate", getIntent().getStringExtra("endDate"));
-        args.putString("mode", getIntent().getStringExtra("mode"));
-        args.putString("barcode", getIntent().getStringExtra("barcode"));
-        args.putString("allEntries", getIntent().getStringExtra("allEntries"));
-        args.putLong("user", getIntent().getLongExtra("user", -1));
+        args.putString(EXTRA_START_DATE, intent.getStringExtra(EXTRA_START_DATE));
+        args.putString(EXTRA_END_DATE, intent.getStringExtra(EXTRA_END_DATE));
+        args.putString(EXTRA_MODE, intent.getStringExtra(EXTRA_MODE));
+        args.putString(EXTRA_BARCODE, intent.getStringExtra(EXTRA_BARCODE));
+        args.putString(EXTRA_ALL_ENTRIES, intent.getStringExtra(EXTRA_ALL_ENTRIES));
+        args.putLong(EXTRA_USER, intent.getLongExtra(EXTRA_USER, -1));
 
         UserReportViewModel userViewModel = new ViewModelProvider(
                 this,
@@ -82,23 +101,19 @@ public class UserReport extends BaseAdminActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
+            finish();
             return true;
         } else if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         } else if (item.getItemId() == R.id.employeeSearch) {
-            Intent intent = new Intent(this, UserSearch.class);
-            startActivity(intent);
+            startActivity(new Intent(this, UserSearch.class));
             return true;
         } else if (item.getItemId() == R.id.employeeDetails) {
-            Intent intent = new Intent(this, UserDetails.class);
-            startActivity(intent);
+            startActivity(new Intent(this, UserDetails.class));
             return true;
         } else if (item.getItemId() == R.id.employeeList) {
-            Intent intent = new Intent(this, UserList.class);
-            startActivity(intent);
+            startActivity(new Intent(this, UserList.class));
             return true;
         } else if (item.getItemId() == R.id.action_copy) {
             copyToClipboard();
@@ -121,17 +136,18 @@ public class UserReport extends BaseAdminActivity {
 
     private void shareReport() {
         List<? extends UserReportRow> rows = userAdapter.getCurrentUserList();
-        String text = generateReportTitle(rows) + "\n\n" + buildReadableUserReport(rows);
+        String title = generateReportTitle(rows);
+        String text = title + "\n\n" + buildReadableUserReport(rows);
 
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_TEXT, text);
-        share.putExtra(Intent.EXTRA_SUBJECT, generateReportTitle(rows));
+        share.putExtra(Intent.EXTRA_SUBJECT, title);
         startActivity(Intent.createChooser(share, "Share report via"));
     }
 
     private String buildReadableUserReport(List<? extends UserReportRow> rows) {
-        if (rows.isEmpty()) { return "No results."; }
+        if (rows.isEmpty()) return "No results.";
 
         StringBuilder sb = new StringBuilder();
         UserReportRow currentUser = null;
@@ -170,16 +186,24 @@ public class UserReport extends BaseAdminActivity {
     }
 
     private String generateReportTitle(List<? extends UserReportRow> rows) {
-        String mode = getIntent().getStringExtra("mode");
-        String barcode = getIntent().getStringExtra("barcode");
-        String startDate = getIntent().getStringExtra("startDate");
-        String endDate = getIntent().getStringExtra("endDate");
+        Intent intent = getIntent();
+
+        String mode = intent.getStringExtra(EXTRA_MODE);
+        if (mode == null && intent.hasExtra(EXTRA_ALL_ENTRIES)) mode = MODE_ALL_ENTRIES;
+        if (mode == null) mode = MODE_UNKNOWN;
+
+        String barcode = intent.getStringExtra(EXTRA_BARCODE);
+        String startDate = intent.getStringExtra(EXTRA_START_DATE);
+        String endDate = intent.getStringExtra(EXTRA_END_DATE);
+
         String fullName = "selected employee";
         String productName = "";
 
         for (UserReportRow row : rows) {
             if (row.isHeader && (row.firstName != null || row.lastName != null)) {
-                fullName = row.firstName + " " + row.lastName;
+                String fn = row.firstName == null ? "" : row.firstName;
+                String ln = row.lastName == null ? "" : row.lastName;
+                fullName = (fn + " " + ln).trim();
             } else if (!row.isFooter && productName.isEmpty()) {
                 productName = row.productName != null ? row.productName : "";
             }
@@ -187,37 +211,40 @@ public class UserReport extends BaseAdminActivity {
 
         StringBuilder title = new StringBuilder("Employee Report");
 
-        switch (Objects.requireNonNull(mode)) {
-            case "allEntries":
+        switch (mode) {
+            case MODE_ALL_ENTRIES:
                 title.append(" for all employees (all-time)");
                 break;
-            case "range":
+            case MODE_RANGE:
                 title.append(" from ").append(startDate).append(" to ").append(endDate);
                 break;
-            case "user":
+            case MODE_USER:
                 title.append(" for ").append(fullName);
                 break;
-            case "range-user":
+            case MODE_RANGE_USER:
                 title.append(" for ").append(fullName)
                         .append(" from ").append(startDate).append(" to ").append(endDate);
                 break;
-            case "barcode":
+            case MODE_BARCODE:
                 title.append(" for product: ").append(productName).append(" ~ ").append(barcode);
                 break;
-            case "barcode-user":
+            case MODE_BARCODE_USER:
                 title.append(" for ").append(fullName)
                         .append(" on product: ").append(productName).append(" ~ ").append(barcode);
                 break;
-            case "barcode-range":
+            case MODE_BARCODE_RANGE:
                 title.append(" for product: ").append(productName).append(" ~ ").append(barcode)
                         .append(" from ").append(startDate).append(" to ").append(endDate);
                 break;
-            case "barcode-range-user":
+            case MODE_BARCODE_RANGE_USER:
                 title.append(" for ").append(fullName).append(" on product: ")
                         .append(productName).append(" ~ ").append(barcode)
                         .append(" from ").append(startDate).append(" to ").append(endDate);
                 break;
+            default:
+                break;
         }
+
         return title.toString();
     }
 }
