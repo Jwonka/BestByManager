@@ -475,6 +475,15 @@ public class ProductDetails extends AppCompatActivity {
         if (imageUri != null) out.putParcelable("IMAGE_URI", imageUri);
     }
 
+    private static int clampSelection(int idx, Spinner spinner) {
+        if (spinner == null || spinner.getAdapter() == null) return 0;
+        int count = spinner.getAdapter().getCount();
+        if (count <= 0) return 0;
+        if (idx < 0) return 0;
+        if (idx >= count) return count - 1;
+        return idx;
+    }
+
     private void populateForm(Product product) {
         currentProduct = product;
         invalidateOptionsMenu();
@@ -484,9 +493,15 @@ public class ProductDetails extends AppCompatActivity {
         weight.setText(product.getWeight());
         quantity.setText(String.valueOf(product.getQuantity()));
         editExp.setText(format(product.getExpirationDate()));
-        barcode.setText(BarcodeUtil.displayCode(product.getBarcode()));
-        category.setSelection(product.getCategory());
-        isle.setSelection(product.getIsle());
+
+        // nullable barcode
+        String bc = product.getBarcode();
+        barcode.setText(bc == null ? "" : BarcodeUtil.displayCode(bc));
+
+        // clamp indices to adapter bounds
+        category.setSelection(clampSelection(product.getCategory(), category), false);
+        isle.setSelection(clampSelection(product.getIsle(), isle), false);
+
         modeSwitch.setEnabled(true);
         if (product.getThumbnail() != null) {
             Bitmap bmp = Converters.toBitmap(product.getThumbnail());
