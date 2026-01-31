@@ -22,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Session.get().preload(this);
+        if (Session.get().currentUserID() <= 0) {
+            Intent i = new Intent(this, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+            return;
+        }
         setTitle(R.string.main_screen);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.logoutButton.setOnClickListener(v -> {
+            Session.get().logOut(this);
             Intent intent = new Intent(MainActivity.this, LoginActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TASK);
