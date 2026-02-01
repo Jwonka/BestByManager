@@ -134,7 +134,7 @@ The app is currently available through Google Play's closed beta testing program
 - 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
 - GitHub Releases (coming soon)
 
-**SHA256 checksum:** `bestbymanager-v1.1.5.apk`  
+**SHA256 checksum:** `bestbymanager-v1.1.6.apk`  
 **Size:** ~9.4MB
 - For **manual install (sideload)**: download the APK.  
 - For **Google Play**: the AAB is provided for Play Console upload.
