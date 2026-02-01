@@ -28,8 +28,14 @@ public interface ProductDAO {
     @Delete
     int deleteProduct(Product product);
 
+    @Query("SELECT earlyWarningEnabled FROM product WHERE productID = :productID LIMIT 1")
+    int getEarlyWarningEnabledBlocking(long productID);
+
     @Query("SELECT quantity FROM product WHERE productID = :productID LIMIT 1")
     int getQuantityBlocking(long productID);
+
+    @Query("UPDATE product SET earlyWarningEnabled = 0 WHERE productID = :productID")
+    int clearEarlyWarning(long productID);
 
     @Query("SELECT * FROM product WHERE productID = :productID LIMIT 1")
     LiveData<Product> getProduct(long productID);

@@ -129,6 +129,7 @@ public class Repository {
                 showToast("Discard recorded.");
                 int q = mProductDAO.getQuantityBlocking(productID);
                 if (q <= 0) {
+                    mProductDAO.clearEarlyWarning(productID);
                     int cancelled = AlarmScheduler.cancelAll(context, productID);
                     if (cancelled != 0) showToast("Reminders cleared (qty is 0).");
                 }
@@ -176,6 +177,13 @@ public class Repository {
             return 0;
         }
 
+        boolean wasEarly = mProductDAO.getEarlyWarningEnabledBlocking(product.getProductID()) == 1;
+
+        // If qty is 0, early warning must be forced off (persisted), otherwise UI will reload it as ON
+        if (product.getQuantity() <= 0 && product.isEarlyWarningEnabled()) {
+            product.setEarlyWarningEnabled(false);
+        }
+
         int rows = mProductDAO.updateProduct(product);
         if (rows <= 0) return 0;
 
@@ -192,11 +200,17 @@ public class Repository {
                             product.getProductName() + " expires in 7 days.");
                 }
             }
+
+            // toast only when user turned early warning OFF (qty still > 0)
+            if (wasEarly && !product.isEarlyWarningEnabled()) {
+                showToast("Early reminder cleared.");
+            }
         } else {
             if (cancelled != 0) showToast("Reminders cleared (qty is 0).");
         }
         return rows;
     }
+
     public void deleteProduct(Product product) { executor.execute(() -> {
             int rows = mProductDAO.deleteProduct(product);
             if (rows == 0) {

@@ -521,7 +521,7 @@ public class ProductDetails extends AppCompatActivity {
         weight.setText(product.getWeight());
         quantity.setText(String.valueOf(product.getQuantity()));
         editExp.setText(format(product.getExpirationDate()));
-        pendingEarlyWarningEnabled = product.isEarlyWarningEnabled();
+        pendingEarlyWarningEnabled = product.isEarlyWarningEnabled() && product.getQuantity() > 0;
         applyEarlyBellIcon((TextInputLayout) findViewById(R.id.edit_expiration_layout));
         // nullable barcode
         String bc = product.getBarcode();
