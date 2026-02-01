@@ -404,6 +404,11 @@ public class ProductDetails extends AppCompatActivity {
                     int newQty = product.getQuantity() - qty;
                     currentProduct = product;
                     quantity.setText(String.valueOf(newQty));
+                    if (newQty <= 0) {
+                        pendingEarlyWarningEnabled = false;
+                        TextInputLayout exp = findViewById(R.id.edit_expiration_layout);
+                        applyEarlyBellIcon(exp);
+                    }
                     invalidateOptionsMenu();
                 })
                 .show();

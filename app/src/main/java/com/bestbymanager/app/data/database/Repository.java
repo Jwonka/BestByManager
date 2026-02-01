@@ -177,22 +177,23 @@ public class Repository {
         }
 
         int rows = mProductDAO.updateProduct(product);
-        if (rows > 0) {
-            AlarmScheduler.cancelAlarm(context, product.getProductID());
-            AlarmScheduler.cancelEarlyWarning(context, product.getProductID());
+        if (rows <= 0) return 0;
 
-            if (product.getQuantity() > 0) {
-                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(),
-                        product.getProductName() + " expires today.");
+        int cancelled = AlarmScheduler.cancelAll(context, product.getProductID());
 
-                if (product.isEarlyWarningEnabled()) {
-                    LocalDate earlyDate = product.getExpirationDate().minusDays(EARLY_WARNING_DAYS);
-                    if (!earlyDate.isBefore(LocalDate.now())) {
-                        AlarmScheduler.scheduleEarlyWarning(context, earlyDate, product.getProductID(),
-                                product.getProductName() + " expires in 7 days.");
-                    }
+        if (product.getQuantity() > 0) {
+            AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(),
+                    product.getProductName() + " expires today.");
+
+            if (product.isEarlyWarningEnabled()) {
+                LocalDate earlyDate = product.getExpirationDate().minusDays(EARLY_WARNING_DAYS);
+                if (!earlyDate.isBefore(LocalDate.now())) {
+                    AlarmScheduler.scheduleEarlyWarning(context, earlyDate, product.getProductID(),
+                            product.getProductName() + " expires in 7 days.");
                 }
             }
+        } else {
+            if (cancelled != 0) showToast("Reminders cleared (qty is 0).");
         }
         return rows;
     }
