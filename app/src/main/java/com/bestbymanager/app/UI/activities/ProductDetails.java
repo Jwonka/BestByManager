@@ -146,6 +146,7 @@ public class ProductDetails extends AppCompatActivity {
         TextInputLayout barcodeLayout = binding.barcodeInputLayout;
         TextInputLayout expirationLayout = binding.editExpirationLayout;
         expirationLayout.setEndIconOnClickListener(v -> showEarlyWarningDialog());
+        applyEarlyBellIcon(expirationLayout);
         modeSwitch = binding.switchMode;
         saveButton = binding.saveProductButton;
         clearButton = binding.clearProductButton;
@@ -418,7 +419,11 @@ public class ProductDetails extends AppCompatActivity {
                 .setTitle("Early warning")
                 .setView(v)
                 .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
-                .setPositiveButton("OK", (d, which) -> pendingEarlyWarningEnabled = toggle.isChecked())
+                .setPositiveButton("OK", (d, which) -> {
+                    pendingEarlyWarningEnabled = toggle.isChecked();
+                    TextInputLayout exp = findViewById(R.id.edit_expiration_layout);
+                    applyEarlyBellIcon(exp);
+                })
                 .show();
     }
 
@@ -512,6 +517,7 @@ public class ProductDetails extends AppCompatActivity {
         quantity.setText(String.valueOf(product.getQuantity()));
         editExp.setText(format(product.getExpirationDate()));
         pendingEarlyWarningEnabled = product.isEarlyWarningEnabled();
+        applyEarlyBellIcon((TextInputLayout) findViewById(R.id.edit_expiration_layout));
         // nullable barcode
         String bc = product.getBarcode();
         barcode.setText(bc == null ? "" : BarcodeUtil.displayCode(bc));
@@ -675,6 +681,11 @@ public class ProductDetails extends AppCompatActivity {
         if (categoryPosition == 0) { category.requestFocus(); toast("Please select a category."); return false; }
 
         return true;
+    }
+
+    private void applyEarlyBellIcon(@NonNull TextInputLayout expirationLayout) {
+        int icon = pendingEarlyWarningEnabled ? R.drawable.ic_bell_filled : R.drawable.ic_bell;
+        expirationLayout.setEndIconDrawable(icon);
     }
 
     @Override protected void onDestroy() {

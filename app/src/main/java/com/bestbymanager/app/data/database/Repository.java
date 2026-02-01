@@ -129,8 +129,8 @@ public class Repository {
                 showToast("Discard recorded.");
                 int q = mProductDAO.getQuantityBlocking(productID);
                 if (q <= 0) {
-                    AlarmScheduler.cancelAlarm(context, productID);
-                    AlarmScheduler.cancelEarlyWarning(context, productID);
+                    int cancelled = AlarmScheduler.cancelAll(context, productID);
+                    if (cancelled != 0) showToast("Reminders cleared (qty is 0).");
                 }
             }
         });

@@ -35,7 +35,7 @@ public class AlarmScheduler {
         am.set(AlarmManager.RTC_WAKEUP, alarmStart, pi);
     }
 
-    public static void cancelAlarm(Context context, long productID) {
+    public static boolean cancelAlarm(Context context, long productID) {
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class)
@@ -48,8 +48,11 @@ public class AlarmScheduler {
                 intent,
                 PendingIntent.FLAG_IMMUTABLE
         );
+
+        if (pi == null) return false;
         am.cancel(pi);
         pi.cancel();
+        return true;
     }
 
     public static void scheduleEarlyWarning(Context context, LocalDate date, long productID, String message) {
@@ -72,7 +75,7 @@ public class AlarmScheduler {
         am.set(AlarmManager.RTC_WAKEUP, alarmStart, pi);
     }
 
-    public static void cancelEarlyWarning(Context context, long productID) {
+    public static boolean cancelEarlyWarning(Context context, long productID) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class)
@@ -87,7 +90,18 @@ public class AlarmScheduler {
                 intent,
                 PendingIntent.FLAG_IMMUTABLE
         );
+
+        if (pi == null) return false;
         am.cancel(pi);
         pi.cancel();
+        return true;
+    }
+
+    /** returns bitmask: 1=expiry cancelled, 2=early cancelled */
+    public static int cancelAll(Context context, long productID) {
+        int mask = 0;
+        if (cancelAlarm(context, productID)) mask |= 1;
+        if (cancelEarlyWarning(context, productID)) mask |= 2;
+        return mask;
     }
 }
