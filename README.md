@@ -7,6 +7,7 @@
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
 ## Status
+📦 **Repo build version:** 1.1.5 (versionCode 7).
 🚀 **Android app in closed beta on Google Play**
 
 ## Table of Contents
@@ -46,14 +47,15 @@
 [Contributing](#contributing)
 
 ## Features
-- 📦 **Inventory tracking** for all food products with brand, barcode, category, and expiration
-- 📷 **Photo capture support** for each product ![Camera: Local Only](https://img.shields.io/badge/Camera-Local%20Only-blue?style=flat-square&logo=camera&logoColor=white)
-- 📅 **Expiration reports** filtered by date range, barcode, or employee
-- 🔎 **Barcode scanning** with 1D barcode support ![Powered by Open Food Facts](https://img.shields.io/badge/Data%20Source-Open%20Food%20Facts-brightgreen?style=flat-square&logo=android&logoColor=white)
-- 🧾 **User-level reporting** with grouped results and total counts
-- 📤 **Export & share** inventory summaries
-- 🔐 **Admin mode**: First user account becomes administrator
+- 📦 **Inventory tracking** for all food products with brand, barcode, category, quantity, and expiration date
+- 📷 **Photo capture** for each product (camera capture + thumbnail storage) ![Camera: Local Only](https://img.shields.io/badge/Camera-Local%20Only-blue?style=flat-square&logo=camera&logoColor=white)
+- 🔎 **Barcode scanning** with 1D barcode support and Open Food Facts lookup ![Powered by Open Food Facts](https://img.shields.io/badge/Data%20Source-Open%20Food%20Facts-brightgreen?style=flat-square&logo=android&logoColor=white)
+- 📅 **Reports** by date range, barcode, and employee, including discarded quantities
+- 🧾 **User-level reporting** with grouped totals
+- 📤 **Share** inventory summaries (text sharing)
+- 🔔 **Early warning reminders** (7‑day pre‑expiry alerts) via bell toggle on expiration date
 - 🗃️ **Offline storage** using Room database ![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-orange?style=flat-square&logo=lock&logoColor=white)
+- 🔐 **Admin mode**: First user account becomes administrator
 - 🛒 Built for small grocery stores, gas stations, or stockrooms ![Built in Wisconsin](https://img.shields.io/badge/Built%20with%20❤️-in%20Wisconsin-red?style=flat-square)
 
 ## Preview
@@ -103,31 +105,18 @@
 - View **User-Level Reports** (grouped product activity by each user)
 
 ## Usage Notes
-🛒 To add products, tap the **Add Product** button or navigate to the **Product Details** screen.
-- Users must fill in the following fields:
+🛒 To add products, tap **Add Product** or open **Product Details**. 
 
-  - Brand
-    
-  - Product name
-  
-  - Weight
-  
-  - Quantity
-  
-  - Expiration date
-    
-  - Barcode
-  
-  - Category
-  
-  - (Optional) Isle and product image
+Required fields include brand, product name, weight, quantity, expiration date, barcode, and category.
 
-🔄 In the **Product Details** screen, users can either:
-
-- Update an existing product
+- 🔔 **Early warning reminders**:
+  - Tap the bell icon on the expiration field to enable a 7‑day reminder.
+  - Reminders are scheduled when you save and are cleared if the quantity drops to 0.
+- 🧹 **Discard tracking**:
+  - When discarding expired or damaged items, the app logs a discard note (optional reason) and updates reports with discarded totals.
+- 🔄 **Product Details**:
+  - This is where you can update an existing product or add a **new expiration date** using the toggle next to **Save Product**.
   
-- Or add a **new expiration date** for the same product by toggling the switch next to the **Save Product** button
-
 📋 All users can access **Product Reports** from the **Product Search** screen to view product data filtered by:
 
 - Barcode
@@ -145,8 +134,10 @@ The app is currently available through Google Play's closed beta testing program
 - 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
 - GitHub Releases (coming soon)
 
-**SHA256 checksum:** `bestbymanager-v1.0.apk`  
+**SHA256 checksum:** `bestbymanager-v1.1.5.apk`  
 **Size:** ~9.4MB
+- For **manual install (sideload)**: download the APK.  
+- For **Google Play**: the AAB is provided for Play Console upload.
 
 Android will prompt once to "Allow installs from unknown sources." Accept to complete the installation.
 
@@ -162,19 +153,18 @@ Clone the repo
 - git clone [https://github.com/Jwonka/BestByManager/tree/main](https://github.com/Jwonka/BestByManager/tree/main)
 - cd BestByManager
 
-Build with Android Studio Meerkat 2024.3.2
+Built with Android Studio Meerkat 2024.3.2
 OR from the command line
 ./gradlew assembleRelease
 
 ## Requirements
-- ![API](https://img.shields.io/badge/API-27%20to%2035-blue) API 27 (Android 8.1 Oreo) ~ API 35 (Android 15, Vanilla Ice Cream)
+- ![API](https://img.shields.io/badge/API-27%20to%2035-blue) API 27+(minSdk 27) (Android 8.1 Oreo) ~ API 35(targetSdk) (Android 15, Vanilla Ice Cream) ~ compileSdk 36
 - Architecture ~ arm64‑v8a, armeabi‑v7a, x86_64
 
 ## Permissions
-- 📷 `CAMERA` – required to take product photos using the device camera
-- 🌐 `INTERNET` – required to fetch product info from Open Food Facts 
-- 📂 `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE` – used to export inventory summaries (optional on Android 10+)
-- 🔔 `POST_NOTIFICATIONS` – used to display expiration reminders (required on Android 13+)
+- 📷 `CAMERA` – required to take product photos and scan barcodes
+- 🌐 `INTERNET` – required for Open Food Facts lookup
+- 🔔 `POST_NOTIFICATIONS` – required for expiration/early warning alerts on Android 13+
 
 Note: Best By Manager does not request location, contacts, or any sensitive personal permissions. All data stays local to the device.
 
@@ -207,7 +197,8 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 - Product deletion is permanent (no undo).
 
 ## Migrations
-Recent releases include database migrations. Play Store updates are required to test migrations properly—sideloaded APKs may skip intermediate versions.
+Current Room schema version: **19**.  
+Defined migrations: **15→16**, **16→17**, **17→18**, **18→19** (adds `earlyWarningEnabled` for reminders).
 
 ## Privacy
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
