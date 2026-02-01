@@ -109,4 +109,5 @@
     <string name="discard_confirm">Discard</string>
     <string name="discarded">Discarded: 0</string>
     <string name="cancel">Cancel</string>
+    <string name="early_warning">Early warning (7 days)</string>
 </resources>

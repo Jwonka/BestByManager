@@ -167,7 +167,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/quantity_input_layout"
                 app:layout_constraintWidth_percent="1"
-                tools:ignore="TextContrastCheck,VisualLintButtonSize" >
+                tools:ignore="TextContrastCheck,VisualLintButtonSize"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_bell"
+                app:endIconTint="@color/black"
+                app:endIconContentDescription="@string/early_warning">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_expiration"

@@ -4,6 +4,7 @@ import static com.bestbymanager.app.utilities.LocalDateBinder.bindFutureDateFiel
 import static com.bestbymanager.app.utilities.LocalDateBinder.format;
 import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import android.Manifest;
 import android.content.Intent;
@@ -78,6 +79,7 @@ public class ProductDetails extends AppCompatActivity {
     Button clearButton;
     SwitchMaterial modeSwitch;
     private Product currentProduct;
+    private boolean pendingEarlyWarningEnabled = false;
     private Spinner category;
     private Spinner isle;
     private ImageView preview;
@@ -142,6 +144,8 @@ public class ProductDetails extends AppCompatActivity {
         isle = binding.spinnerIsle;
         preview = binding.imagePreview;
         TextInputLayout barcodeLayout = binding.barcodeInputLayout;
+        TextInputLayout expirationLayout = binding.editExpirationLayout;
+        expirationLayout.setEndIconOnClickListener(v -> showEarlyWarningDialog());
         modeSwitch = binding.switchMode;
         saveButton = binding.saveProductButton;
         clearButton = binding.clearProductButton;
@@ -320,10 +324,10 @@ public class ProductDetails extends AppCompatActivity {
         MenuItem delete = menu.findItem(R.id.deleteProduct);
         if (delete != null) delete.setVisible(hasProduct);
 
-        // show discard only when product exists AND is expired AND qty > 0
+        // show discard whenever a product exists and there is on-hand qty
         MenuItem discard = menu.findItem(R.id.discardProduct);
         if (discard != null) {
-            boolean showDiscard = hasProduct && currentProduct.isDiscardable() && currentProduct.getQuantity() > 0;
+            boolean showDiscard = hasProduct && currentProduct.getQuantity() > 0;
             discard.setVisible(showDiscard);
         }
         return true;
@@ -373,7 +377,7 @@ public class ProductDetails extends AppCompatActivity {
         qtyEt.setText(String.valueOf(product.getQuantity()));
 
         new AlertDialog.Builder(this)
-                .setTitle("Discard expired item")
+                .setTitle("Discard item")
                 .setView(v)
                 .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
                 .setPositiveButton(R.string.discard_confirm, (d, which) -> {
@@ -401,6 +405,20 @@ public class ProductDetails extends AppCompatActivity {
                     quantity.setText(String.valueOf(newQty));
                     invalidateOptionsMenu();
                 })
+                .show();
+    }
+
+    private void showEarlyWarningDialog() {
+        View v = getLayoutInflater().inflate(R.layout.dialog_early_warning, null);
+        MaterialSwitch toggle = v.findViewById(R.id.early_warning_switch);
+
+        toggle.setChecked(pendingEarlyWarningEnabled);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Early warning")
+                .setView(v)
+                .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
+                .setPositiveButton("OK", (d, which) -> pendingEarlyWarningEnabled = toggle.isChecked())
                 .show();
     }
 
@@ -493,7 +511,7 @@ public class ProductDetails extends AppCompatActivity {
         weight.setText(product.getWeight());
         quantity.setText(String.valueOf(product.getQuantity()));
         editExp.setText(format(product.getExpirationDate()));
-
+        pendingEarlyWarningEnabled = product.isEarlyWarningEnabled();
         // nullable barcode
         String bc = product.getBarcode();
         barcode.setText(bc == null ? "" : BarcodeUtil.displayCode(bc));
@@ -527,6 +545,7 @@ public class ProductDetails extends AppCompatActivity {
         imageUri = null;
         currentProduct = null;
         invalidateOptionsMenu();
+        pendingEarlyWarningEnabled = false;
         modeSwitch.setChecked(false);
         modeSwitch.setEnabled(false);
     }
@@ -593,6 +612,8 @@ public class ProductDetails extends AppCompatActivity {
                 return;
             }
         }
+
+        toSave.setEarlyWarningEnabled(pendingEarlyWarningEnabled);
 
         productViewModel.save(toSave, id -> runOnUiThread(() -> {
             if (id <= 0) { toast("Save failed."); return; }

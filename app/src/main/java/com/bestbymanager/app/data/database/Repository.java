@@ -45,6 +45,7 @@ public class Repository {
     private final Executor executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
     private final OffApi api;
     private static final LiveData<List<?>> EMPTY = new MutableLiveData<>(Collections.emptyList());
+    private static final int EARLY_WARNING_DAYS = 7;
     @SuppressWarnings("unchecked")
     private static <T> LiveData<T> emptyLiveData() { return (LiveData<T>) EMPTY; }
 
@@ -126,6 +127,11 @@ public class Repository {
                 showToast("Not enough on-hand quantity to discard.");
             } else {
                 showToast("Discard recorded.");
+                int q = mProductDAO.getQuantityBlocking(productID);
+                if (q <= 0) {
+                    AlarmScheduler.cancelAlarm(context, productID);
+                    AlarmScheduler.cancelEarlyWarning(context, productID);
+                }
             }
         });
     }
@@ -150,6 +156,15 @@ public class Repository {
         product.setProductID(id);
         AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), id,
                 product.getProductName() + " expires today.");
+
+        if (product.isEarlyWarningEnabled()) {
+            LocalDate earlyDate = product.getExpirationDate().minusDays(EARLY_WARNING_DAYS);
+            if (!earlyDate.isBefore(LocalDate.now())) {
+                AlarmScheduler.scheduleEarlyWarning(context, earlyDate, id,
+                        product.getProductName() + " expires in 7 days.");
+            }
+        }
+
         return id;
     }
 
@@ -164,8 +179,20 @@ public class Repository {
         int rows = mProductDAO.updateProduct(product);
         if (rows > 0) {
             AlarmScheduler.cancelAlarm(context, product.getProductID());
-            AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(),
-                    product.getProductName() + " expires today.");
+            AlarmScheduler.cancelEarlyWarning(context, product.getProductID());
+
+            if (product.getQuantity() > 0) {
+                AlarmScheduler.scheduleAlarm(context, product.getExpirationDate(), product.getProductID(),
+                        product.getProductName() + " expires today.");
+
+                if (product.isEarlyWarningEnabled()) {
+                    LocalDate earlyDate = product.getExpirationDate().minusDays(EARLY_WARNING_DAYS);
+                    if (!earlyDate.isBefore(LocalDate.now())) {
+                        AlarmScheduler.scheduleEarlyWarning(context, earlyDate, product.getProductID(),
+                                product.getProductName() + " expires in 7 days.");
+                    }
+                }
+            }
         }
         return rows;
     }
@@ -175,6 +202,7 @@ public class Repository {
                 showToast("Product not found.");
             }  else {
                 AlarmScheduler.cancelAlarm(context, product.getProductID());
+                AlarmScheduler.cancelEarlyWarning(context, product.getProductID());
             }
         });
     }

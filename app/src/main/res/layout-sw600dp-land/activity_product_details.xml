@@ -155,7 +155,11 @@
                     android:layout_marginTop="@dimen/spacing_s"
                     app:layout_constraintTop_toBottomOf="@id/quantity_input_layout"
                     app:layout_constraintStart_toStartOf="@id/quantity_input_layout"
-                    app:layout_constraintEnd_toEndOf="@id/quantity_input_layout">
+                    app:layout_constraintEnd_toEndOf="@id/quantity_input_layout"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_bell"
+                    app:endIconTint="@color/black"
+                    app:endIconContentDescription="@string/early_warning">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_expiration"

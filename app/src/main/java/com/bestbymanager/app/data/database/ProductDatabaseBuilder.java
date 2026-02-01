@@ -14,7 +14,7 @@ import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 18, exportSchema = false)
+@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 19, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
@@ -136,6 +136,16 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_18_19 = new Migration(18, 19) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL(
+                    "ALTER TABLE product " +
+                            "ADD COLUMN earlyWarningEnabled INTEGER NOT NULL DEFAULT 0"
+            );
+        }
+    };
+
     public static ProductDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ProductDatabaseBuilder.class) {
@@ -147,7 +157,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             )
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
-                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18)
+                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19)
                             .build();
                 }
             }

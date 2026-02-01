@@ -36,6 +36,8 @@ public class Product {
     @NonNull
     private LocalDate expirationDate;
     private int    quantity;
+    @ColumnInfo(defaultValue = "0")
+    private boolean earlyWarningEnabled;
     private String weight;
     private String barcode;
     private int category;
@@ -43,6 +45,8 @@ public class Product {
     private LocalDate purchaseDate;
     private String imageUri;
     private byte[] thumbnail;
+    public boolean isEarlyWarningEnabled() { return earlyWarningEnabled; }
+    public void setEarlyWarningEnabled(boolean earlyWarningEnabled) { this.earlyWarningEnabled = earlyWarningEnabled; }
 
     @Ignore
     public Product() {}
@@ -60,6 +64,7 @@ public class Product {
                    @NonNull String productName,
                    @NonNull LocalDate expirationDate,
                    int quantity,
+                   boolean earlyWarningEnabled,
                    String weight,
                    String barcode,
                    String brand,
@@ -68,19 +73,21 @@ public class Product {
                    LocalDate purchaseDate,
                    String imageUri,
                    byte[] thumbnail) {
+
         this.productID = productID;
-        this.userID        = userID;
-        this.brand           = brand;
+        this.userID = userID;
+        this.brand = brand;
         this.productName = productName;
         this.expirationDate = expirationDate;
-        this.quantity        = quantity;
-        this.weight          = weight;
-        this.barcode         = barcode;
-        this.category        = category;
-        this.isle            = isle;
-        this.purchaseDate    = purchaseDate;
-        this.imageUri        = imageUri;
-        this.thumbnail       = thumbnail;
+        this.quantity = quantity;
+        this.earlyWarningEnabled = earlyWarningEnabled;
+        this.weight = weight;
+        this.barcode = barcode;
+        this.category = category;
+        this.isle = isle;
+        this.purchaseDate = purchaseDate;
+        this.imageUri = imageUri;
+        this.thumbnail = thumbnail;
     }
 
     public long getProductID() {
