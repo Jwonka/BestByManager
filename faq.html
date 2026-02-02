@@ -15,41 +15,52 @@
         <li><a class="active" href="faq.html">FAQ</a></li>
       </ul>
     </nav>
-  
+
     <main>
       <h1>Frequently Asked Questions</h1>
-      
+
       <h2>How do I become the administrator?</h2>
       <p>The first account created after installing the app becomes the administrator automatically.</p>
-  
-      <h2>How do I add products?</h2>
-      <p>Tap the “Add Product” button or go to the Product Details screen. You’ll be prompted to enter required information such as brand, product name, quantity, and expiration date.</p>
-  
-      <h2>Where is my data stored?</h2>
-      <p>All data is stored locally on your Android device using a secure Room database.  <strong>No data leaves your device.</strong></p>
-  
+
       <h2>Do I need an internet connection?</h2>
-      <p>Only for barcode lookup through Open Food Facts. The app functions offline for everything else.</p>
-  
+      <p>Only for barcode lookup through Open Food Facts. Inventory, photos, discards, and reports work offline.</p>
+
+      <h2>How do I add products?</h2>
+      <p>Tap “Add Product” or open Product Details. Enter brand/product, quantity, expiration date, barcode, and category.</p>
+
+      <h2>What is the bell icon / early warning reminder?</h2>
+      <p>The bell enables a 7-day early warning reminder for that product. It schedules when you save and clears automatically if quantity is set to 0.</p>
+
+      <h2>What is “discard tracking”?</h2>
+      <p>When items are expired or damaged, you can record a discard (quantity + optional reason). Reports include discarded totals.</p>
+
+      <h2>Where is my data stored?</h2>
+      <p>All data is stored locally on your Android device using a Room database. <strong>No data leaves your device.</strong></p>
+
+      <h2>Why does the app request notification permission?</h2>
+      <p>Notifications are used for expiration reminders and the 7-day early warning alerts (Android 13+).</p>
+
       <h2>Can I reset user passwords?</h2>
-      <p class="center">Yes. Administrators can reset passwords through the Employee Details screen.</p>
-  
+      <p>Yes. Administrators can reset passwords through the Employee Details screen.</p>
+
       <h2>What happens if I delete a product?</h2>
-      <p class="center">Deletion is permanent. There is no undo feature at this time.</p></br></br>
-  
+      <p>Deletion is permanent. There is no undo feature at this time.</p>
+
       <p class="center"><strong>Note:</strong> Only administrators can create new users or administrators.</p>
     </main>
-  
-     <footer>
+
+    <footer>
       <p>&copy; <span id="year"></span> Joshua Werlein</p>
       <p>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
       <p style="text-align: center; font-size: 1rem;">
-        This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>, licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
+        This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>,
+        licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
       </p>
     </footer>
-    
+
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
   </body>
 </html>
+
