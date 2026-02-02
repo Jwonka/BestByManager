@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Best By Manager – Android app for tracking food product expiration and managing inventory for small businesses." />
+    <meta name="description" content="Best By Manager – Android app for tracking product expiration, quantities, discard events, and reminders for small businesses." />
     <meta property="og:title" content="Best By Manager" />
-    <meta property="og:description" content="Track product expiration dates with barcode scanning and smart reminders." />
-    <meta property="og:image" content="https://jwonka.github.io/BestByManager/og-image.png?v=3" />
+    <meta property="og:description" content="Track expiration dates with barcode scanning, discard logging, and smart reminders (including a 7-day early warning)." />
+    <meta property="og:image" content="https://jwonka.github.io/BestByManager/og-image.png?v=4" />
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
     <meta property="og:url" content="https://jwonka.github.io/BestByManager/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    
+
     <link href="styles.css" rel="stylesheet" />
     <script src="https://static.itch.io/api.js"></script>
     <title>Best By Manager</title>
@@ -27,34 +27,39 @@
         <li><a href="faq.html">FAQ</a></li>
       </ul>
     </nav>
-  
+
     <main>
       <h1>Best By Manager</h1>
-  
-      <p class="listHeadline">Keep food safe and shelves stocked with <strong>Best By Manager</strong> 🧊 – expiration tracking made simple.</p>
-  
+
+      <p class="listHeadline">
+        Keep food safe and shelves stocked with <strong>Best By Manager</strong> 🧊 – expiration tracking made simple.
+      </p>
+
       <section id="features">
         <h2>What Can Best By Manager Do?</h2>
         <ul>
-          <li><strong>Scan barcodes</strong> to quickly identify food items</li>
-          <li><strong>Add products</strong> with expiration dates, categories, and quantities</li>
-          <li><strong>Track expiration</strong> by employee or category</li>
-          <li><strong>Get smart reports</strong> for products expiring soon</li>
-          <li><strong>Use the camera</strong> to snap product photos for easy ID</li>
+          <li><strong>Scan barcodes</strong> to identify items fast (Open Food Facts lookup)</li>
+          <li><strong>Add products</strong> with brand, name, weight, category, quantity, and expiration date</li>
+          <li><strong>Early warning reminders</strong> (7-day pre-expiry) via the bell toggle on the expiration field</li>
+          <li><strong>Expiration reminders</strong> and <strong>auto-clear</strong> reminders when quantity hits 0</li>
+          <li><strong>Discard tracking</strong> (quantity + optional reason) with reporting totals</li>
+          <li><strong>Reports</strong> filtered by barcode, date range, expiration status, or employee</li>
+          <li><strong>Camera photos</strong> stored locally for easy product identification</li>
+          <li><strong>Local-only storage</strong> (no accounts, no cloud sync, no analytics)</li>
         </ul>
       </section>
-  
+
       <section id="howto">
         <h2>How It Works</h2>
-          <ul class="features">
-            <li><strong>Install the APK</strong> and launch the app</li>
-            <li><strong>Create the first user</strong> – becomes the administrator automatically</li>
-            <li><strong>Add inventory</strong> via “Add Product” or by scanning a barcode</li>
-            <li><strong>Search and filter reports</strong> by barcode, date, or employee</li>
-            <li><strong>Export or share</strong> expiration summaries as plain text</li>
-          </ul>
+        <ul class="features">
+          <li><strong>Install</strong> the app and create the first user → becomes admin automatically</li>
+          <li><strong>Add inventory</strong> via “Add Product” or by scanning a barcode</li>
+          <li><strong>Enable early warning</strong> by tapping the bell icon on the expiration field (optional)</li>
+          <li><strong>Record discards</strong> for expired/damaged items (optional reason)</li>
+          <li><strong>Run reports</strong> and <strong>share</strong> summaries via Android share sheet</li>
+        </ul>
       </section>
-  
+
       <section id="preview">
         <h2>App Preview</h2>
         <div class="shots">
@@ -66,33 +71,38 @@
           <img src="images/productReport.png" alt="Product Report" />
         </div>
       </section>
-  
+
       <section class="section-block">
         <h2>Download</h2>
         <p class="center">
-          Get the latest APK:
-           <button id="buy-bbm" class="btn">Download on itch.io</button>
+          <button id="buy-bbm" class="btn">Download on itch.io (APK)</button>
         </p>
-        <p id="sources" class="center"><em>Note: Android will prompt you once to allow unknown sources.</em></p>
+        <p class="center">
+          <a class="btn" href="https://github.com/Jwonka/BestByManager/releases" target="_blank" rel="noopener">GitHub Releases</a>
+        </p>
+        <p id="sources" class="center">
+          <em>Note: Android will prompt you once to allow installs from unknown sources (sideload).</em>
+        </p>
       </section>
-  
+
       <section class="section-block">
-        <p>The first account created becomes the <em>administrator</em>, gaining full control of all users.</p>
+        <p>The first account created becomes the <em>administrator</em>, gaining control of user management and reports.</p>
         <p class="center">
           Learn more:
-          <a class="btn" href="https://github.com/Jwonka/BestByManager" target="_blank">Repository</a>
+          <a class="btn" href="https://github.com/Jwonka/BestByManager" target="_blank" rel="noopener">Repository</a>
         </p>
       </section>
     </main>
-  
+
     <footer>
       <p><em>&copy; <span id="year"></span> Joshua Werlein</em></p>
       <p><em>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></em></p>
       <p style="text-align: center; font-size: 1rem;">
-        This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>, licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
+        This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>,
+        licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
       </p>
     </footer>
-  
+
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
