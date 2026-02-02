@@ -252,6 +252,15 @@ a.active {
   text-align: left;
 }
 
+/* FAQ-only spacing (override default <p> margins) */
+.page-faq main p {
+  margin: 0.35rem auto;
+}
+
+.page-faq main h2 {
+  margin: 1.2rem 0 0.35rem;
+}
+
 footer {
   display: flex;
   flex-direction: column;
