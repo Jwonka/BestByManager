@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     && event.getAction() == KeyEvent.ACTION_DOWN;
 
             if (imeDone || enter) {
-                if (firstRun[0]) registerAction.run();
+                if (firstRun[0]) button.performClick();
                 else loginAction.run();
                 return true;
             }
