@@ -112,7 +112,7 @@
     <string name="early_warning">Early warning (7 days)</string>
     <string name="reset_app_menu">Reset app data</string>
     <string name="reset_app_title">Reset all app data?</string>
-    <string name="reset_app_message">This will permanently delete ALL users, inventory, and settings on this device. This cannot be undone.\n\nType DELETE to continue.</string>
+    <string name="reset_app_message">This will permanently delete ALL users, inventory, and settings on this device. This cannot be undone.\n\nType delete to continue.</string>
     <string name="reset_app_mismatch">Confirmation text did not match.</string>
     <string name="reset_app_final_title">Final confirmation</string>
     <string name="reset_app_final_message">Are you absolutely sure? This will wipe everything on this device.</string>

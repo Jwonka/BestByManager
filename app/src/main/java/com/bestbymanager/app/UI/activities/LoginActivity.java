@@ -42,8 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "app_prefs";
     private static final int REQ_POST_NOTIF = 42;
     private static final String KEY_FIRST_RUN_DONE = "first_run_done";
-
-    // Room DB filename from your builder:
     private static final String DB_NAME = "MyProductDatabase.db";
 
     private AuthenticationAction loginAction;
@@ -101,10 +99,25 @@ public class LoginActivity extends AppCompatActivity {
             button.setText(R.string.register);
             button.setOnClickListener(v -> {
                 registerAction.run();
-                prefs.edit().putBoolean(KEY_FIRST_RUN_DONE, true).apply();
-                firstRun[0] = false; // important: fixes “IME still runs login”
-                button.setText(R.string.login);
-                button.setOnClickListener(x -> loginAction.run());
+
+                // Re-check after attempting registration; only flip to login if a user actually exists
+                new Thread(() -> {
+                    boolean anyUsers = false;
+                    try {
+                        anyUsers = repository.userCountBlocking() > 0;
+                    } catch (Throwable ignored) {}
+
+                    final boolean finalAnyUsers = anyUsers;
+                    runOnUiThread(() -> {
+                        if (finalAnyUsers) {
+                            prefs.edit().putBoolean(KEY_FIRST_RUN_DONE, true).apply();
+                            firstRun[0] = false;
+                            button.setText(R.string.login);
+                            button.setOnClickListener(x -> loginAction.run());
+                        }
+                        // else: stay in Register mode
+                    });
+                }).start();
             });
         } else {
             button.setText(R.string.login);
@@ -143,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showResetDialog() {
         final EditText input = new EditText(this);
-        input.setHint("Type DELETE to confirm");
+        input.setHint("Type delete to confirm");
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.reset_app_title)
@@ -152,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.cancel, (d, w) -> d.dismiss())
                 .setPositiveButton(R.string.continue_label, (d, w) -> {
                     String val = input.getText() == null ? "" : input.getText().toString().trim();
-                    if (!"DELETE".equals(val)) {
+                    if (!"delete".equalsIgnoreCase(val)) {
                         Toast.makeText(this, R.string.reset_app_mismatch, Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -171,7 +184,11 @@ public class LoginActivity extends AppCompatActivity {
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {
             boolean requested = am.clearApplicationUserData();
-            if (requested) return; // system will kill/restart the app process
+            if (requested) {
+                // don't rely on the system timing; force a cold restart so prefs/UI reload
+                restartFresh();
+                return;
+            }
         }
 
         // Fallback: close DB + delete DB files + clear prefs + clear cache + restart
