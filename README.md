@@ -7,7 +7,7 @@
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
 ## Status
-📦 **Repo build version:** 1.1.5 (versionCode 7).
+📦 **Repo build version:** 1.1.7 (versionCode 9).
 🚀 **Android app in closed beta on Google Play**
 
 ## Table of Contents
@@ -19,6 +19,8 @@
 [Admin Setup](#admin-setup)
 
 [Usage Notes](#usage-notes)
+
+[Account Recovery (Local-Only)](#account-recovery-local-only)
 
 [Installation](#installation)
 
@@ -125,6 +127,13 @@ Required fields include brand, product name, weight, quantity, expiration date, 
 
 - Expiration status (e.g., expired, expiring soon)
 
+  ### Account Recovery (Local-Only)
+Best By Manager does not use cloud accounts or email recovery.
+
+If all user passwords are lost on a device, the app provides a **secure local reset option** that wipes app data and returns the app to first-run state. This prevents permanent lockout on offline, single-device installs.
+
+⚠️ This action permanently deletes all local inventory and user data and cannot be undone.
+
 ## Installation
 
 ### Google Play (Closed Beta)
@@ -132,9 +141,8 @@ The app is currently available through Google Play's closed beta testing program
 
 ### APK Sideload
 - 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
-- GitHub Releases (coming soon)
 
-**SHA256 checksum:** `bestbymanager-v1.1.6.apk`  
+**SHA256 checksum:** `bestbymanager-v1.1.7.apk`  
 **Size:** ~9.4MB
 - For **manual install (sideload)**: download the APK.  
 - For **Google Play**: the AAB is provided for Play Console upload.
@@ -195,6 +203,7 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 - No automated testing suite (yet).
 - Cloud sync is not implemented, but may be added in a future version.
 - Product deletion is permanent (no undo).
+- Forgotten passwords cannot be recovered without a full local data reset (by design).
 
 ## Migrations
 Current Room schema version: **19**.  
@@ -207,7 +216,8 @@ Best By Manager stores all data locally on your device. No personal or product d
 - 🌐 The app fetches public product information from [Open Food Facts](https://openfoodfacts.org) using barcode lookup.
 - 🔒 No data is sent back to Open Food Facts or any third party.
 - 🚫 There is no analytics, tracking, or cloud sync.
-
+  
+Because all data is stored locally, account recovery is handled via an optional full local reset rather than cloud-based password recovery.
 This ensures your inventory stays private and under your control at all times.
 
 ## License
