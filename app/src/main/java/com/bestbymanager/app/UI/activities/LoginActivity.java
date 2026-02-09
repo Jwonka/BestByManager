@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         setTitle(R.string.login);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         final View rootView = binding.getRoot();
@@ -193,30 +192,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performFactoryReset() {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (am != null) {
-            boolean requested = am.clearApplicationUserData();
-            if (requested) {
-                // force a cold restart so we don’t sit in stale UI state
-                restartFresh();
-                return;
-            }
-        }
-
+        // Always do explicit wipe so state is guaranteed before restart.
         try {
             try {
                 ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(getApplicationContext());
                 if (db != null) db.close();
             } catch (Throwable ignored) {}
 
+            // DB wipe
             deleteDatabase(DB_NAME);
             deleteDatabase(DB_NAME + "-wal");
             deleteDatabase(DB_NAME + "-shm");
 
-            getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
-            getSharedPreferences("bestby_session", MODE_PRIVATE).edit().clear().apply();
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+            // prefs wipe
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().commit();
+            getSharedPreferences("bestby_session", MODE_PRIVATE).edit().clear().commit();
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
 
+            // cache wipe
             deleteRecursively(getCacheDir());
 
             restartFresh();
