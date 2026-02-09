@@ -22,7 +22,7 @@ public abstract class AuthenticationAction {
     }
     public final void run() {
         String name = userName.getText().toString().trim();
-        String plainPassword = password.getText().toString().trim();
+        String plainPassword = password.getText().toString()
 
         if (!validInput(name, plainPassword, strict)) return;
 
