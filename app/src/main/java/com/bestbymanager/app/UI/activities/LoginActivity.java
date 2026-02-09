@@ -41,11 +41,15 @@ import java.io.File;
 public class LoginActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "app_prefs";
     private static final int REQ_POST_NOTIF = 42;
-    private static final String KEY_FIRST_RUN_DONE = "first_run_done";
     private static final String DB_NAME = "MyProductDatabase.db";
 
     private AuthenticationAction loginAction;
     private AuthenticationAction registerAction;
+
+    private Repository repository;
+    private ActivityLoginBinding binding;
+
+    private volatile boolean firstRun = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,44 +89,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Repository repository = new Repository(getApplication());
-
+        repository = new Repository(getApplication());
         loginAction = new LoginAction(this, binding.userNameInput, binding.passwordInput, repository);
         registerAction = new RegisterAction(this, binding.userNameInput, binding.passwordInput, repository);
 
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean[] firstRun = { !prefs.getBoolean(KEY_FIRST_RUN_DONE, false) };
-
-        MaterialButton button = binding.loginButton;
-
-        if (firstRun[0]) {
-            button.setText(R.string.register);
-            button.setOnClickListener(v -> {
-                registerAction.run();
-
-                // Re-check after attempting registration; only flip to login if a user actually exists
-                new Thread(() -> {
-                    boolean anyUsers = false;
-                    try {
-                        anyUsers = repository.userCountBlocking() > 0;
-                    } catch (Throwable ignored) {}
-
-                    final boolean finalAnyUsers = anyUsers;
-                    runOnUiThread(() -> {
-                        if (finalAnyUsers) {
-                            prefs.edit().putBoolean(KEY_FIRST_RUN_DONE, true).apply();
-                            firstRun[0] = false;
-                            button.setText(R.string.login);
-                            button.setOnClickListener(x -> loginAction.run());
-                        }
-                        // else: stay in Register mode
-                    });
-                }).start();
-            });
-        } else {
-            button.setText(R.string.login);
-            button.setOnClickListener(v -> loginAction.run());
-        }
+        refreshFirstRunStateAndWireUi();
 
         binding.passwordInput.setOnEditorActionListener((v, actionId, event) -> {
             boolean imeDone = actionId == EditorInfo.IME_ACTION_DONE;
@@ -131,18 +102,60 @@ public class LoginActivity extends AppCompatActivity {
                     && event.getAction() == KeyEvent.ACTION_DOWN;
 
             if (imeDone || enter) {
-                if (firstRun[0]) button.performClick();
-                else loginAction.run();
+                // ensure IME follows whatever the button currently does (register vs login)
+                binding.loginButton.performClick();
                 return true;
             }
             return false;
         });
     }
 
+    private void refreshFirstRunStateAndWireUi() {
+        final MaterialButton button = binding.loginButton;
+
+        // Disable until we know state
+        button.setEnabled(false);
+
+        new Thread(() -> {
+            boolean anyUsers = false;
+            try {
+                anyUsers = repository.userCountBlocking() > 0;
+            } catch (Throwable ignored) {}
+
+            final boolean computedFirstRun = !anyUsers;
+            runOnUiThread(() -> {
+                firstRun = computedFirstRun;
+
+                if (firstRun) {
+                    button.setText(R.string.register);
+                    button.setOnClickListener(v -> {
+                        registerAction.run();
+
+                        // after registration attempt, re-check DB and rewire (only flips to login if a user exists)
+                        refreshFirstRunStateAndWireUi();
+                    });
+                } else {
+                    button.setText(R.string.login);
+                    button.setOnClickListener(v -> loginAction.run());
+                }
+
+                button.setEnabled(true);
+                invalidateOptionsMenu(); // hide/show overflow item based on firstRun
+            });
+        }).start();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_login_activity, menu);
         return true;
+    }
+
+    // Hide overflow item on first run (your preference)
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem reset = menu.findItem(R.id.menu_reset_app_data);
+        if (reset != null) reset.setVisible(!firstRun);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -180,18 +193,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performFactoryReset() {
-        // Preferred: full app-data wipe (same as Settings -> Clear storage)
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null) {
             boolean requested = am.clearApplicationUserData();
             if (requested) {
-                // don't rely on the system timing; force a cold restart so prefs/UI reload
+                // force a cold restart so we don’t sit in stale UI state
                 restartFresh();
                 return;
             }
         }
 
-        // Fallback: close DB + delete DB files + clear prefs + clear cache + restart
         try {
             try {
                 ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(getApplicationContext());
@@ -202,14 +213,10 @@ public class LoginActivity extends AppCompatActivity {
             deleteDatabase(DB_NAME + "-wal");
             deleteDatabase(DB_NAME + "-shm");
 
-            // clear app_prefs (first_run_done etc)
             getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
-
-            // clear Session prefs + default prefs
             getSharedPreferences("bestby_session", MODE_PRIVATE).edit().clear().apply();
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
 
-            // clear cache dir (temp photos etc)
             deleteRecursively(getCacheDir());
 
             restartFresh();
@@ -238,7 +245,6 @@ public class LoginActivity extends AppCompatActivity {
             File[] kids = f.listFiles();
             if (kids != null) for (File k : kids) deleteRecursively(k);
         }
-        // ignore return; best-effort
         //noinspection ResultOfMethodCallIgnored
         f.delete();
     }
