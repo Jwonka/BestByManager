@@ -5,6 +5,7 @@
     <dimen name="spacing_s">8dp</dimen>
     <dimen name="spacing_sm">10dp</dimen>
     <dimen name="spacing_m">16dp</dimen>
+    <dimen name="spacing_ml">20dp</dimen>
     <dimen name="spacing_l">24dp</dimen>
     <dimen name="spacing_xl">32dp</dimen>
     <dimen name="spacing_xxl">48dp</dimen>
