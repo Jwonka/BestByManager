@@ -8,6 +8,16 @@
     android:background="@color/mint_green"
     tools:context=".UI.activities.LoginActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:title=""
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <ImageView
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
@@ -20,7 +30,7 @@
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintHeight_max="350dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -30,11 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_m"
         android:layout_marginEnd="@dimen/spacing_m"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/grocery_icon"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- rest unchanged -->
         <TextView
             android:id="@+id/login_title"
             android:layout_width="0dp"
