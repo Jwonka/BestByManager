@@ -21,8 +21,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_percent="0.32"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintWidth_max="300dp"
-        app:layout_constraintHeight_max="300dp"
+        app:layout_constraintWidth_max="340dp"
+        app:layout_constraintHeight_max="340dp"
         android:layout_marginEnd="@dimen/spacing_z" />
 
     <com.google.android.material.card.MaterialCardView
@@ -35,6 +35,7 @@
         app:strokeColor="@color/black"
         app:strokeWidth="1dp"
         app:cardCornerRadius="0dp"
+
         app:layout_constraintStart_toEndOf="@id/grocery_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

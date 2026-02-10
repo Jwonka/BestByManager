@@ -24,10 +24,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintWidth_percent="0.52"
-            app:layout_constraintWidth_max="300dp"
-            app:layout_constraintHeight_max="300dp"
+            app:layout_constraintWidth_max="380dp"
+            app:layout_constraintHeight_max="380dp"
             app:layout_constraintDimensionRatio="1:1"
-            android:layout_marginTop="@dimen/spacing_xxxxl" />
+            android:layout_marginTop="@dimen/spacing_xxxxxl" />
 
         <TextView
             android:id="@+id/login_title"
@@ -48,7 +48,7 @@
             android:id="@+id/credentials_panel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginTop="@dimen/spacing_l"
             android:layout_marginBottom="@dimen/spacing_xxl"
             app:cardBackgroundColor="@color/sky_blue"
             app:strokeColor="@color/black"
@@ -137,8 +137,8 @@
             style="@style/DarkGreenPillBig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_m"
-            android:layout_marginBottom="@dimen/spacing_s"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:layout_marginBottom="@dimen/spacing_l"
             android:text="@string/login"
             app:layout_constraintTop_toBottomOf="@id/credentials_panel"
             app:layout_constraintStart_toStartOf="parent"
