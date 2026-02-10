@@ -91,11 +91,11 @@
         <activity
             android:name=".UI.activities.ResetPasswordActivity"
             android:windowSoftInputMode="adjustResize"
-            android:exported="true"/>
+            android:exported="false"/>
         <activity
             android:name=".UI.authentication.RecoveryActivity"
             android:windowSoftInputMode="adjustResize"
-            android:exported="true"/>
+            android:exported="false"/>
         <activity
             android:name=".UI.activities.LoginActivity"
             android:windowSoftInputMode="adjustResize"
