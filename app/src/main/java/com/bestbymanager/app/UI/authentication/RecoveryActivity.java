@@ -2,6 +2,7 @@ package com.bestbymanager.app.UI.authentication;
 
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -18,6 +19,8 @@ import com.bestbymanager.app.UI.activities.ResetPasswordActivity;
 public class RecoveryActivity extends AppCompatActivity {
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
+    private static final String SECURITY_PREFS = "security_prefs";
+    private static final String KEY_RECOVERY_ENABLED = "recovery_enabled";
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,18 @@ public class RecoveryActivity extends AppCompatActivity {
 
         final View btn = findViewById(R.id.btn_verify_device);
         final TextView err = findViewById(R.id.recovery_error);
+
+        boolean enabled = getSharedPreferences(SECURITY_PREFS, Context.MODE_PRIVATE)
+                .getBoolean(KEY_RECOVERY_ENABLED, false);
+        if (!enabled) {
+            if (btn != null) btn.setEnabled(false);
+            if (err != null) {
+                err.setVisibility(View.VISIBLE);
+                err.setText(R.string.recovery_not_enabled);
+            }
+            Toast.makeText(this, R.string.recovery_not_enabled, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         BiometricManager bm = BiometricManager.from(this);
         int canAuth = bm.canAuthenticate(

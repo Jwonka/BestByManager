@@ -3,6 +3,7 @@ package com.bestbymanager.app.UI.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import androidx.biometric.BiometricManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -35,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private Repository repository;
     private ActivityLoginBinding binding;
-
     private volatile boolean firstRun = true;
 
     @Override
@@ -82,9 +82,33 @@ public class LoginActivity extends AppCompatActivity {
 
         refreshFirstRunStateAndWireUi();
 
-        findViewById(R.id.link_forgot_password).setOnClickListener(v ->
-                startActivity(new Intent(this, com.bestbymanager.app.UI.authentication.RecoveryActivity.class))
-        );
+        findViewById(R.id.link_forgot_password).setOnClickListener(v -> {
+            // Hide on first run (no account to recover yet)
+            if (firstRun) return;
+
+            // Require that recovery has been enabled in-app (after admin setup)
+            boolean enabled = getSharedPreferences("security_prefs", MODE_PRIVATE)
+                    .getBoolean("recovery_enabled", false);
+
+            if (!enabled) {
+                Toast.makeText(this, "Password recovery not set up yet. Ask an admin to enable it in Settings.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Require device credential/biometric enrolled
+            BiometricManager bm = BiometricManager.from(this);
+            int canAuth = bm.canAuthenticate(
+                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                            | BiometricManager.Authenticators.BIOMETRIC_STRONG
+            );
+
+            if (canAuth != BiometricManager.BIOMETRIC_SUCCESS) {
+                Toast.makeText(this, "Screen lock required for recovery. Set a PIN/pattern in Android settings.", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS));
+                return;
+            }
+            startActivity(new Intent(this, com.bestbymanager.app.UI.authentication.RecoveryActivity.class));
+        });
 
         binding.passwordInput.setOnEditorActionListener((v, actionId, event) -> {
             boolean imeDone = actionId == EditorInfo.IME_ACTION_DONE;
@@ -113,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
             final boolean computedFirstRun = !anyUsers;
             runOnUiThread(() -> {
                 firstRun = computedFirstRun;
+                binding.linkForgotPassword.setVisibility(firstRun ? View.GONE : View.VISIBLE);
 
                 if (firstRun) {
                     button.setText(R.string.register);

@@ -14,13 +14,13 @@ import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 19, exportSchema = false)
+@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 20, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
     public abstract UserDAO userDAO();
     public abstract ProductDAO productDAO();
-
+    public static final String DB_NAME = "MyProductDatabase.db";
     private static volatile ProductDatabaseBuilder INSTANCE;
 
     public static final Migration MIGRATION_15_16 = new Migration(15, 16) {
@@ -153,7 +153,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(
                                     context.getApplicationContext(),
                                     ProductDatabaseBuilder.class,
-                                    "MyProductDatabase.db"
+                                    DB_NAME
                             )
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))

@@ -23,9 +23,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.7"
+            app:layout_constraintWidth_percent="0.52"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintHeight_max="300dp"
             app:layout_constraintDimensionRatio="1:1"
-            android:layout_marginTop="@dimen/padding_m" />
+            android:layout_marginTop="@dimen/spacing_xxxxl" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/employee_search_panel"

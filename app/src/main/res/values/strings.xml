@@ -121,4 +121,9 @@
     <string name="reset_app_final_message">Are you absolutely sure? This will wipe everything on this device.</string>
     <string name="continue_label">Continue</string>
     <string name="reset_app_wipe_now">Wipe now</string>
+    <string name="recovery_unavailable_first_run">Recovery is unavailable until at least one account exists.</string>
+    <string name="recovery_not_enabled">Password recovery is not enabled by an administrator.</string>
+    <string name="recovery_auth_unavailable">Device PIN/pattern or biometrics is not available.</string>
+    <string name="enable_password_recovery">Enable Password Recovery</string>
+    <string name="recovery_enabled_toast">Password recovery enabled.</string>
 </resources>

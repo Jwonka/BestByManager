@@ -13,14 +13,16 @@
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/spacing_l"
+        android:layout_marginStart="@dimen/spacing_xxxxxl"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
-        android:layout_marginEnd="@dimen/spacing_l"
+        android:layout_marginEnd="@dimen/spacing_z"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintWidth_percent="0.42"
+        app:layout_constraintWidth_percent="0.32"
+        app:layout_constraintWidth_max="300dp"
+        app:layout_constraintHeight_max="300dp"
         app:layout_constraintDimensionRatio="1:1" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,6 +30,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_m"
+        android:layout_marginStart="@dimen/spacing_z"
+        android:layout_marginEnd="@dimen/spacing_xxxxl"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/grocery_icon"
