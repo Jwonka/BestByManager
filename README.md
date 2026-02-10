@@ -225,8 +225,8 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 - Password recovery depends on administrator access or device biometric authentication.
 
 ## Migrations
-Current Room schema version: **19**.  
-Defined migrations: **15→16**, **16→17**, **17→18**, **18→19**, **19→20** (adds `earlyWarningEnabled` for reminders).
+Current Room schema version: **20**.  
+Defined migrations: **15→16**, **16→17**, **17→18**, **18→19** (adds `earlyWarningEnabled` for reminders), **19→20** (adds `password reset` for admin).
 
 ## Privacy
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
