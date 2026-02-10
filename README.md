@@ -7,7 +7,7 @@
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
 ## Status
-📦 **Repo build version:** 1.1.7 (versionCode 9).
+📦 **Repo build version:** 1.1.8 (versionCode 10).
 🚀 **Android app in closed beta on Google Play**
 
 ## Table of Contents
@@ -105,6 +105,8 @@
 - Reset passwords for users
 
 - View **User-Level Reports** (grouped product activity by each user)
+  
+- Perform a full local data wipe (administrators only)
 
 ## Usage Notes
 🛒 To add products, tap **Add Product** or open **Product Details**. 
@@ -127,23 +129,39 @@ Required fields include brand, product name, weight, quantity, expiration date, 
 
 - Expiration status (e.g., expired, expiring soon)
 
-  ### Account Recovery (Local-Only)
-Best By Manager does not use cloud accounts or email recovery.
+### Account Recovery (Local-Only)
 
-If all user passwords are lost on a device, the app provides a **secure local reset option** that wipes app data and returns the app to first-run state. This prevents permanent lockout on offline, single-device installs.
+Best By Manager does not use cloud accounts, email, or external recovery services.
 
-⚠️ This action permanently deletes all local inventory and user data and cannot be undone.
+Password recovery options are intentionally **local and permission-based**:
+
+- 🔐 **Administrator password reset**
+  - Administrators can reset passwords for other users from the Employee Details screen.
+  - This does **not** delete inventory or app data.
+
+- 🔑 **Biometric-assisted self-reset (optional)**
+  - If biometric authentication (PIN, pattern, fingerprint, or face) is enabled on the device,
+    a user may reset their own password after successful device authentication.
+  - No data is deleted during this process.
+
+- 🧹 **Administrator data wipe**
+  - Administrators may perform a full local data wipe to return the app to first-run state.
+  - This permanently deletes all users and inventory data on the device and cannot be undone.
+  - Intended only for lost credentials or device handoff scenarios.
+
+All data remains stored locally on the device at all times.
 
 ## Installation
 
 ### Google Play (Closed Beta)
-The app is currently available through Google Play's closed beta testing program.
+Best By Manager is currently in closed beta testing on Google Play.
+Public availability will follow after testing and review of feedback.
 
 ### APK Sideload
 - 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
 
-**SHA256 checksum:** `bestbymanager-v1.1.7.apk`  
-**Size:** ~9.4MB
+**SHA256 checksum:** `bestbymanager-v1.1.8.apk`  
+**Size:** ~9.6MB
 - For **manual install (sideload)**: download the APK.  
 - For **Google Play**: the AAB is provided for Play Console upload.
 
@@ -173,6 +191,7 @@ OR from the command line
 - 📷 `CAMERA` – required to take product photos and scan barcodes
 - 🌐 `INTERNET` – required for Open Food Facts lookup
 - 🔔 `POST_NOTIFICATIONS` – required for expiration/early warning alerts on Android 13+
+- 🔐 `USE_BIOMETRIC` – optional biometric/PIN authentication for secure password reset
 
 Note: Best By Manager does not request location, contacts, or any sensitive personal permissions. All data stays local to the device.
 
@@ -196,18 +215,18 @@ This app uses data and product images from [Open Food Facts](https://openfoodfac
 ## Testing Status
 🧪 All screens have been manually tested for scrollability, responsiveness, and crash-free usage on common Android phones and tablets.
 
-- Accessibility features (e.g. TalkBack) not yet verified.
+- Accessibility features (e.g., TalkBack) not yet verified.
 
 ## Known Issues
 - Some screens may not scroll optimally on very small devices (< 5").
 - No automated testing suite (yet).
 - Cloud sync is not implemented, but may be added in a future version.
 - Product deletion is permanent (no undo).
-- Forgotten passwords cannot be recovered without a full local data reset (by design).
+- Password recovery depends on administrator access or device biometric authentication.
 
 ## Migrations
 Current Room schema version: **19**.  
-Defined migrations: **15→16**, **16→17**, **17→18**, **18→19** (adds `earlyWarningEnabled` for reminders).
+Defined migrations: **15→16**, **16→17**, **17→18**, **18→19**, **19→20** (adds `earlyWarningEnabled` for reminders).
 
 ## Privacy
 Best By Manager stores all data locally on your device. No personal or product data is ever uploaded to external servers.
