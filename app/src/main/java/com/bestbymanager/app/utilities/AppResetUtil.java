@@ -3,9 +3,9 @@ package com.bestbymanager.app.utilities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
 import androidx.preference.PreferenceManager;
 import com.bestbymanager.app.UI.activities.LoginActivity;
+import com.bestbymanager.app.UI.authentication.Session;
 import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
 import java.io.File;
 
@@ -16,6 +16,7 @@ public final class AppResetUtil {
         Context app = a.getApplicationContext();
 
         try {
+            Session.get().logOut(app);
             try {
                 ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(app);
                 if (db != null) db.close();
@@ -34,8 +35,6 @@ public final class AppResetUtil {
             a.startActivity(i);
             a.finishAffinity();
 
-            Process.killProcess(Process.myPid());
-            System.exit(0);
         } catch (Throwable ignored) {}
     }
 
