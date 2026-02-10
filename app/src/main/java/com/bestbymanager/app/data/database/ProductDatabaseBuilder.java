@@ -1,6 +1,7 @@
 package com.bestbymanager.app.data.database;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -25,7 +26,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
     public static final Migration MIGRATION_15_16 = new Migration(15, 16) {
         @Override
-        public void migrate(SupportSQLiteDatabase db) {
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
             db.execSQL("CREATE TABLE IF NOT EXISTS `discard_event` (" +
                     "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "`productID` INTEGER NOT NULL, " +
@@ -49,7 +50,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
     public static final Migration MIGRATION_16_17 = new Migration(16, 17) {
         @Override
-        public void migrate(SupportSQLiteDatabase db) {
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
             db.execSQL("PRAGMA foreign_keys=OFF");
             db.beginTransaction();
             try {
@@ -112,7 +113,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
     public static final Migration MIGRATION_17_18 = new Migration(17, 18) {
         @Override
-        public void migrate(SupportSQLiteDatabase db) {
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
             // remap old category indices to new indices
             db.execSQL(
                     "UPDATE product SET category = CASE category " +
@@ -138,12 +139,16 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
     public static final Migration MIGRATION_18_19 = new Migration(18, 19) {
         @Override
-        public void migrate(SupportSQLiteDatabase db) {
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
             db.execSQL(
                     "ALTER TABLE product " +
                             "ADD COLUMN earlyWarningEnabled INTEGER NOT NULL DEFAULT 0"
             );
         }
+    };
+
+    public static final Migration MIGRATION_19_20 = new Migration(19, 20) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) { /* no-op */ }
     };
 
     public static ProductDatabaseBuilder getDatabase(final Context context) {
@@ -157,7 +162,7 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             )
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
-                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19)
+                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20)
                             .build();
                 }
             }
