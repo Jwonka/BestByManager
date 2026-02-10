@@ -305,7 +305,7 @@ public class ProductDetails extends AppCompatActivity {
                     currentProduct = local;
                     populateForm(local);
                 } else {
-                    Log.d(TAG, "→ No local hit – calling API");
+                   // Log.d(TAG, "→ No local hit – calling API");
                     productViewModel.fetchProduct(code, lookupCallback);
                 }
             });
@@ -397,7 +397,7 @@ public class ProductDetails extends AppCompatActivity {
                     if (reason != null && reason.isEmpty()) reason = null;
 
                     long userId = Session.get().currentUserID();
-                    Log.d("DISCARD", "ProductDetails discard uid=" + userId);
+                   // Log.d("DISCARD", "ProductDetails discard uid=" + userId);
                     productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate
@@ -522,7 +522,7 @@ public class ProductDetails extends AppCompatActivity {
         quantity.setText(String.valueOf(product.getQuantity()));
         editExp.setText(format(product.getExpirationDate()));
         pendingEarlyWarningEnabled = product.isEarlyWarningEnabled() && product.getQuantity() > 0;
-        applyEarlyBellIcon((TextInputLayout) findViewById(R.id.edit_expiration_layout));
+        applyEarlyBellIcon(findViewById(R.id.edit_expiration_layout));
         // nullable barcode
         String bc = product.getBarcode();
         barcode.setText(bc == null ? "" : BarcodeUtil.displayCode(bc));

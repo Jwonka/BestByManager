@@ -45,7 +45,7 @@
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_marginEnd="@dimen/spacing_xs"
         android:layout_marginTop="@dimen/spacing_l"
-        android:layout_marginBottom="@dimen/spacing_l"
+        android:layout_marginBottom="@dimen/spacing_z"
         android:padding="@dimen/padding_m"
         app:cardBackgroundColor="@color/sky_blue"
         app:strokeColor="@color/black"
@@ -144,6 +144,22 @@
         app:layout_constraintTop_toBottomOf="@id/credentials_panel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="@dimen/spacing_ml"/>
+        app:layout_constraintBottom_toTopOf="@id/link_forgot_password"
+        android:layout_marginTop="@dimen/spacing_s" />
+
+    <TextView
+        android:id="@+id/link_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/spacing_m"
+        app:layout_constraintTop_toBottomOf="@id/login_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

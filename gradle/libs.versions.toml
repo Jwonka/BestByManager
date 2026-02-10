@@ -1,4 +1,5 @@
 [versions]
+biometric = "1.1.0"
 exif = "1.4.1"
 agp = "8.13.1"
 converterGson = "3.0.0"
@@ -18,6 +19,7 @@ preference = "1.2.1"
 zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
+biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }

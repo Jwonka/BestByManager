@@ -3,6 +3,7 @@ package com.bestbymanager.app.UI.activities;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -38,33 +39,55 @@ public class ResetPasswordActivity  extends AppCompatActivity {
             }
         });
 
+        boolean recoveryMode = getIntent().getBooleanExtra("recovery_mode", false);
+
         long userID = getIntent().getLongExtra("userId", -1);
-        if (userID < 0) {
-            Long sid = Session.get().userId();
-            if (sid != null && sid > 0) {
-                userID = sid;
-            } else {
-                finish();
-                return;
-            }
-        }
 
         Repository repository = new Repository(getApplication());
 
+        if (recoveryMode) {
+            // recovery ALWAYS targets the first admin only
+            new Thread(() -> {
+                Long adminId = repository.getFirstAdminIdBlocking();
+                runOnUiThread(() -> {
+                    if (adminId == null || adminId <= 0) {
+                        Toast.makeText(this, "No admin account found.", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+                    initUi(binding, repository, adminId);
+                });
+            }).start();
+            return;
+        }
+
+        if (userID < 0) {
+            Long sid = Session.get().userId();
+            if (sid != null && sid > 0) userID = sid;
+            else { finish(); return; }
+        }
+        initUi(binding, repository, userID);
+    }
+
+    private void initUi(ActivityResetPasswordBinding binding, Repository repository, long userID) {
         repository.getUser(userID).observe(this, user -> {
             if (user != null) binding.usernameLabel.setText(user.getUserName());
         });
 
-        action = new ResetPasswordAction(this, binding.usernameLabel, binding.passwordInput, binding.passwordConfirmationInput, userID, repository);
+        action = new ResetPasswordAction(
+                this,
+                binding.usernameLabel,
+                binding.passwordInput,
+                binding.passwordConfirmationInput,
+                userID,
+                repository
+        );
 
-        binding.passwordConfirmationInput.setOnEditorActionListener(
-                (v,id,e)->{
-                    if(id==EditorInfo.IME_ACTION_DONE){
-                        action.run();
-                        return true;
-                    }
-                    return false;
-                });
+        binding.passwordConfirmationInput.setOnEditorActionListener((v, id, e) -> {
+            if (id == EditorInfo.IME_ACTION_DONE) { action.run(); return true; }
+            return false;
+        });
+
         binding.resetButton.setOnClickListener(v -> action.run());
     }
 }

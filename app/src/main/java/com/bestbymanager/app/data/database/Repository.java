@@ -72,7 +72,7 @@ public class Repository {
 
         api = retrofit.create(OffApi.class);
     }
-
+    public Long getFirstAdminIdBlocking() { return mUserDAO.getFirstAdminId(); }
     public int userCountBlocking() { return mUserDAO.userCount(); }
     public LiveData<List<ProductReportRow>> getAllProducts() { return mProductDAO.getAllProducts(); }
     public LiveData<List<UserReportRow>> getAllEntries(LocalDate today) { return mUserDAO.getAllEntries(today); }

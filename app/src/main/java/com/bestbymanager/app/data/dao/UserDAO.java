@@ -45,6 +45,9 @@ public interface UserDAO {
     @Query("SELECT * FROM user ORDER BY userID")
     LiveData<List<User>> getUsers();
 
+    @Query("SELECT userID FROM user WHERE isAdmin = 1 ORDER BY userID ASC LIMIT 1")
+    Long getFirstAdminId();
+
     @Transaction
     default String setTempPassword(long userId) {
         String tmp = PasswordUtil.generateTempPassword();

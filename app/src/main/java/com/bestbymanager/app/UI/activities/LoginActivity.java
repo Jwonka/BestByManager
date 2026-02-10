@@ -1,21 +1,15 @@
 package com.bestbymanager.app.UI.activities;
 
 import android.Manifest;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -24,23 +18,17 @@ import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.preference.PreferenceManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.AuthenticationAction;
 import com.bestbymanager.app.UI.authentication.LoginAction;
 import com.bestbymanager.app.UI.authentication.RegisterAction;
-import com.bestbymanager.app.UI.authentication.Session;
-import com.bestbymanager.app.data.database.Repository;
-import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
 import com.bestbymanager.app.databinding.ActivityLoginBinding;
+import com.bestbymanager.app.data.database.Repository;
+import com.bestbymanager.app.UI.authentication.Session;
 import com.google.android.material.button.MaterialButton;
-import android.view.inputmethod.EditorInfo;
-import java.io.File;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String PREFS_NAME = "app_prefs";
     private static final int REQ_POST_NOTIF = 42;
-    private static final String DB_NAME = "MyProductDatabase.db";
 
     private AuthenticationAction loginAction;
     private AuthenticationAction registerAction;
@@ -94,6 +82,10 @@ public class LoginActivity extends AppCompatActivity {
 
         refreshFirstRunStateAndWireUi();
 
+        findViewById(R.id.link_forgot_password).setOnClickListener(v ->
+                startActivity(new Intent(this, com.bestbymanager.app.UI.authentication.RecoveryActivity.class))
+        );
+
         binding.passwordInput.setOnEditorActionListener((v, actionId, event) -> {
             boolean imeDone = actionId == EditorInfo.IME_ACTION_DONE;
             boolean enter = event != null
@@ -101,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
                     && event.getAction() == KeyEvent.ACTION_DOWN;
 
             if (imeDone || enter) {
-                // ensure IME follows whatever the button currently does (register vs login)
                 binding.loginButton.performClick();
                 return true;
             }
@@ -111,8 +102,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void refreshFirstRunStateAndWireUi() {
         final MaterialButton button = binding.loginButton;
-
-        // Disable until we know state
         button.setEnabled(false);
 
         new Thread(() -> {
@@ -129,8 +118,6 @@ public class LoginActivity extends AppCompatActivity {
                     button.setText(R.string.register);
                     button.setOnClickListener(v -> {
                         registerAction.run();
-
-                        // after registration attempt, re-check DB and rewire (only flips to login if a user exists)
                         refreshFirstRunStateAndWireUi();
                     });
                 } else {
@@ -139,107 +126,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 button.setEnabled(true);
-                invalidateOptionsMenu(); // hide/show overflow item based on firstRun
             });
         }).start();
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login_activity, menu);
-        return true;
-    }
-
-    // Hide overflow item on first run (your preference)
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem reset = menu.findItem(R.id.menu_reset_app_data);
-        if (reset != null) reset.setVisible(!firstRun);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_reset_app_data) {
-            showResetDialog();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void showResetDialog() {
-        final EditText input = new EditText(this);
-        input.setHint("Type delete to confirm");
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.reset_app_title)
-                .setMessage(R.string.reset_app_message)
-                .setView(input)
-                .setNegativeButton(android.R.string.cancel, (d, w) -> d.dismiss())
-                .setPositiveButton(R.string.continue_label, (d, w) -> {
-                    String val = input.getText() == null ? "" : input.getText().toString().trim();
-                    if (!"delete".equalsIgnoreCase(val)) {
-                        Toast.makeText(this, R.string.reset_app_mismatch, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.reset_app_final_title)
-                            .setMessage(R.string.reset_app_final_message)
-                            .setNegativeButton(android.R.string.cancel, (d2, w2) -> d2.dismiss())
-                            .setPositiveButton(R.string.reset_app_wipe_now, (d2, w2) -> performFactoryReset())
-                            .show();
-                })
-                .show();
-    }
-
-    private void performFactoryReset() {
-        // Always do explicit wipe so state is guaranteed before restart.
-        try {
-            try {
-                ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(getApplicationContext());
-                if (db != null) db.close();
-            } catch (Throwable ignored) {}
-
-            // DB wipe
-            deleteDatabase(DB_NAME);
-            deleteDatabase(DB_NAME + "-wal");
-            deleteDatabase(DB_NAME + "-shm");
-
-            // prefs wipe
-            getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().clear().commit();
-            getSharedPreferences("bestby_session", MODE_PRIVATE).edit().clear().commit();
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().commit();
-
-            // cache wipe
-            deleteRecursively(getCacheDir());
-
-            restartFresh();
-        } catch (Exception e) {
-            Toast.makeText(this, "Reset failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void restartFresh() {
-        Intent launch = getPackageManager().getLaunchIntentForPackage(getPackageName());
-        if (launch != null) {
-            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(launch);
-        } else {
-            startActivity(new Intent(this, LoginActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        }
-        finishAffinity();
-        Process.killProcess(Process.myPid());
-        System.exit(0);
-    }
-
-    private static void deleteRecursively(File f) {
-        if (f == null || !f.exists()) return;
-        if (f.isDirectory()) {
-            File[] kids = f.listFiles();
-            if (kids != null) for (File k : kids) deleteRecursively(k);
-        }
-        //noinspection ResultOfMethodCallIgnored
-        f.delete();
     }
 
     @Override

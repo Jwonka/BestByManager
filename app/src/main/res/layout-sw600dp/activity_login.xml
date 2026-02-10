@@ -136,8 +136,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginBottom="@dimen/spacing_s"
             android:text="@string/login"
             app:layout_constraintTop_toBottomOf="@id/credentials_panel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/link_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forgot_password"
+            android:clickable="true"
+            android:focusable="true"
+            android:minHeight="48dp"
+            android:paddingHorizontal="@dimen/spacing_m"
+            android:paddingTop="@dimen/spacing_m"
+            app:layout_constraintTop_toBottomOf="@id/login_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

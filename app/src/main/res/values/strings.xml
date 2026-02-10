@@ -110,6 +110,9 @@
     <string name="discarded">Discarded: 0</string>
     <string name="cancel">Cancel</string>
     <string name="early_warning">Early warning (7 days)</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="verify_device">Verify Device</string>
+    <string name="recover_account">To recover your account, set a screen lock (PIN/pattern) or biometrics in Android settings.</string>
     <string name="reset_app_menu">Reset app data</string>
     <string name="reset_app_title">Reset all app data?</string>
     <string name="reset_app_message">This will permanently delete ALL users, inventory, and settings on this device. This cannot be undone.\n\nType delete to continue.</string>
