@@ -11,7 +11,7 @@
     <dimen name="spacing_xl">32dp</dimen>
     <dimen name="spacing_xxl">48dp</dimen>
     <dimen name="spacing_xxxxl">140dp</dimen>
-    <dimen name="spacing_xxxxxl">480dp</dimen>
+    <dimen name="spacing_xxxxxl">400dp</dimen>
     <dimen name="padding_xxs">2dp</dimen>
     <dimen name="padding_xs">4dp</dimen>
     <dimen name="padding_s">8dp</dimen>

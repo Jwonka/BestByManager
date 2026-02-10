@@ -23,7 +23,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintWidth_percent="0.32"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintHeight_max="300dp"
             app:layout_constraintDimensionRatio="1:1" />
 
         <com.google.android.material.card.MaterialCardView
