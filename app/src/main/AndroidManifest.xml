@@ -90,7 +90,7 @@
             android:exported="false"/>
         <activity
             android:name=".UI.activities.ResetPasswordActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:exported="false"/>
         <activity
             android:name=".UI.authentication.RecoveryActivity"
@@ -98,7 +98,7 @@
             android:exported="false"/>
         <activity
             android:name=".UI.activities.LoginActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
