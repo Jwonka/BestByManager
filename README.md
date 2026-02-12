@@ -7,7 +7,7 @@
 **Best By Manager** is an Android inventory-tracking app built to help small grocery stores, gas stations, and small businesses stay on top of product expiration dates. With barcode lookup, image support, and smart reporting, it ensures food is safe to consume and helps reduce waste by keeping your stock fresh.
 
 ## Status
-📦 **Repo build version:** 1.2.0 (versionCode 12).
+📦 **Repo build version:** 1.2.1 (versionCode 13).
 🚀 **Android app in closed beta on Google Play**
 
 ## Table of Contents
@@ -160,8 +160,8 @@ Public availability will follow after testing and review of feedback.
 ### APK Sideload
 - 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
 
-**SHA256 checksum:** `bestbymanager-v1.2.0.apk`  
-**Size:** ~8.7MB
+**SHA256 checksum:** `bestbymanager-v1.2.1.apk`  
+**Size:** ~9.59MB
 - For **manual install (sideload)**: download the APK.  
 - For **Google Play**: the AAB is provided for Play Console upload.
 
