@@ -10,9 +10,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import androidx.core.graphics.Insets;
+import androidx.core.os.BundleCompat;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -20,7 +22,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,12 +85,16 @@ public class ProductDetails extends AppCompatActivity {
     private Spinner isle;
     private ImageView preview;
     private Uri imageUri;
-    private Uri tempCameraUri;
     private byte[] thumbBlob;
     private ArrayAdapter<String> adapter;
     private Callback<ProductResponse> lookupCallback;
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private static final String STATE_IMAGE_URI = "IMAGE_URI";
+    @androidx.annotation.Nullable
+    private static Uri restoreImageUri(@androidx.annotation.Nullable Bundle s) {
+        return (s == null) ? null : BundleCompat.getParcelable(s, STATE_IMAGE_URI, Uri.class);
+    }
 
     @Override
     protected void onCreate(Bundle s) {
@@ -103,16 +108,13 @@ public class ProductDetails extends AppCompatActivity {
             return;
         }
 
-        if (s != null) {
-            imageUri = s.getParcelable("IMAGE_URI");
-        }
+        imageUri = restoreImageUri(s);
         setTitle(R.string.product_details);
         takePictureLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 ok -> {
-                    if (ok) {
-                        handleImage(tempCameraUri);
-                    }
+                    if (!ok || imageUri == null) return;
+                    handleImage(imageUri);
                 });
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -458,32 +460,83 @@ public class ProductDetails extends AppCompatActivity {
     private void launchCamera()  {
         try {
             File photoFile = File.createTempFile("product_", ".jpg", getCacheDir());
-            tempCameraUri = FileProvider.getUriForFile(
+            Uri outUri = FileProvider.getUriForFile(
                     this, getPackageName() + ".fileprovider", photoFile);
 
-            takePictureLauncher.launch(tempCameraUri);
+            imageUri = outUri;
+            takePictureLauncher.launch(outUri);
 
         } catch (IOException e) {
             Log.e(TAG, "Could not create temporary image file", e);
         }
     }
 
-    private void handleImage(@NonNull Uri uri)  {
+    private void handleImage(@NonNull Uri uri) {
         imageUri = uri;
-        preview.setImageURI(uri);
 
-        try (InputStream in = getContentResolver().openInputStream(uri)) {
-            if (in != null) {
-                ExifInterface exif = new ExifInterface(in);
-                int orient = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                Bitmap raw = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                Bitmap bmp = rotateIfNeeded(raw, orient);
-                preview.setImageBitmap(bmp);
-                thumbBlob = Converters.fromBitmap(bmp);
+        io.execute(() -> {
+            try {
+                // 1) Read EXIF orientation (needs its own stream)
+                int orient = ExifInterface.ORIENTATION_NORMAL;
+                try (InputStream exifIn = getContentResolver().openInputStream(uri)) {
+                    if (exifIn != null) {
+                        ExifInterface exif = new ExifInterface(exifIn);
+                        orient = exif.getAttributeInt(
+                                ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_NORMAL
+                        );
+                    }
+                }
+
+                // 2) Bounds decode to compute sample size
+                BitmapFactory.Options bounds = new BitmapFactory.Options();
+                bounds.inJustDecodeBounds = true;
+                try (InputStream boundsIn = getContentResolver().openInputStream(uri)) {
+                    if (boundsIn == null) throw new IOException("openInputStream returned null (bounds)");
+                    BitmapFactory.decodeStream(boundsIn, null, bounds);
+                }
+
+                // target preview size
+                final int reqW = 1200;
+                final int reqH = 1200;
+
+                int inSampleSize = 1;
+                int h = bounds.outHeight;
+                int w = bounds.outWidth;
+                while (h / inSampleSize > reqH || w / inSampleSize > reqW) {
+                    inSampleSize *= 2;
+                }
+
+                // 3) Actual decode
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inSampleSize = inSampleSize;
+                opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+                Bitmap decoded;
+                try (InputStream imgIn = getContentResolver().openInputStream(uri)) {
+                    if (imgIn == null) throw new IOException("openInputStream returned null (decode)");
+                    decoded = BitmapFactory.decodeStream(imgIn, null, opts);
+                }
+
+                if (decoded == null) throw new IOException("Bitmap decode returned null");
+
+                Bitmap rotated = rotateIfNeeded(decoded, orient);
+
+                if (rotated != decoded) decoded.recycle();
+
+                // 4) Create/store thumbnail bytes off-main-thread
+                byte[] bytes = Converters.fromBitmap(rotated);
+
+                runOnUiThread(() -> {
+                    preview.setImageBitmap(rotated);
+                    thumbBlob = bytes;
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Reading bitmap failed", e);
+                runOnUiThread(() -> toast("Could not load image."));
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Reading bitmap failed", e);
-        }
+        });
     }
 
     private static Bitmap rotateIfNeeded(Bitmap src, int orientation) {
@@ -500,7 +553,7 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override protected void onSaveInstanceState(@NonNull Bundle out) {
         super.onSaveInstanceState(out);
-        if (imageUri != null) out.putParcelable("IMAGE_URI", imageUri);
+        if (imageUri != null) out.putParcelable(STATE_IMAGE_URI, imageUri);
     }
 
     private static int clampSelection(int idx, Spinner spinner) {
