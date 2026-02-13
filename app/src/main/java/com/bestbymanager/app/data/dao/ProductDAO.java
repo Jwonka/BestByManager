@@ -40,16 +40,16 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE productID = :productID LIMIT 1")
     LiveData<Product> getProduct(long productID);
 
-    @Query("SELECT * FROM product WHERE expirationDate >= :today ORDER BY expirationDate ASC")
+    @Query("SELECT * FROM product WHERE expirationDate >= :today ORDER BY expirationDate ASC, productName COLLATE NOCASE ASC, brand COLLATE NOCASE ASC, productID ASC")
     LiveData<List<Product>> getProducts(LocalDate today);
 
-    @Query("SELECT * FROM product WHERE barcode = :barcode ORDER BY expirationDate ASC LIMIT 1")
+    @Query("SELECT * FROM product WHERE barcode = :barcode ORDER BY expirationDate ASC, productID ASC LIMIT 1")
     Product getRecentExpirationByBarcode(String barcode);
 
-    @Query("SELECT * FROM product WHERE barcode = :barcode ORDER BY expirationDate ASC")
+    @Query("SELECT * FROM product WHERE barcode = :barcode ORDER BY expirationDate ASC, productID ASC")
     LiveData<List<Product>> getProductsByBarcode(String barcode);
 
-    @Query("SELECT * FROM product WHERE expirationDate BETWEEN :from AND :selected ORDER BY expirationDate ASC")
+    @Query("SELECT * FROM product WHERE expirationDate BETWEEN :from AND :selected ORDER BY expirationDate ASC, productName COLLATE NOCASE ASC, brand COLLATE NOCASE ASC, productID ASC")
     LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected);
 
     // --- Discard support (Option A: event log) ---
@@ -57,14 +57,12 @@ public interface ProductDAO {
     @Insert
     long insertDiscardEvent(DiscardEvent event);
 
-    // only decrements if enough on-hand exists
     @Query("UPDATE product SET quantity = quantity - :quantity " +
             "WHERE productID = :productID AND quantity >= :quantity")
     int decrementQuantity(long productID, int quantity);
 
     @Transaction
     default boolean discardProduct(DiscardEvent event) {
-        // guard against 0/negative qty
         if (event == null || event.getQuantity() <= 0) return false;
 
         int updated = decrementQuantity(event.getProductID(), event.getQuantity());
@@ -88,7 +86,7 @@ public interface ProductDAO {
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate < :cutoff " +
-            "ORDER BY expirationDate DESC, brand")
+            "ORDER BY expirationDate DESC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
     LiveData<List<ProductReportRow>> getExpired(LocalDate cutoff);
 
     @Query("SELECT product.productID AS productID, " +
@@ -105,7 +103,7 @@ public interface ProductDAO {
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE expirationDate BETWEEN :from AND :selected " +
-            "ORDER BY expirationDate ASC, brand")
+            "ORDER BY expirationDate ASC, productName COLLATE NOCASE ASC, brand COLLATE NOCASE ASC, productID ASC")
     LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected);
 
     @Query("SELECT product.productID AS productID, " +
@@ -121,7 +119,7 @@ public interface ProductDAO {
             "product.category AS category " +
             "FROM product " +
             "JOIN user ON product.userID = user.userID " +
-            "ORDER BY product.expirationDate ASC")
+            "ORDER BY product.expirationDate ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
     List<ProductReportRow> getReportRows();
 
     @Query("SELECT product.productID AS productID, " +
@@ -138,7 +136,7 @@ public interface ProductDAO {
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
             "WHERE product.barcode = :barcode " +
-            "ORDER BY product.expirationDate")
+            "ORDER BY product.expirationDate ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
     LiveData<List<ProductReportRow>> getReportRowsByBarcode(String barcode);
 
     @Query("SELECT product.productID, " +
@@ -156,7 +154,7 @@ public interface ProductDAO {
             "JOIN user ON product.userID = user.userID " +
             "WHERE barcode = :barcode " +
             "AND expirationDate BETWEEN :from AND :to " +
-            "ORDER BY expirationDate ASC")
+            "ORDER BY expirationDate ASC, productName COLLATE NOCASE ASC, brand COLLATE NOCASE ASC, productID ASC")
     LiveData<List<ProductReportRow>> getProductsByBarcodeAndDateRange(String barcode, LocalDate from, LocalDate to);
 
     @Query("SELECT product.productID AS productID, " +
@@ -172,13 +170,13 @@ public interface ProductDAO {
             "product.category AS category " +
             "FROM product " +
             "JOIN user ON user.userID = product.userID " +
-            "ORDER BY product.productName ASC, product.expirationDate ASC")
+            "ORDER BY product.expirationDate ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
     LiveData<List<ProductReportRow>> getAllProducts();
 
     @Query("SELECT * " +
             "FROM product " +
             "WHERE userID = :userId AND barcode = :barcode " +
-            "ORDER BY expirationDate DESC " +
+            "ORDER BY expirationDate DESC, productID DESC " +
             "LIMIT 1")
     Product getLatestByBarcodeForUser(long userId, String barcode);
 }
