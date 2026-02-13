@@ -9,19 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.ProductReportAdapter;
 import com.bestbymanager.app.UI.authentication.Session;
@@ -33,6 +29,7 @@ import com.bestbymanager.app.viewmodel.ProductReportViewModel;
 import java.util.List;
 
 public class ProductReport extends AppCompatActivity {
+    private ProductReportViewModel prViewModel;
     private static final String EXTRA_START_DATE  = "startDate";
     private static final String EXTRA_END_DATE    = "endDate";
     private static final String EXTRA_MODE        = "mode";
@@ -66,7 +63,7 @@ public class ProductReport extends AppCompatActivity {
         args.putString(EXTRA_BARCODE, in.getStringExtra(EXTRA_BARCODE));
         args.putBoolean(EXTRA_ALL_PRODUCTS, in.getBooleanExtra(EXTRA_ALL_PRODUCTS, false));
 
-        ProductReportViewModel prViewModel = new ViewModelProvider(
+        prViewModel = new ViewModelProvider(
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
         ).get(ProductReportViewModel.class);
@@ -90,7 +87,7 @@ public class ProductReport extends AppCompatActivity {
             if ((rows == null || rows.isEmpty()) && !emptyToastShown) {
                 emptyToastShown = true;
                 Toast.makeText(this, "No results.", Toast.LENGTH_SHORT).show();
-                finish(); // returns to ProductSearch so report doesn't open if empty
+                finish();
             }
         });
     }
@@ -227,11 +224,11 @@ public class ProductReport extends AppCompatActivity {
         String barcode = in.getStringExtra("barcode");
         String start = in.getStringExtra("startDate");
         String end = in.getStringExtra("endDate");
-        String allProducts = in.getStringExtra("allProducts");
+        boolean allProducts = in.getBooleanExtra(EXTRA_ALL_PRODUCTS, false);
 
         if ("expired".equals(mode)) return "Expired Products Report";
         if ("expiring".equals(mode)) return "Products Expiring Soon";
-        if (allProducts != null || "allProducts".equals(mode)) return "All Products – Full Inventory";
+        if (allProducts || "allProducts".equals(mode)) return "All Products – Full Inventory";
 
         if (barcode != null && start == null && end == null) {
             String name = rows.isEmpty() ? barcode : rows.get(0).productName;
@@ -243,5 +240,11 @@ public class ProductReport extends AppCompatActivity {
             return "Product Report – " + name + " (" + start + " to " + end + ")";
         }
         return "Product Report";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        prViewModel.refresh();
     }
 }

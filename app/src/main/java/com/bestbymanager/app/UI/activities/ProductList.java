@@ -23,6 +23,8 @@ import java.util.Collections;
 
 public class ProductList extends AppCompatActivity {
 
+    private ProductListViewModel productListViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class ProductList extends AppCompatActivity {
         binding.productListRecyclerView.setAdapter(productAdapter);
         binding.productListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ProductListViewModel productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
+        productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
 
         productListViewModel.getProducts(LocalDate.now()).observe(this, list -> {
             if (list == null) { return; }
@@ -99,5 +101,5 @@ public class ProductList extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() { super.onResume(); }
+    protected void onResume() { super.onResume(); productListViewModel.refresh();}
 }
