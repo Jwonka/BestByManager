@@ -293,8 +293,7 @@ public class UserDetails extends BaseAdminActivity {
                 byte[] bytes = Converters.fromBitmap(rotated);
 
                 runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    if (preview == null) return;
+                    if (isFinishing() || isDestroyed() || preview == null) return;
                     preview.setImageBitmap(rotated);
                     thumbBlob = bytes;
                 });

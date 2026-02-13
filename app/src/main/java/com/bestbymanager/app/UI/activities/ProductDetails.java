@@ -327,6 +327,10 @@ public class ProductDetails extends AppCompatActivity {
             inFlightLookupCall.cancel();
             inFlightLookupCall = null;
         }
+        // Clear Glide safely while Activity is still valid
+        if (preview != null) {
+            Glide.with(this).clear(preview);
+        }
     }
 
     @Override
@@ -543,6 +547,7 @@ public class ProductDetails extends AppCompatActivity {
                 byte[] bytes = Converters.fromBitmap(rotated);
 
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed() || preview == null) return;
                     preview.setImageBitmap(rotated);
                     thumbBlob = bytes;
                 });
@@ -763,8 +768,7 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override protected void onDestroy() {
         super.onDestroy();
-        if (inFlightLookupCall != null) inFlightLookupCall.cancel();
-        if (preview != null) Glide.with(preview).clear(preview);
+        preview = null;
         io.shutdown();
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
