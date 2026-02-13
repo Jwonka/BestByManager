@@ -34,6 +34,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -105,10 +106,13 @@ public class Repository {
         String code = canonicalOrNull(raw);
         return code == null ? emptyLiveData() : mProductDAO.getProductsByBarcode(code);
     }
-    public void fetchProduct(String raw, Callback<ProductResponse> cb) {
+    public Call<ProductResponse> fetchProduct(String raw, Callback<ProductResponse> cb) {
         String code = canonicalOrNull(raw);
-        if (code == null) { return; }
-        api.getByBarcode(code).enqueue(cb);
+        if (code == null) return null;
+
+        Call<ProductResponse> call = api.getByBarcode(code);
+        call.enqueue(cb);
+        return call;
     }
     public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(today); }
     public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }

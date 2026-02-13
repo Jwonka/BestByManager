@@ -15,6 +15,7 @@ import com.bestbymanager.app.data.entities.Product;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import retrofit2.Call;
 import retrofit2.Callback;
 
 public class ProductDetailsViewModel extends AndroidViewModel {
@@ -57,7 +58,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
     }
     public Product getRecentExpiringProduct(String code) { return repository.getRecentExpirationByBarcode(code); }
     public void delete(Product product) { repository.deleteProduct(product); }
-    public void fetchProduct(String barcode, Callback<ProductResponse> cb) { repository.fetchProduct(barcode, cb); }
+    public Call<ProductResponse> fetchProduct(String barcode, Callback<ProductResponse> cb) { return repository.fetchProduct(barcode, cb); }
     public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long userId) {
         repository.discardExpiredProduct(productID, quantity, reason, userId);
     }

@@ -90,6 +90,7 @@ public class ProductDetails extends AppCompatActivity {
     private Callback<ProductResponse> lookupCallback;
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    @Nullable private Call<ProductResponse> inFlightLookupCall;
     private static final String STATE_IMAGE_URI = "IMAGE_URI";
     @androidx.annotation.Nullable
     private static Uri restoreImageUri(@androidx.annotation.Nullable Bundle s) {
@@ -199,9 +200,12 @@ public class ProductDetails extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<ProductResponse> call, @NonNull Response<ProductResponse> response) {
 
+                if (isFinishing() || isDestroyed()) return;
+
                 if (response.isSuccessful() && response.body() != null && response.body().status == 1) {
                     ProductData data = response.body().product;
                     runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) return;
                         brand.setText(data.brands);
                         name.setText(data.productName);
                         weight.setText(data.weight);
@@ -221,7 +225,7 @@ public class ProductDetails extends AppCompatActivity {
                         }
 
                         if (data.imageUri != null && !data.imageUri.isEmpty()) {
-                            Glide.with(ProductDetails.this)
+                            Glide.with(preview)
                                     .asBitmap()
                                     .load(data.imageUri)
                                     .placeholder(R.drawable.image_placeholder_border)
@@ -241,13 +245,14 @@ public class ProductDetails extends AppCompatActivity {
                         }
                     });
                 } else {
-                    runOnUiThread(() -> toast("Product not found."));
+                    runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) toast("Product not found."); });
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ProductResponse> call, @NonNull Throwable t) {
-                toast("Network error");
+                if (isFinishing() || isDestroyed()) return;
+                runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) toast("Network error"); });
                 Log.e(TAG, "Failed to fetch product", t);
             }
         };
@@ -303,15 +308,25 @@ public class ProductDetails extends AppCompatActivity {
         io.execute(() -> {
             Product local = productViewModel.getRecentExpiringProduct(code);
             runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
                 if (local != null) {
                     currentProduct = local;
                     populateForm(local);
                 } else {
                    // Log.d(TAG, "→ No local hit – calling API");
-                    productViewModel.fetchProduct(code, lookupCallback);
+                    if (inFlightLookupCall != null) inFlightLookupCall.cancel();
+                    inFlightLookupCall = productViewModel.fetchProduct(code, lookupCallback);
                 }
             });
         });
+    }
+
+    @Override protected void onStop() {
+        super.onStop();
+        if (inFlightLookupCall != null) {
+            inFlightLookupCall.cancel();
+            inFlightLookupCall = null;
+        }
     }
 
     @Override
@@ -748,6 +763,8 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override protected void onDestroy() {
         super.onDestroy();
+        if (inFlightLookupCall != null) inFlightLookupCall.cancel();
+        if (preview != null) Glide.with(preview).clear(preview);
         io.shutdown();
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }

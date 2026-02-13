@@ -293,13 +293,15 @@ public class UserDetails extends BaseAdminActivity {
                 byte[] bytes = Converters.fromBitmap(rotated);
 
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (preview == null) return;
                     preview.setImageBitmap(rotated);
                     thumbBlob = bytes;
                 });
 
             } catch (Exception e) {
                 Log.e(TAG, "Reading bitmap failed", e);
-                runOnUiThread(() -> toast("Could not load image."));
+                runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) toast("Could not load image."); });
             }
         });
     }
@@ -466,6 +468,12 @@ public class UserDetails extends BaseAdminActivity {
         share.putExtra("sms_body", body);
 
         return share;
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        preview = null;
+        io.shutdownNow();
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }
