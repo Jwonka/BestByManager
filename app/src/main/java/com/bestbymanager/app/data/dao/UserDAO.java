@@ -42,7 +42,7 @@ public interface UserDAO {
     @Query("SELECT * FROM user WHERE userID = :userID LIMIT 1")
     LiveData<User> getUser(long userID);
 
-    @Query("SELECT * FROM user ORDER BY userID")
+    @Query("SELECT * FROM user ORDER BY userName COLLATE NOCASE ASC, userID ASC")
     LiveData<List<User>> getUsers();
 
     @Query("SELECT userID FROM user WHERE isAdmin = 1 ORDER BY userID ASC LIMIT 1")
@@ -63,14 +63,16 @@ public interface UserDAO {
     @Query("UPDATE `user` SET hash = :hash, mustChange = 0, resetTokenHash = NULL, resetExpires = NULL WHERE userID = :id")
     void changePassword(long id, String hash);
 
-    @Query("SELECT * FROM user WHERE isAdmin = 1")
+    @Query("SELECT * FROM user WHERE isAdmin = 1 ORDER BY userName COLLATE NOCASE ASC, userID ASC")
     LiveData<List<User>> loadAdmins();
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT userID, userName, firstName, lastName FROM user WHERE isAdmin = 1")
+    @Query("SELECT userID, userName, firstName, lastName " +
+            "FROM user " +
+            "WHERE isAdmin = 1 " +
+            "ORDER BY userName COLLATE NOCASE ASC, userID ASC")
     LiveData<List<UserReportRow>> getAdmins();
 
-    // ===== Reports (now include discardedCount) =====
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT user.userID AS userID, " +
             "user.userName AS userName, " +
@@ -111,7 +113,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY totalCount DESC")
+            "ORDER BY user.userName COLLATE NOCASE ASC, MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesByDateRange(LocalDate from, LocalDate to, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -154,7 +156,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY totalCount DESC")
+            "ORDER BY user.userName COLLATE NOCASE ASC, MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesByBarcode(String barcode, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -197,7 +199,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY product.expirationDate ASC")
+            "ORDER BY MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesForEmployeeAndBarcode(long userID, String barcode, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -240,7 +242,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY product.expirationDate ASC")
+            "ORDER BY MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesForEmployeeInRange(long userID, LocalDate from, LocalDate to, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -285,7 +287,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND user.userID = :userID AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY MIN(product.expirationDate)")
+            "ORDER BY MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesByBarcodeForEmployeeInRange(long userID, String barcode, LocalDate from, LocalDate to, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -330,7 +332,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE product.barcode = :barcode AND product.expirationDate BETWEEN :from AND :to " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY product.expirationDate ASC")
+            "ORDER BY user.userName COLLATE NOCASE ASC, MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesByBarcodeForRange(String barcode, LocalDate from, LocalDate to, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -371,7 +373,7 @@ public interface UserDAO {
             "JOIN product product ON product.userID = user.userID " +
             "WHERE user.userID = :userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY product.expirationDate ASC")
+            "ORDER BY MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getEntriesByEmployee(long userID, LocalDate today);
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -411,6 +413,6 @@ public interface UserDAO {
             "FROM user user " +
             "JOIN product product ON product.userID = user.userID " +
             "GROUP BY user.userID, user.userName, user.firstName, user.lastName, product.brand, product.productName " +
-            "ORDER BY user.userID ASC")
+            "ORDER BY user.userName COLLATE NOCASE ASC, MIN(product.expirationDate) ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC")
     LiveData<List<UserReportRow>> getAllEntries(LocalDate today);
 }
