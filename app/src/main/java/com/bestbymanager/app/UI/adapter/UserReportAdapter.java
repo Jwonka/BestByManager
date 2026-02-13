@@ -5,15 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.data.pojo.UserReportRow;
-
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -135,7 +133,7 @@ public class UserReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final List<UserReportRow> newData = new ArrayList<>();
 
         Map<Long, List<UserReportRow>> grouped = incoming.stream()
-                .collect(Collectors.groupingBy(r -> r.userID));
+                .collect(Collectors.groupingBy(r -> r.userID, LinkedHashMap::new, Collectors.toList()));
 
         for (Map.Entry<Long, List<UserReportRow>> entry : grouped.entrySet()) {
             List<UserReportRow> groupRows = entry.getValue();
