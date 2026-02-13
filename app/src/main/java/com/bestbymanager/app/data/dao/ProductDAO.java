@@ -8,11 +8,9 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
-
 import com.bestbymanager.app.data.entities.DiscardEvent;
 import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -52,8 +50,6 @@ public interface ProductDAO {
     @Query("SELECT * FROM product WHERE expirationDate BETWEEN :from AND :selected ORDER BY expirationDate ASC, productName COLLATE NOCASE ASC, brand COLLATE NOCASE ASC, productID ASC")
     LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected);
 
-    // --- Discard support (Option A: event log) ---
-
     @Insert
     long insertDiscardEvent(DiscardEvent event);
 
@@ -71,8 +67,6 @@ public interface ProductDAO {
         insertDiscardEvent(event);
         return true;
     }
-
-    // --- Report queries (include discardedQuantity) ---
 
     @Query("SELECT product.productID, " +
             "product.brand, " +
