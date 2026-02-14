@@ -101,11 +101,11 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle s) {
         super.onCreate(s);
-        if (Session.get().isLoggedOut()) {
-            Intent i = new Intent(this, LoginActivity.class);
-            i.putExtra("deeplinkProductId", getIntent().getLongExtra("productID", -1L));
-            i.putExtra("fromNotification", getIntent().getBooleanExtra("fromNotification", false));
-            startActivity(i);
+
+        long activeId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
+        if (activeId <= 0) {
+            Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
             finish();
             return;
         }

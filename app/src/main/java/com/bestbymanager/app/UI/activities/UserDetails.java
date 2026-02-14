@@ -75,10 +75,9 @@ public class UserDetails extends BaseAdminActivity {
     @Override
     protected void onCreate(Bundle s) {
         super.onCreate(s);
-        if (Session.get().isLoggedOut()) {
-            Intent i = new Intent(this, LoginActivity.class);
-            i.putExtra("deepLink", getIntent());
-            startActivity(i);
+        if (Session.get().isLoggedOut() || !Session.get().currentUserIsAdmin()) {
+            Toast.makeText(this, "Owner admin required.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }
