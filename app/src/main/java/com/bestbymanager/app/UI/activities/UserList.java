@@ -221,16 +221,6 @@ public class UserList extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        pinFlowInFlight = false;
-        if (pinDialog != null) {
-            pinDialog.dismiss();
-            pinDialog = null;
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
         if (selectMode) return false; // no admin menu while selecting
@@ -256,5 +246,25 @@ public class UserList extends AppCompatActivity {
         if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }
         if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, UserDetails.class)); return true; }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        pinFlowInFlight = false;
+        if (pinDialog != null) {
+            pinDialog.dismiss();
+            pinDialog = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        pinFlowInFlight = false;
+        if (pinDialog != null) {
+            pinDialog.dismiss();
+            pinDialog = null;
+        }
+        super.onDestroy();
     }
 }
