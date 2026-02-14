@@ -241,9 +241,8 @@ public class UserList extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
         if (AdminMenu.handle(this, item)) { return true; }
-        if (item.getItemId() == android.R.id.home) { if (selectMode) return true; finish(); return true; }
+        if (item.getItemId() == android.R.id.home) { finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }
         if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, UserDetails.class)); return true; }
