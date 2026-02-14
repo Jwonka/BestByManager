@@ -205,10 +205,6 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
             if (reason != null && reason.isEmpty()) reason = null;
 
             long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductReport.this);
-            if (userId <= 0) {
-                Toast.makeText(ProductReport.this, "Select an employee first.", Toast.LENGTH_SHORT).show();
-                return;
-            }
             viewModel.discardExpiredProduct(row.productID, qty, reason, userId);
             dialog.dismiss();
         }));
