@@ -4,6 +4,7 @@ import static com.bestbymanager.app.utilities.LocalDateBinder.bindFutureDateFiel
 import static com.bestbymanager.app.utilities.LocalDateBinder.format;
 import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
 import androidx.appcompat.app.AlertDialog;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import android.Manifest;
@@ -417,8 +418,8 @@ public class ProductDetails extends AppCompatActivity {
                     String reason = reasonEt.getText() == null ? null : reasonEt.getText().toString().trim();
                     if (reason != null && reason.isEmpty()) reason = null;
 
-                    long userId = Session.get().currentUserID();
-                   // Log.d("DISCARD", "ProductDetails discard uid=" + userId);
+                    long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
+                    if (userId <= 0) { toast("Select an employee first."); return; }
                     productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate
@@ -643,14 +644,8 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     private void saveProduct() {
-        long currentUserId = Session.get().currentUserID();
-        if (currentUserId <= 0) {
-            Intent i = new Intent(this, LoginActivity.class);
-            i.putExtra("deepLink", getIntent());
-            startActivity(i);
-            finish();
-            return;
-        }
+        long currentUserId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
+        if (currentUserId <= 0) { toast("Select an employee first."); return; }
 
         final boolean isCreate = (currentProduct == null);
         final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
