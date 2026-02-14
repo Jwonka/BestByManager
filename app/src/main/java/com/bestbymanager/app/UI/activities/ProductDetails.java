@@ -4,7 +4,9 @@ import static com.bestbymanager.app.utilities.LocalDateBinder.bindFutureDateFiel
 import static com.bestbymanager.app.utilities.LocalDateBinder.format;
 import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
 import androidx.appcompat.app.AlertDialog;
+import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import android.Manifest;
@@ -39,7 +41,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -49,7 +50,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bestbymanager.app.R;
-import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.api.ProductData;
 import com.bestbymanager.app.data.api.ProductResponse;
 import com.bestbymanager.app.data.database.Converters;
@@ -71,7 +71,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductDetails extends AppCompatActivity {
+public class ProductDetails extends BaseEmployeeRequiredActivity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private ProductDetailsViewModel productViewModel;
     private static final String TAG = "ProductDetails";
@@ -101,14 +101,6 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle s) {
         super.onCreate(s);
-
-        long activeId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
-        if (activeId <= 0) {
-            Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-            finish();
-            return;
-        }
 
         imageUri = restoreImageUri(s);
         setTitle(R.string.product_details);
@@ -337,6 +329,7 @@ public class ProductDetails extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_details, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
@@ -346,6 +339,7 @@ public class ProductDetails extends AppCompatActivity {
 
         MenuItem delete = menu.findItem(R.id.deleteProduct);
         if (delete != null) delete.setVisible(hasProduct);
+        AdminMenu.setVisibility(menu);
 
         // show discard whenever a product exists and there is on-hand qty
         MenuItem discard = menu.findItem(R.id.discardProduct);
@@ -358,17 +352,16 @@ public class ProductDetails extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+        if (AdminMenu.handle(this, item)) {
+            return true;
+        } else if (item.getItemId() == R.id.mainScreen) {
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ProductSearch.class));
             return true;
         } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ProductList.class));
             return true;
         } else if (item.getItemId() == R.id.discardProduct) {
             if (currentProduct == null) {

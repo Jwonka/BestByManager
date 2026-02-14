@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -20,14 +19,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.ProductReportAdapter;
+import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
 import com.bestbymanager.app.databinding.ActivityProductReportBinding;
 import com.bestbymanager.app.databinding.DialogDiscardExpiredBinding;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.ProductReportViewModel;
 import java.util.List;
 
-public class ProductReport extends AppCompatActivity {
+public class ProductReport extends BaseEmployeeRequiredActivity {
     private ProductReportViewModel prViewModel;
     private static final String EXTRA_START_DATE  = "startDate";
     private static final String EXTRA_END_DATE    = "endDate";
@@ -94,12 +95,21 @@ public class ProductReport extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_report, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        AdminMenu.setVisibility(menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (AdminMenu.handle(this, item)) {
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
         } else if (item.getItemId() == R.id.mainScreen) {

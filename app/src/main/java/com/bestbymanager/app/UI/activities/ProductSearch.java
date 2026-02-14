@@ -19,23 +19,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
+import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
-import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityProductSearchBinding;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.journeyapps.barcodescanner.ScanOptions;
 import java.time.LocalDate;
 import com.journeyapps.barcodescanner.ScanContract;
 
-public class ProductSearch extends AppCompatActivity {
+public class ProductSearch extends BaseEmployeeRequiredActivity {
     private static final int REQ_CAMERA = 42;
     private static final String EXTRA_START_DATE  = "startDate";
     private static final String EXTRA_END_DATE    = "endDate";
@@ -196,25 +195,31 @@ public class ProductSearch extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_search, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        AdminMenu.setVisibility(menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (AdminMenu.handle(this, item)) {
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
         } else if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         } else if (item.getItemId() == R.id.employeeDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ProductDetails.class));
             return true;
         } else if (item.getItemId() == R.id.productList) {
-            Intent intent = new Intent(this, ProductList.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ProductList.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

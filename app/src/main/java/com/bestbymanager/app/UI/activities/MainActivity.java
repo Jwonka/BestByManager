@@ -5,25 +5,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
-import com.bestbymanager.app.data.database.Repository;
+import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.session.Session;
-import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.databinding.ActivityMainBinding;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.bestbymanager.app.utilities.AdminMenu;
 
-public class MainActivity extends AppCompatActivity {
-    private boolean selectingEmployee = false;
-    private final ExecutorService io = Executors.newSingleThreadExecutor();
+public class MainActivity extends BaseEmployeeRequiredActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,44 +41,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.productDetailsButton.setOnClickListener(v -> {
-            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
-                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-                return;
-            }
-            startActivity(new Intent(MainActivity.this, ProductDetails.class));
-        });
-
-        binding.productSearchButton.setOnClickListener(v -> {
-            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
-                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-                return;
-            }
-            startActivity(new Intent(MainActivity.this, ProductSearch.class));
-        });
-
-        binding.productListButton.setOnClickListener(v -> {
-            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
-                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-                return;
-            }
-            startActivity(new Intent(MainActivity.this, ProductList.class));
-        });
-
-        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(this, UserList.class).putExtra("selectMode", true)));
-
-        binding.aboutButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            startActivity(intent);
-        });
+        binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductDetails.class)));
+        binding.productSearchButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductSearch.class)));
+        binding.productListButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductList.class)));
+        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UserList.class).putExtra("selectMode", true)));
+        binding.aboutButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AboutActivity.class)));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
@@ -92,50 +59,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isAdmin = Session.get().currentUserIsAdmin();
         menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.adminPage) {
-            Intent intent = new Intent(this, AdministratorActivity.class);
-            startActivity(intent);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (AdminMenu.handle(this, item)) {
+            return true;
+        } else if (item.getItemId() == R.id.adminPage) {
+            startActivity(new Intent(this, AdministratorActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        io.execute(() -> {
-            Repository repo = new Repository(getApplication());
-            int count = repo.userCountBlocking();
-
-            runOnUiThread(() -> {
-                if (isFinishing() || isDestroyed()) return;
-
-                if (count == 0) {
-                    selectingEmployee = false;
-                    startActivity(new Intent(this, LoginActivity.class)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    finish();
-                    return;
-                }
-
-                long activeId = ActiveEmployeeManager.getActiveEmployeeId(this);
-                if (activeId <= 0 && !selectingEmployee) {
-                    selectingEmployee = true;
-                    startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-                } else if (activeId > 0) {
-                    selectingEmployee = false;
-                }
-            });
-        });
-    }
-
-    @Override protected void onDestroy() {
-        super.onDestroy();
-        io.shutdownNow();
     }
 }

@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
@@ -16,12 +15,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.ProductAdapter;
+import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.databinding.ActivityProductListBinding;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.ProductListViewModel;
 import java.time.LocalDate;
 import java.util.Collections;
 
-public class ProductList extends AppCompatActivity {
+public class ProductList extends BaseEmployeeRequiredActivity {
 
     private ProductListViewModel productListViewModel;
 
@@ -76,12 +77,21 @@ public class ProductList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_list, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        AdminMenu.setVisibility(menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (AdminMenu.handle(this, item)) {
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
         } else if (item.getItemId() == R.id.mainScreen) {
@@ -92,7 +102,7 @@ public class ProductList extends AppCompatActivity {
             Intent intent = new Intent(this, ProductSearch.class);
             startActivity(intent);
             return true;
-        } else if (item.getItemId() == R.id.employeeDetails) {
+        } else if (item.getItemId() == R.id.productDetails) {
             Intent intent = new Intent(this, ProductDetails.class);
             startActivity(intent);
             return true;
