@@ -25,6 +25,7 @@ import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
 import com.bestbymanager.app.data.pojo.UserReportRow;
 import com.bestbymanager.app.utilities.AlarmScheduler;
+import com.bestbymanager.app.utilities.PasswordUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -51,6 +52,8 @@ public class Repository {
     private static final int EARLY_WARNING_DAYS = 7;
     @SuppressWarnings("unchecked")
     private static <T> LiveData<T> emptyLiveData() { return (LiveData<T>) EMPTY; }
+    private static final int PIN_MAX_ATTEMPTS = 5;
+    private static final long PIN_LOCKOUT_MS = 5L * 60L * 1000L;
 
     public Repository(Application application) {
         this.context = application.getApplicationContext();
@@ -369,6 +372,130 @@ public class Repository {
             showToast("Unsupported barcode");
             return null;
         }
+    }
+
+    public static final class PinState {
+        public final boolean hasPin;
+        public final int failedAttempts;
+        @Nullable public final Long lockedUntilMs;
+        public final boolean locked;
+
+        public PinState(boolean hasPin, int failedAttempts, @Nullable Long lockedUntilMs) {
+            this.hasPin = hasPin;
+            this.failedAttempts = failedAttempts;
+            this.lockedUntilMs = lockedUntilMs;
+            long now = System.currentTimeMillis();
+            this.locked = lockedUntilMs != null && lockedUntilMs > now;
+        }
+    }
+
+    public enum PinVerifyCode {
+        OK,
+        NO_PIN_SET,
+        LOCKED,
+        BAD_PIN
+    }
+
+    public static final class PinVerifyResult {
+        public final PinVerifyCode code;
+        @Nullable public final Long lockedUntilMs;
+        public final int failedAttempts;
+
+        public PinVerifyResult(PinVerifyCode code, @Nullable Long lockedUntilMs, int failedAttempts) {
+            this.code = code;
+            this.lockedUntilMs = lockedUntilMs;
+            this.failedAttempts = failedAttempts;
+        }
+    }
+
+    /** Read current PIN state for selection UI. */
+    public LiveData<PinState> getEmployeePinState(long userId) {
+        MutableLiveData<PinState> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            String hash = mUserDAO.getEmployeePinHashBlocking(userId);
+            int fails = mUserDAO.getEmployeePinFailedAttemptsBlocking(userId);
+            Long lockedUntil = mUserDAO.getEmployeePinLockedUntilBlocking(userId);
+
+            // auto-clear expired lockout
+            if (lockedUntil != null && lockedUntil <= System.currentTimeMillis()) {
+                mUserDAO.clearEmployeePinLockout(userId);
+                fails = 0;
+                lockedUntil = null;
+            }
+
+            boolean hasPin = hash != null && !hash.trim().isEmpty();
+            out.postValue(new PinState(hasPin, fails, lockedUntil));
+        });
+        return out;
+    }
+
+    /** Set or replace PIN (hash + resets lockout/attempts). */
+    public LiveData<Boolean> setEmployeePin(long userId, @NonNull String plainPin) {
+        MutableLiveData<Boolean> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                String pin = plainPin.trim();
+                if (!pin.matches("\\d{4,8}")) { // 4-8 digits
+                    out.postValue(false);
+                    return;
+                }
+                String hash = PasswordUtil.hash(pin);
+                mUserDAO.setEmployeePinHash(userId, hash);
+                out.postValue(true);
+            } catch (Exception e) {
+                out.postValue(false);
+            }
+        });
+        return out;
+    }
+
+    /** Verify PIN + apply attempt/lockout policy. */
+    public LiveData<PinVerifyResult> verifyEmployeePin(long userId, @NonNull String plainPin) {
+        MutableLiveData<PinVerifyResult> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            long now = System.currentTimeMillis();
+
+            String storedHash = mUserDAO.getEmployeePinHashBlocking(userId);
+            int fails = mUserDAO.getEmployeePinFailedAttemptsBlocking(userId);
+            Long lockedUntil = mUserDAO.getEmployeePinLockedUntilBlocking(userId);
+
+            // locked?
+            if (lockedUntil != null && lockedUntil > now) {
+                out.postValue(new PinVerifyResult(PinVerifyCode.LOCKED, lockedUntil, fails));
+                return;
+                // expired lockout -> clear
+            } else if (lockedUntil != null && lockedUntil <= now) {
+                mUserDAO.clearEmployeePinLockout(userId);
+                fails = 0;
+                lockedUntil = null;
+            }
+
+            boolean hasPin = storedHash != null && !storedHash.trim().isEmpty();
+            if (!hasPin) {
+                out.postValue(new PinVerifyResult(PinVerifyCode.NO_PIN_SET, null, fails));
+                return;
+            }
+
+            boolean ok = BCrypt.checkpw(plainPin.trim(), storedHash);
+            if (ok) {
+                mUserDAO.clearEmployeePinLockout(userId);
+                out.postValue(new PinVerifyResult(PinVerifyCode.OK, null, 0));
+                return;
+            }
+
+            // bad pin -> increment + maybe lock
+            mUserDAO.incrementEmployeePinFailedAttempts(userId);
+            int newFails = fails + 1;
+
+            if (newFails >= PIN_MAX_ATTEMPTS) {
+                long until = now + PIN_LOCKOUT_MS;
+                mUserDAO.setEmployeePinLockedUntil(userId, until);
+                out.postValue(new PinVerifyResult(PinVerifyCode.LOCKED, until, newFails));
+            } else {
+                out.postValue(new PinVerifyResult(PinVerifyCode.BAD_PIN, null, newFails));
+            }
+        });
+        return out;
     }
 
     private void showToast(String msg) {
