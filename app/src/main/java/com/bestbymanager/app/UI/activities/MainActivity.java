@@ -14,12 +14,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
+import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.databinding.ActivityMainBinding;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     private boolean selectingEmployee = false;
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +74,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, ProductList.class));
         });
 
-        binding.employeeListButton.setOnClickListener(v -> {
-            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-        });
+        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(this, UserList.class).putExtra("selectMode", true)));
 
         binding.aboutButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
@@ -106,12 +108,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        long activeId = ActiveEmployeeManager.getActiveEmployeeId(this);
-        if (activeId <= 0 && !selectingEmployee) {
-            selectingEmployee = true;
-            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
-        } else if (activeId > 0) {
-            selectingEmployee = false;
-        }
+        io.execute(() -> {
+            Repository repo = new Repository(getApplication());
+            int count = repo.userCountBlocking();
+
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+
+                if (count == 0) {
+                    selectingEmployee = false;
+                    startActivity(new Intent(this, LoginActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    finish();
+                    return;
+                }
+
+                long activeId = ActiveEmployeeManager.getActiveEmployeeId(this);
+                if (activeId <= 0 && !selectingEmployee) {
+                    selectingEmployee = true;
+                    startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
+                } else if (activeId > 0) {
+                    selectingEmployee = false;
+                }
+            });
+        });
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        io.shutdownNow();
     }
 }
