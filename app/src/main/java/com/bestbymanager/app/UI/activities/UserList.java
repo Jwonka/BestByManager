@@ -23,6 +23,7 @@ import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.databinding.ActivityUserListBinding;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.UserListViewModel;
 import java.util.List;
 
@@ -186,12 +187,22 @@ public class UserList extends AppCompatActivity {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
         if (selectMode) return false; // no admin menu while selecting
         getMenuInflater().inflate(R.menu.menu_user_list, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isAdmin = Session.get().currentUserIsAdmin();
+        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
+        if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { if (selectMode) return true; finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }

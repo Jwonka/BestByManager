@@ -107,30 +107,14 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (AdminMenu.handle(this, item)) {
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            startActivity(new Intent(this, ProductSearch.class));
-            return true;
-        } else if (item.getItemId() == R.id.employeeDetails) {
-            startActivity(new Intent(this, ProductDetails.class));
-            return true;
-        } else if (item.getItemId() == R.id.productList) {
-            startActivity(new Intent(this, ProductList.class));
-            return true;
-        } else if (item.getItemId() == R.id.action_copy) {
-            copyToClipboard();
-            return true;
-        } else if (item.getItemId() == R.id.action_share) {
-            shareReport();
-            return true;
-        }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }
+        if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, ProductDetails.class)); return true; }
+        if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
+        if (item.getItemId() == R.id.action_copy) { copyToClipboard(); return true; }
+        if (item.getItemId() == R.id.action_share) { shareReport(); return true; }
         return super.onOptionsItemSelected(item);
     }
 

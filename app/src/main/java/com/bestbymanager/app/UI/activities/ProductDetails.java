@@ -352,25 +352,16 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (AdminMenu.handle(this, item)) {
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            startActivity(new Intent(this, ProductSearch.class));
-            return true;
-        } else if (item.getItemId() == R.id.productList) {
-            startActivity(new Intent(this, ProductList.class));
-            return true;
-        } else if (item.getItemId() == R.id.discardProduct) {
-            if (currentProduct == null) {
-                toast("No product loaded.");
-                return true;
-            }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }
+        if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
+        if (item.getItemId() == R.id.discardProduct) {
+            if (currentProduct == null) { toast("No product loaded."); return true; }
             showDiscardDialog(currentProduct);
             return true;
-        } else if (item.getItemId() == R.id.deleteProduct) {
+        }
+        if (item.getItemId() == R.id.deleteProduct) {
             if (currentProduct != null) {
                 productViewModel.delete(currentProduct);
                 clearForm();

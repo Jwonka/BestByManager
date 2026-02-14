@@ -35,6 +35,8 @@ import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.databinding.ActivityUserSearchBinding;
+import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.UserListViewModel;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -297,27 +299,25 @@ public class UserSearch  extends BaseAdminActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_search, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isAdmin = Session.get().currentUserIsAdmin();
+        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.employeeDetails) {
-            Intent intent = new Intent(this, UserDetails.class);
-            startActivity(intent);
-            return true;
-        }  else if (item.getItemId() == R.id.employeeList) {
-            Intent intent = new Intent(this, UserList.class);
-            startActivity(intent);
-            return true;
-        }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, UserDetails.class)); return true; }
+        if (item.getItemId() == R.id.employeeList) { startActivity(new Intent(this, UserList.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
     private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }

@@ -44,6 +44,7 @@ import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.Converters;
 import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.databinding.ActivityUserDetailsBinding;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.UserDetailsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.io.File;
@@ -75,6 +76,7 @@ public class UserDetails extends BaseAdminActivity {
     @Override
     protected void onCreate(Bundle s) {
         super.onCreate(s);
+        // BaseAdminActivity already enforces admin; this extra check only displays the custom toast/message.
         if (Session.get().isLoggedOut() || !Session.get().currentUserIsAdmin()) {
             Toast.makeText(this, "Owner admin required.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
@@ -116,18 +118,12 @@ public class UserDetails extends BaseAdminActivity {
         clearButton = binding.clearEmployeeButton;
         adminLabel = binding.administratorLabel;
         password = binding.generateTempPwd;
-        binding.imagePreview.setOnClickListener(v -> {
-            if (ensureCameraPermission()) {
-                launchCamera();
-            }
-        });
+        binding.imagePreview.setOnClickListener(v -> { if (ensureCameraPermission()) { launchCamera(); } });
         modeSwitch.setOnCheckedChangeListener((btn, isChecked) -> updateAdmin(isChecked));
         clearButton.setOnClickListener(v -> clearForm());
         saveButton.setOnClickListener(v -> saveUser());
 
-        if (imageUri != null) {
-            handleImage(imageUri);
-        }
+        if (imageUri != null) { handleImage(imageUri); }
 
         password.setOnClickListener(v -> {
             if (currentUser == null) {
@@ -158,33 +154,25 @@ public class UserDetails extends BaseAdminActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_details, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.deleteEmployee).setVisible(currentUser != null);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.employeeSearch) {
-            Intent intent = new Intent(this, UserSearch.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.employeeList) {
-            Intent intent = new Intent(this, UserList.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.deleteEmployee) {
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }
+        if (item.getItemId() == R.id.employeeList) { startActivity(new Intent(this, UserList.class)); return true; }
+        if (item.getItemId() == R.id.deleteEmployee) {
             if (currentUser != null) {
                 userViewModel.delete(currentUser);
                 clearForm();

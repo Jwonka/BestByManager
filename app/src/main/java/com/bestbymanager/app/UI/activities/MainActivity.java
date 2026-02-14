@@ -65,12 +65,8 @@ public class MainActivity extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (AdminMenu.handle(this, item)) {
-            return true;
-        } else if (item.getItemId() == R.id.adminPage) {
-            startActivity(new Intent(this, AdministratorActivity.class));
-            return true;
-        }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == R.id.adminPage) { startActivity(new Intent(this, AdministratorActivity.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 }

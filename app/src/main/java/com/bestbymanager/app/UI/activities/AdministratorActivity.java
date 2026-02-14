@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
 import com.bestbymanager.app.databinding.ActivityAdministratorBinding;
+import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.utilities.AppResetUtil;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -69,17 +71,25 @@ public class AdministratorActivity extends BaseAdminActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_administrator_activity, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isAdmin = Session.get().currentUserIsAdmin();
+        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
-
         if (item.getItemId() == R.id.menu_enable_recovery) { promptAuthThenEnableRecovery(); return true; }
         if (item.getItemId() == R.id.menu_reset_app_data) { promptAuthThenConfirmReset(); return true; }
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -89,24 +89,11 @@ public class ProductList extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (AdminMenu.handle(this, item)) {
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.productSearch) {
-            Intent intent = new Intent(this, ProductSearch.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.productDetails) {
-            Intent intent = new Intent(this, ProductDetails.class);
-            startActivity(intent);
-            return true;
-        }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }
+        if (item.getItemId() == R.id.productDetails) { startActivity(new Intent(this, ProductDetails.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 

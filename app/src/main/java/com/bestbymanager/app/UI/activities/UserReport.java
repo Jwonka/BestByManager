@@ -22,6 +22,8 @@ import com.bestbymanager.app.UI.adapter.UserReportAdapter;
 import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
 import com.bestbymanager.app.data.pojo.UserReportRow;
 import com.bestbymanager.app.databinding.ActivityUserReportBinding;
+import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.UserReportViewModel;
 import java.util.List;
 
@@ -93,33 +95,28 @@ public class UserReport extends BaseAdminActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_report, menu);
+        AdminMenu.inflateIfAdmin(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isAdmin = Session.get().currentUserIsAdmin();
+        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        AdminMenu.setVisibility(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        } else if (item.getItemId() == R.id.mainScreen) {
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.employeeSearch) {
-            startActivity(new Intent(this, UserSearch.class));
-            return true;
-        } else if (item.getItemId() == R.id.employeeDetails) {
-            startActivity(new Intent(this, UserDetails.class));
-            return true;
-        } else if (item.getItemId() == R.id.employeeList) {
-            startActivity(new Intent(this, UserList.class));
-            return true;
-        } else if (item.getItemId() == R.id.action_copy) {
-            copyToClipboard();
-            return true;
-        } else if (item.getItemId() == R.id.action_share) {
-            shareReport();
-            return true;
-        }
+        if (AdminMenu.handle(this, item)) { return true; }
+        if (item.getItemId() == android.R.id.home) { finish(); return true; }
+        if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }
+        if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, UserDetails.class)); return true; }
+        if (item.getItemId() == R.id.employeeList) { startActivity(new Intent(this, UserList.class)); return true; }
+        if (item.getItemId() == R.id.action_copy) { copyToClipboard(); return true; }
+        if (item.getItemId() == R.id.action_share) { shareReport(); return true; }
         return super.onOptionsItemSelected(item);
     }
 
