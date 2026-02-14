@@ -23,6 +23,10 @@ public class User {
     private String hash;
     private byte[] thumbnail;
     public boolean isAdmin;
+    public boolean isOwner;
+    @Nullable public String employeePinHash;
+    public int employeePinFailedAttempts;
+    @Nullable public Long employeePinLockedUntil;
     @Nullable String resetTokenHash;
     @Nullable
     OffsetDateTime resetExpires;
@@ -37,8 +41,6 @@ public class User {
     public User(@NonNull String userName, @NonNull String hash) {
         this.userName = userName;
         this.hash = hash;
-        this.userName = userName;
-        this.hash = hash;
     }
 
     // Constructor for Room to read the database
@@ -49,6 +51,10 @@ public class User {
                 @NonNull String lastName,
                 byte[] thumbnail,
                 boolean isAdmin,
+                boolean isOwner,
+                @Nullable String employeePinHash,
+                int employeePinFailedAttempts,
+                @Nullable Long employeePinLockedUntil,
                 @Nullable String resetTokenHash,
                 @Nullable OffsetDateTime resetExpires,
                 boolean mustChange) {
@@ -59,6 +65,10 @@ public class User {
         this.lastName = lastName;
         this.thumbnail = thumbnail;
         this.isAdmin = isAdmin;
+        this.isOwner = isOwner;
+        this.employeePinHash = employeePinHash;
+        this.employeePinFailedAttempts = employeePinFailedAttempts;
+        this.employeePinLockedUntil = employeePinLockedUntil;
         this.resetTokenHash = resetTokenHash;
         this.resetExpires   = resetExpires;
         this.mustChange     = mustChange;
@@ -93,6 +103,16 @@ public class User {
     public void setFirstName(@NonNull String firstName) { this.firstName = firstName; }
     public boolean isAdmin() { return isAdmin; }
     public void setAdmin(boolean admin) { isAdmin = admin; }
+    public boolean isOwner() { return isOwner; }
+    public void setOwner(boolean owner) { isOwner = owner; }
+    @Nullable
+    public String getEmployeePinHash() { return employeePinHash; }
+    public void setEmployeePinHash(@Nullable String employeePinHash) { this.employeePinHash = employeePinHash; }
+    public int getEmployeePinFailedAttempts() { return employeePinFailedAttempts; }
+    public void setEmployeePinFailedAttempts(int attempts) { this.employeePinFailedAttempts = attempts; }
+    @Nullable
+    public Long getEmployeePinLockedUntil() { return employeePinLockedUntil; }
+    public void setEmployeePinLockedUntil(@Nullable Long lockedUntil) { this.employeePinLockedUntil = lockedUntil; }
     public void setResetTokenHash(@Nullable String token) { this.resetTokenHash = token; }
     @Nullable
     public String getResetTokenHash() { return resetTokenHash; }

@@ -15,7 +15,7 @@ import com.bestbymanager.app.data.entities.Product;
 import com.bestbymanager.app.data.entities.User;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 20, exportSchema = false)
+@Database(entities = {User.class, Product.class, DiscardEvent.class}, version = 21, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ProductDatabaseBuilder extends RoomDatabase {
 
@@ -151,6 +151,27 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
         @Override public void migrate(@NonNull SupportSQLiteDatabase db) { /* no-op */ }
     };
 
+    public static final Migration MIGRATION_20_21 = new Migration(20, 21) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            // Add kiosk-mode columns to user
+            db.execSQL("ALTER TABLE `user` ADD COLUMN `isOwner` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `user` ADD COLUMN `employeePinHash` TEXT");
+            db.execSQL("ALTER TABLE `user` ADD COLUMN `employeePinFailedAttempts` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `user` ADD COLUMN `employeePinLockedUntil` INTEGER");
+
+            // Stamp the earliest existing admin as Owner (super admin)
+            // If there are no admins, this will do nothing
+            db.execSQL(
+                    "UPDATE `user` " +
+                            "SET `isOwner` = 1 " +
+                            "WHERE `userID` = (" +
+                            "  SELECT `userID` FROM `user` WHERE `isAdmin` = 1 ORDER BY `userID` ASC LIMIT 1" +
+                            ")"
+            );
+        }
+    };
+
     public static ProductDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ProductDatabaseBuilder.class) {
@@ -162,7 +183,14 @@ public abstract class ProductDatabaseBuilder extends RoomDatabase {
                             )
                             .setTransactionExecutor(Executors.newSingleThreadExecutor())
                             .setQueryExecutor(Executors.newFixedThreadPool(4))
-                            .addMigrations(MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18, MIGRATION_18_19, MIGRATION_19_20)
+                            .addMigrations(
+                                    MIGRATION_15_16,
+                                    MIGRATION_16_17,
+                                    MIGRATION_17_18,
+                                    MIGRATION_18_19,
+                                    MIGRATION_19_20,
+                                    MIGRATION_20_21
+                            )
                             .build();
                 }
             }
