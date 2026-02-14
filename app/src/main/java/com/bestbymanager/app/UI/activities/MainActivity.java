@@ -19,6 +19,7 @@ import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean selectingEmployee = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +106,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
+        long activeId = ActiveEmployeeManager.getActiveEmployeeId(this);
+        if (activeId <= 0 && !selectingEmployee) {
+            selectingEmployee = true;
             startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
+        } else if (activeId > 0) {
+            selectingEmployee = false;
         }
     }
 }

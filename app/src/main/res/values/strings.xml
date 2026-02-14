@@ -26,6 +26,7 @@
     <string name="expiring">Expiring</string>
     <string name="product_list">Product List</string>
     <string name="employee_list">Employee List</string>
+    <string name="select_employee">Select Employee</string>
     <string name="employee_details">Employee Details</string>
     <string name="employee_report">Employee Report</string>
     <string name="employee_search">Employee Search</string>

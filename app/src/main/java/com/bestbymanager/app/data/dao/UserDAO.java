@@ -66,6 +66,28 @@ public interface UserDAO {
     @Query("SELECT * FROM user WHERE isAdmin = 1 ORDER BY userName COLLATE NOCASE ASC, userID ASC")
     LiveData<List<User>> loadAdmins();
 
+    // pin state read for selection flow
+    @Query("SELECT employeePinHash FROM user WHERE userID = :userId LIMIT 1")
+    String getEmployeePinHashBlocking(long userId);
+
+    @Query("SELECT employeePinFailedAttempts FROM user WHERE userID = :userId LIMIT 1")
+    int getEmployeePinFailedAttemptsBlocking(long userId);
+
+    @Query("SELECT employeePinLockedUntil FROM user WHERE userID = :userId LIMIT 1")
+    Long getEmployeePinLockedUntilBlocking(long userId);
+
+    @Query("UPDATE user SET employeePinHash = :hash, employeePinFailedAttempts = 0, employeePinLockedUntil = NULL WHERE userID = :userId")
+    void setEmployeePinHash(long userId, String hash);
+
+    @Query("UPDATE user SET employeePinFailedAttempts = 0, employeePinLockedUntil = NULL WHERE userID = :userId")
+    void clearEmployeePinLockout(long userId);
+
+    @Query("UPDATE user SET employeePinFailedAttempts = employeePinFailedAttempts + 1 WHERE userID = :userId")
+    void incrementEmployeePinFailedAttempts(long userId);
+
+    @Query("UPDATE user SET employeePinLockedUntil = :lockedUntil WHERE userID = :userId")
+    void setEmployeePinLockedUntil(long userId, Long lockedUntil);
+
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT userID, userName, firstName, lastName " +
             "FROM user " +
