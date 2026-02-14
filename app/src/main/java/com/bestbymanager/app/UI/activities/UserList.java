@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,17 +18,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.UserAdapter;
+import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.databinding.ActivityUserListBinding;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.viewmodel.UserListViewModel;
 import java.util.List;
 
 public class UserList extends AppCompatActivity {
 
+    private Repository repo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        repo = new Repository(getApplication());
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
 
         setTitle(selectMode ? R.string.select_employee : R.string.employee_list);
@@ -54,20 +60,37 @@ public class UserList extends AppCompatActivity {
         });
 
         binding.employeeDetailsButton.setVisibility(selectMode ? View.GONE : View.VISIBLE);
-
-        binding.employeeDetailsButton.setOnClickListener(v -> {
-            startActivity(new Intent(UserList.this, UserDetails.class));
-        });
+        binding.employeeDetailsButton.setOnClickListener(v -> startActivity(new Intent(UserList.this, UserDetails.class)));
 
         final UserAdapter userAdapter = new UserAdapter((userID) -> {
-            if (selectMode) {
-                // TEMP: until PIN flow is wired, just select and return
+            if (!selectMode) {
+                startActivity(new Intent(UserList.this, UserDetails.class).putExtra("userID", userID));
+                return;
+            }
+
+            // Admin override: no PIN needed to select anyone
+            if (Session.get().currentUserIsAdmin()) {
                 ActiveEmployeeManager.setActiveEmployeeId(UserList.this, userID);
                 Toast.makeText(UserList.this, "Employee selected.", Toast.LENGTH_SHORT).show();
                 finish();
-            } else {
-                startActivity(new Intent(UserList.this, UserDetails.class).putExtra("userID", userID));
+                return;
             }
+
+            // Non-admin: enforce PIN (set on first selection, then verify on future selections)
+            repo.getEmployeePinState(userID).observe(this, state -> {
+                if (state == null) return;
+
+                if (state.locked) {
+                    Long until = state.lockedUntilMs;
+                    long msLeft = Math.max(0, (until == null ? 0L : until) - System.currentTimeMillis());
+                    long sec = msLeft / 1000;
+                    Toast.makeText(this, "Locked. Try again in " + sec + "s.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!state.hasPin)  showSetPinDialog(userID);
+                else showVerifyPinDialog(userID);
+            });
         });
 
         binding.employeeListRecyclerView.setAdapter(userAdapter);
@@ -87,6 +110,75 @@ public class UserList extends AppCompatActivity {
                 userAdapter.setUsers(list);
             }
         });
+    }
+
+    private void showSetPinDialog(long userId) {
+        final EditText input = new EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        input.setHint("4-8 digit PIN");
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Set employee PIN")
+                .setMessage("PIN is required for this employee.")
+                .setView(input)
+                .setCancelable(false)
+                .setPositiveButton("Set PIN", (d, which) -> {
+                    String pin = input.getText() == null ? "" : input.getText().toString().trim();
+                    repo.setEmployeePin(userId, pin).observe(this, ok -> {
+                        if (Boolean.TRUE.equals(ok)) {
+                            // Immediately verify (forced on first selection rule)
+                            showVerifyPinDialog(userId);
+                        } else {
+                            Toast.makeText(this, "PIN must be 4-8 digits.", Toast.LENGTH_SHORT).show();
+                            showSetPinDialog(userId);
+                        }
+                    });
+                })
+                .show();
+    }
+
+    private void showVerifyPinDialog(long userId) {
+        final EditText input = new EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        input.setHint("Enter PIN");
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Employee PIN")
+                .setView(input)
+                .setCancelable(false)
+                .setNegativeButton("Cancel", (d, w) -> { /* stay here */ })
+                .setPositiveButton("Unlock", (d, w) -> {
+                    String pin = input.getText() == null ? "" : input.getText().toString().trim();
+                    repo.verifyEmployeePin(userId, pin).observe(this, res -> {
+                        if (res == null) return;
+
+                        switch (res.code) {
+                            case OK:
+                                ActiveEmployeeManager.setActiveEmployeeId(this, userId);
+                                Toast.makeText(this, "Employee selected.", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+
+                            case NO_PIN_SET:
+                                showSetPinDialog(userId);
+                                break;
+
+                            case LOCKED: {
+                                long msLeft = Math.max(0, (res.lockedUntilMs == null ? 0 : res.lockedUntilMs) - System.currentTimeMillis());
+                                long sec = msLeft / 1000;
+                                Toast.makeText(this, "Locked. Try again in " + sec + "s.", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+
+                            case BAD_PIN:
+                            default:
+                                Toast.makeText(this, "Bad PIN. Attempts: " + res.failedAttempts, Toast.LENGTH_SHORT).show();
+                                showVerifyPinDialog(userId);
+                                break;
+                        }
+                    });
+                })
+                .show();
     }
 
     @Override
