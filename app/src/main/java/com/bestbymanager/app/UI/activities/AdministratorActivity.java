@@ -22,7 +22,6 @@ import com.bestbymanager.app.databinding.ActivityAdministratorBinding;
 import com.bestbymanager.app.utilities.AppResetUtil;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-
 import java.util.concurrent.Executor;
 
 public class AdministratorActivity extends BaseAdminActivity {

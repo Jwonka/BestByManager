@@ -85,10 +85,6 @@
             android:exported="false"
             android:parentActivityName=".UI.activities.ProductSearch" />
         <activity
-            android:name=".UI.activities.MainActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false"/>
-        <activity
             android:name=".UI.activities.ResetPasswordActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:exported="false"/>
@@ -99,6 +95,10 @@
         <activity
             android:name=".UI.activities.LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"
+            android:exported="false"/>
+        <activity
+            android:name=".UI.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,6 +15,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,15 +24,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Session.get().preload(this);
-        if (Session.get().currentUserID() <= 0) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-            return;
-        }
-        setTitle(R.string.main_screen);
 
+        setTitle(R.string.main_screen);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -48,27 +43,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.productDetailsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ProductDetails.class);
-            startActivity(intent);
+            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
+                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
+                return;
+            }
+            startActivity(new Intent(MainActivity.this, ProductDetails.class));
         });
 
         binding.productSearchButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ProductSearch.class);
-            startActivity(intent);
+            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
+                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
+                return;
+            }
+            startActivity(new Intent(MainActivity.this, ProductSearch.class));
         });
 
         binding.productListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ProductList.class);
-            startActivity(intent);
+            if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
+                Toast.makeText(this, "Select an employee first.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
+                return;
+            }
+            startActivity(new Intent(MainActivity.this, ProductList.class));
         });
 
-        binding.logoutButton.setOnClickListener(v -> {
-            Session.get().logOut(this);
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+        binding.employeeListButton.setOnClickListener(v -> {
+            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
         });
 
         binding.aboutButton.setOnClickListener(v -> {
@@ -103,12 +105,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Session.get().requiresPasswordReset()) {
-            Intent i = new Intent(this, ResetPasswordActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.putExtra("userId", Session.get().userId() == null ? -1L : Session.get().userId());
-            startActivity(i);
-            finish();
+        if (ActiveEmployeeManager.getActiveEmployeeId(this) <= 0) {
+            startActivity(new Intent(this, UserList.class).putExtra("selectMode", true));
         }
     }
 }

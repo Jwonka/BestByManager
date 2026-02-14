@@ -20,12 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.ProductReportAdapter;
-import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
 import com.bestbymanager.app.databinding.ActivityProductReportBinding;
 import com.bestbymanager.app.databinding.DialogDiscardExpiredBinding;
 import com.bestbymanager.app.viewmodel.ProductReportViewModel;
-
 import java.util.List;
 
 public class ProductReport extends AppCompatActivity {
@@ -211,7 +210,12 @@ public class ProductReport extends AppCompatActivity {
             String reason = b.discardReason.getText() == null ? null : b.discardReason.getText().toString().trim();
             if (reason != null && reason.isEmpty()) reason = null;
 
-            viewModel.discardExpiredProduct(row.productID, qty, reason, Session.get().currentUserID());
+            long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductReport.this);
+            if (userId <= 0) {
+                Toast.makeText(ProductReport.this, "Select an employee first.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            viewModel.discardExpiredProduct(row.productID, qty, reason, userId);
             dialog.dismiss();
         }));
 

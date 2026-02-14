@@ -79,11 +79,11 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/logout_button"
+                android:id="@+id/employee_list_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/logout"
+                android:text="@string/employee_list"
                 android:layout_marginTop="@dimen/spacing_m"
                 app:layout_constraintTop_toBottomOf="@id/product_list_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/about"
                 android:layout_marginTop="@dimen/spacing_m"
-                app:layout_constraintTop_toBottomOf="@id/logout_button"
+                app:layout_constraintTop_toBottomOf="@id/employee_list_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
