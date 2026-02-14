@@ -84,7 +84,7 @@ public class AdministratorActivity extends BaseAdminActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }

@@ -351,7 +351,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }

@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,8 +31,10 @@ import com.bestbymanager.app.viewmodel.UserListViewModel;
 import java.util.List;
 
 public class UserList extends AppCompatActivity {
-
     private Repository repo;
+    private boolean pinFlowInFlight = false;
+    @Nullable
+    private AlertDialog pinDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +82,19 @@ public class UserList extends AppCompatActivity {
                 return;
             }
 
+            if (pinFlowInFlight) { return; }
+            pinFlowInFlight = true;
+
             // Non-admin: enforce PIN (set on first selection, then verify on future selections)
             repo.getEmployeePinState(userID).observe(this, state -> {
-                if (state == null) return;
+                if (state == null) { pinFlowInFlight = false; return; }
 
                 if (state.locked) {
                     Long until = state.lockedUntilMs;
                     long msLeft = Math.max(0, (until == null ? 0L : until) - System.currentTimeMillis());
                     long sec = msLeft / 1000;
                     Toast.makeText(this, "Locked. Try again in " + sec + "s.", Toast.LENGTH_SHORT).show();
+                    pinFlowInFlight = false;
                     return;
                 }
 
@@ -114,11 +123,16 @@ public class UserList extends AppCompatActivity {
     }
 
     private void showSetPinDialog(long userId) {
+        if (pinDialog != null && pinDialog.isShowing()) { return; }
+        if (pinDialog != null) {
+            pinDialog.dismiss();
+            pinDialog = null;
+        }
         final EditText input = new EditText(this);
         input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         input.setHint("4-8 digit PIN");
 
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        pinDialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Set employee PIN")
                 .setMessage("PIN is required for this employee.")
                 .setView(input)
@@ -127,27 +141,38 @@ public class UserList extends AppCompatActivity {
                     String pin = input.getText() == null ? "" : input.getText().toString().trim();
                     repo.setEmployeePin(userId, pin).observe(this, ok -> {
                         if (Boolean.TRUE.equals(ok)) {
-                            // Immediately verify (forced on first selection rule)
                             showVerifyPinDialog(userId);
                         } else {
                             Toast.makeText(this, "PIN must be 4-8 digits.", Toast.LENGTH_SHORT).show();
+                            // keep gate true; re-prompt
                             showSetPinDialog(userId);
                         }
                     });
                 })
-                .show();
+                .create();
+
+        pinDialog.setOnDismissListener(d -> pinDialog = null);
+        pinDialog.show();
     }
 
     private void showVerifyPinDialog(long userId) {
+        if (pinDialog != null && pinDialog.isShowing()) { return; }
+        if (pinDialog != null) {
+            pinDialog.dismiss();
+            pinDialog = null;
+        }
         final EditText input = new EditText(this);
         input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         input.setHint("Enter PIN");
 
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        pinDialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Employee PIN")
                 .setView(input)
                 .setCancelable(false)
-                .setNegativeButton("Cancel", (d, w) -> { /* stay here */ })
+                .setNegativeButton("Cancel", (d, w) -> {
+                    pinFlowInFlight = false;
+                    pinDialog = null; // dialog will dismiss right after this
+                })
                 .setPositiveButton("Unlock", (d, w) -> {
                     String pin = input.getText() == null ? "" : input.getText().toString().trim();
                     repo.verifyEmployeePin(userId, pin).observe(this, res -> {
@@ -157,10 +182,13 @@ public class UserList extends AppCompatActivity {
                             case OK:
                                 ActiveEmployeeManager.setActiveEmployeeId(this, userId);
                                 Toast.makeText(this, "Employee selected.", Toast.LENGTH_SHORT).show();
+                                pinFlowInFlight = false;
+                                pinDialog = null;
                                 finish();
                                 break;
 
                             case NO_PIN_SET:
+                                // keep gate true while we move to set-pin
                                 showSetPinDialog(userId);
                                 break;
 
@@ -168,18 +196,38 @@ public class UserList extends AppCompatActivity {
                                 long msLeft = Math.max(0, (res.lockedUntilMs == null ? 0 : res.lockedUntilMs) - System.currentTimeMillis());
                                 long sec = msLeft / 1000;
                                 Toast.makeText(this, "Locked. Try again in " + sec + "s.", Toast.LENGTH_SHORT).show();
+                                pinFlowInFlight = false;
+                                // dialog will close after this click; onDismiss will clear pinDialog
                                 break;
                             }
 
                             case BAD_PIN:
                             default:
                                 Toast.makeText(this, "Bad PIN. Attempts: " + res.failedAttempts, Toast.LENGTH_SHORT).show();
+                                // keep gate true and re-prompt
                                 showVerifyPinDialog(userId);
                                 break;
                         }
                     });
                 })
-                .show();
+                .create();
+
+        pinDialog.setOnDismissListener(d -> {
+            pinDialog = null;
+            // if user somehow dismisses (system), don’t leave the gate stuck
+            pinFlowInFlight = false;
+        });
+        pinDialog.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        pinFlowInFlight = false;
+        if (pinDialog != null) {
+            pinDialog.dismiss();
+            pinDialog = null;
+        }
     }
 
     @Override
@@ -200,7 +248,7 @@ public class UserList extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { if (selectMode) return true; finish(); return true; }
