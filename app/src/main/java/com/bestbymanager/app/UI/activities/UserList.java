@@ -223,7 +223,7 @@ public class UserList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
-        if (selectMode) return false; // no admin menu while selecting
+        if (selectMode) return false;
         getMenuInflater().inflate(R.menu.menu_user_list, menu);
         AdminMenu.inflateIfAdmin(this, menu);
         return true;
@@ -231,8 +231,10 @@ public class UserList extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
+        boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
+        if (selectMode) return false;
+        MenuItem adminPage = menu.findItem(R.id.adminPage);
+        if (adminPage != null) adminPage.setVisible(Session.get().currentUserIsAdmin());
         AdminMenu.setVisibility(menu);
         return true;
     }
