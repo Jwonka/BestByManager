@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.activities.MainActivity;
+import com.bestbymanager.app.session.Session;
 
 public abstract class BaseAdminActivity extends AppCompatActivity {
     @Override

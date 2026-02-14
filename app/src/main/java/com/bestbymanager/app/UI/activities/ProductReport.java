@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.adapter.ProductReportAdapter;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.pojo.ProductReportRow;
 import com.bestbymanager.app.databinding.ActivityProductReportBinding;
 import com.bestbymanager.app.databinding.DialogDiscardExpiredBinding;

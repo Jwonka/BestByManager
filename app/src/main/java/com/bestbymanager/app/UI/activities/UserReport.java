@@ -24,7 +24,6 @@ import com.bestbymanager.app.data.pojo.UserReportRow;
 import com.bestbymanager.app.databinding.ActivityUserReportBinding;
 import com.bestbymanager.app.viewmodel.UserReportViewModel;
 import java.util.List;
-import java.util.Objects;
 
 public class UserReport extends BaseAdminActivity {
     private static final String EXTRA_START_DATE   = "startDate";

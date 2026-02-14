@@ -48,7 +48,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bestbymanager.app.R;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.api.ProductData;
 import com.bestbymanager.app.data.api.ProductResponse;
 import com.bestbymanager.app.data.database.Converters;

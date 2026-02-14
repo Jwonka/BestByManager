@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.preference.PreferenceManager;
 import com.bestbymanager.app.UI.activities.LoginActivity;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
 import java.io.File;
 

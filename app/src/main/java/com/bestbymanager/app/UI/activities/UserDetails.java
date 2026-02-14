@@ -40,7 +40,7 @@ import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.Converters;
 import com.bestbymanager.app.data.entities.User;
 import com.bestbymanager.app.databinding.ActivityUserDetailsBinding;

@@ -1,4 +1,4 @@
-package com.bestbymanager.app.UI.authentication;
+package com.bestbymanager.app.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;

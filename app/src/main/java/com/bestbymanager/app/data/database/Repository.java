@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import com.bestbymanager.app.UI.adapter.LoginResult;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.api.OffApi;
 import com.bestbymanager.app.data.api.ProductResponse;
 import com.bestbymanager.app.data.dao.ProductDAO;

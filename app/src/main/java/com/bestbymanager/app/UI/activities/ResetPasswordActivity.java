@@ -12,7 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.UI.authentication.ResetPasswordAction;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityResetPasswordBinding;
 

@@ -25,7 +25,7 @@ import com.bestbymanager.app.UI.authentication.LoginAction;
 import com.bestbymanager.app.UI.authentication.RegisterAction;
 import com.bestbymanager.app.databinding.ActivityLoginBinding;
 import com.bestbymanager.app.data.database.Repository;
-import com.bestbymanager.app.UI.authentication.Session;
+import com.bestbymanager.app.session.Session;
 import com.google.android.material.button.MaterialButton;
 
 public class LoginActivity extends AppCompatActivity {
