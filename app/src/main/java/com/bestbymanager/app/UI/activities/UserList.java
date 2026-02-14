@@ -233,8 +233,6 @@ public class UserList extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
         if (selectMode) return false;
-        MenuItem adminPage = menu.findItem(R.id.adminPage);
-        if (adminPage != null) adminPage.setVisible(Session.get().currentUserIsAdmin());
         AdminMenu.setVisibility(menu);
         return true;
     }

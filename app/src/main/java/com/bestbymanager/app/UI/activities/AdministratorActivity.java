@@ -77,8 +77,6 @@ public class AdministratorActivity extends BaseAdminActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
         AdminMenu.setVisibility(menu);
         return true;
     }

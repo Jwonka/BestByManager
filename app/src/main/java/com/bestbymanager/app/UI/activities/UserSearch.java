@@ -305,8 +305,6 @@ public class UserSearch  extends BaseAdminActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem adminPage = menu.findItem(R.id.adminPage);
-        if (adminPage != null) adminPage.setVisible(Session.get().currentUserIsAdmin());
         AdminMenu.setVisibility(menu);
         return true;
     }
