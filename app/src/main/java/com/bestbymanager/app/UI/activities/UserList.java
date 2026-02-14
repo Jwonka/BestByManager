@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,6 +31,15 @@ public class UserList extends AppCompatActivity {
         boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
 
         setTitle(selectMode ? R.string.select_employee : R.string.employee_list);
+        if (getSupportActionBar() != null) { getSupportActionBar().setDisplayHomeAsUpEnabled(!selectMode); }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                if (selectMode) return; // force selection
+                setEnabled(false);
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityUserListBinding binding = ActivityUserListBinding.inflate(getLayoutInflater());
@@ -89,7 +99,8 @@ public class UserList extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { finish(); return true; }
+        boolean selectMode = getIntent().getBooleanExtra("selectMode", false);
+        if (item.getItemId() == android.R.id.home) { if (selectMode) return true; finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.employeeSearch) { startActivity(new Intent(this, UserSearch.class)); return true; }
         if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, UserDetails.class)); return true; }
