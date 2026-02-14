@@ -403,7 +403,6 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                     if (reason != null && reason.isEmpty()) reason = null;
 
                     long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
-                    if (userId <= 0) { toast("Select an employee first."); return; }
                     productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate
@@ -629,7 +628,6 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
 
     private void saveProduct() {
         long currentUserId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
-        if (currentUserId <= 0) { toast("Select an employee first."); return; }
 
         final boolean isCreate = (currentProduct == null);
         final boolean addNewExpiration = (!isCreate) && modeSwitch.isEnabled() && modeSwitch.isChecked();
