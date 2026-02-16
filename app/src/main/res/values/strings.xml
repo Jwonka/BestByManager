@@ -98,9 +98,9 @@
     <string name="dev_title">Developer Contact</string>
     <string name="dev_info">App developed by Joshua Werlein</string>
     <string name="dev_email">📧 Email: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></string>
-    <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-w-901241241/">https://www.linkedin.com/in/joshua-w-901241241/</a></string>
+    <string name="dev_linkedin">🔗 LinkedIn: <a href="https://www.linkedin.com/in/joshua-werlein/">https://www.linkedin.com/in/joshua-werlein/</a></string>
     <string name="disclaimer">This app is an independent project and is not affiliated with or endorsed by Open Food Facts.</string>
-    <string name="copyright">© 2025 Joshua Werlein. All rights reserved.</string>
+    <string name="copyright">© %1$d Joshua Werlein. All rights reserved.</string>
     <string name="discard_product">Discard Product</string>
     <string name="discard_quantity">Discard quantity</string>
     <string name="discard_reason_optional">Reason (optional)</string>
