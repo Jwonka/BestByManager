@@ -25,6 +25,7 @@ import com.bestbymanager.app.UI.authentication.SetupOwnerAction;
 import com.bestbymanager.app.UI.authentication.UnlockKioskAction;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityUnlockKioskBinding;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.Session;
 import com.google.android.material.button.MaterialButton;
 
@@ -42,11 +43,18 @@ public class UnlockKioskActivity extends AppCompatActivity {
 
         Session.get().preload(this);
 
-        // If kiosk already unlocked (and not in forced reset), go straight to employee switch/select
+        // If kiosk already unlocked (and not in forced reset)
         if (Session.get().isUnlocked() && !Session.get().requiresPasswordReset()) {
-            startActivity(new Intent(this, EmployeeList.class)
-                    .putExtra("selectMode", true)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                // Active employee navigates to home screen
+            if (ActiveEmployeeManager.hasActiveEmployee(this)) {
+                startActivity(new Intent(this, MainActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            } else {  // go straight to employee switch/select
+                startActivity(new Intent(this, EmployeeList.class)
+                        .putExtra("selectMode", true)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            }
+
             finish();
             return;
         }
