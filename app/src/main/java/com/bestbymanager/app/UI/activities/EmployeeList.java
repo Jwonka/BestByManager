@@ -118,7 +118,7 @@ public class EmployeeList extends AppCompatActivity {
             if (e == null) return;
             ActiveEmployeeManager.setActiveEmployeeId(this, employeeId);
             ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, e.isAdmin());
-            
+
             Toast.makeText(this, "Employee selected.", Toast.LENGTH_SHORT).show();
 
             startActivity(new Intent(this, MainActivity.class)
