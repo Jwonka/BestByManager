@@ -9,20 +9,22 @@ import com.bestbymanager.app.data.database.Repository;
 public abstract class AuthenticationAction {
 
     protected final Context context;
-    private final TextView userName;
-    private final EditText password;
+    private final TextView nameField;
+    private final EditText passwordField;
     protected final Repository repository;
     private final boolean strict;
-    protected AuthenticationAction(Context context, TextView userName, EditText password, Repository repository, boolean strict) {
+
+    protected AuthenticationAction(Context context, TextView nameField, EditText passwordField, Repository repository, boolean strict) {
         this.context = context;
-        this.userName = userName;
-        this.password = password;
+        this.nameField = nameField;
+        this.passwordField = passwordField;
         this.repository = repository;
         this.strict = strict;
     }
+
     public final void run() {
-        String name = userName.getText().toString().trim();
-        String plainPassword = password.getText().toString();
+        String name = nameField.getText().toString().trim();
+        String plainPassword = passwordField.getText().toString();
 
         if (!validInput(name, plainPassword, strict)) return;
 
@@ -31,28 +33,23 @@ public abstract class AuthenticationAction {
 
     protected boolean validInput(String name, String plainPassword, boolean strict) {
 
-        if (name.isEmpty()) { return fail(userName, "Username required."); }
+        if (name.isEmpty()) return fail(nameField, "Name required.");
 
-        if (name.length() > 30) { return fail(userName, "Username must be less than 30 characters."); }
+        if (name.length() > 64) return fail(nameField, "Name must be less than 64 characters.");
 
         return !strict || strongEnough(plainPassword);
     }
 
     protected boolean strongEnough(String plainPassword) {
 
-        if(plainPassword.isEmpty()) { return fail(password, "password required."); }
+        if (plainPassword.isEmpty())
+            return fail(passwordField, "Password required.");
 
-        if(plainPassword.length() < 12) return fail(password,"Password must be at least 12-characters.");
+        if (plainPassword.length() < 8)
+            return fail(passwordField, "Password must be at least 8 characters.");
 
-        if (plainPassword.length() > 30) { return fail(password, "Password must be less than 30 characters."); }
-
-        if(plainPassword.chars().noneMatch(Character::isDigit)) return fail(password,"Password must contain a number.");
-
-        if(plainPassword.chars().allMatch(Character::isLetterOrDigit)) return fail(password,"Password must contain a symbol.");
-
-        if(plainPassword.chars().noneMatch(Character::isUpperCase)) return fail(password,"Password must contain a uppercase letter.");
-
-        if(plainPassword.chars().noneMatch(Character::isLowerCase)) return fail(password,"Password must contain a lowercase letter.");
+        if (plainPassword.length() > 128)
+            return fail(passwordField, "Password must be less than 128 characters.");
 
         return true;
     }

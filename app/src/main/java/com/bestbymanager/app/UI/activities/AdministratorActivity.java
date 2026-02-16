@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
 import com.bestbymanager.app.databinding.ActivityAdministratorBinding;
-import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.utilities.AppResetUtil;
 import androidx.biometric.BiometricManager;
@@ -27,7 +27,6 @@ import androidx.biometric.BiometricPrompt;
 import java.util.concurrent.Executor;
 
 public class AdministratorActivity extends BaseAdminActivity {
-
     private static final String SECURITY_PREFS = "security_prefs";
     private static final String KEY_RECOVERY_ENABLED = "recovery_enabled";
 
@@ -53,17 +52,17 @@ public class AdministratorActivity extends BaseAdminActivity {
         });
 
         binding.employeeListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AdministratorActivity.this, UserList.class);
+            Intent intent = new Intent(AdministratorActivity.this, EmployeeList.class);
             startActivity(intent);
         });
 
         binding.employeeDetailsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AdministratorActivity.this, UserDetails.class);
+            Intent intent = new Intent(AdministratorActivity.this, EmployeeDetails.class);
             startActivity(intent);
         });
 
         binding.employeeSearchButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AdministratorActivity.this, UserSearch.class);
+            Intent intent = new Intent(AdministratorActivity.this, EmployeeSearch.class);
             startActivity(intent);
         });
     }
@@ -77,7 +76,11 @@ public class AdministratorActivity extends BaseAdminActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        AdminMenu.setVisibility(menu);
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
         return true;
     }
 

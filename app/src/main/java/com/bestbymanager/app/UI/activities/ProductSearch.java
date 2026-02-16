@@ -27,8 +27,9 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
-import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
+import com.bestbymanager.app.data.database.BestByManagerDatabase;
 import com.bestbymanager.app.databinding.ActivityProductSearchBinding;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.journeyapps.barcodescanner.ScanOptions;
 import java.time.LocalDate;
@@ -36,20 +37,28 @@ import com.journeyapps.barcodescanner.ScanContract;
 
 public class ProductSearch extends BaseEmployeeRequiredActivity {
     private static final int REQ_CAMERA = 42;
-    private static final String EXTRA_START_DATE  = "startDate";
-    private static final String EXTRA_END_DATE    = "endDate";
-    private static final String EXTRA_MODE        = "mode";
-    private static final String EXTRA_BARCODE     = "barcode";
-    private static final String EXTRA_ALL_PRODUCTS= "allProducts";
-    private static final String MODE_ALL_PRODUCTS = "allProducts";
-    private static final String MODE_EXPIRED      = "expired";
-    private static final String MODE_EXPIRING     = "expiring";
+
+    private static final String EXTRA_START_DATE   = "startDate";
+    private static final String EXTRA_END_DATE     = "endDate";
+    private static final String EXTRA_MODE         = "mode";
+    private static final String EXTRA_BARCODE      = "barcode";
+    private static final String EXTRA_ALL_PRODUCTS = "allProducts";
+    private static final String MODE_ALL_PRODUCTS  = "allProducts";
+    private static final String MODE_EXPIRED       = "expired";
+    private static final String MODE_EXPIRING      = "expiring";
 
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // non-UI init only (safe before gate)
+        BestByManagerDatabase.getDatabase(this);
+    }
+
+    @Override
+    protected void onGatePassed() {
         setTitle(R.string.product_search);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -62,8 +71,6 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        ProductDatabaseBuilder.getDatabase(this);
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() != null) binding.editBarcode.setText(result.getContents());
@@ -107,32 +114,27 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
                     !startDateString.equals(getString(R.string.start_date)) &&
                             !endDateString.equals(getString(R.string.end_date));
 
-            // Empty search => All products
             if (!hasBarcode && !hasDateRange) {
                 startActivity(new Intent(this, ProductReport.class)
                         .putExtra(EXTRA_MODE, MODE_ALL_PRODUCTS)
-                        // backward-compat for existing VM/label checks
                         .putExtra(EXTRA_ALL_PRODUCTS, true));
                 return;
             }
 
-            // Date parsing only if user actually picked dates
             LocalDate start = hasDateRange ? parseOrToday(startDateString) : null;
             LocalDate end   = hasDateRange ? parseOrToday(endDateString) : null;
 
             if (hasDateRange && end.isBefore(start)) {
-                toast("End date must be after the start date.");
+                Toast.makeText(this, "End date must be after the start date.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Barcode only
             if (hasBarcode && !hasDateRange) {
                 startActivity(new Intent(this, ProductReport.class)
                         .putExtra(EXTRA_BARCODE, barcode));
                 return;
             }
 
-            // Barcode + date range
             if (hasBarcode) {
                 startActivity(new Intent(this, ProductReport.class)
                         .putExtra(EXTRA_BARCODE, barcode)
@@ -141,7 +143,6 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
                 return;
             }
 
-            // Date range only
             startActivity(new Intent(this, ProductReport.class)
                     .putExtra(EXTRA_START_DATE, format(start))
                     .putExtra(EXTRA_END_DATE, format(end)));
@@ -201,8 +202,12 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        AdminMenu.setVisibility(menu);
-        return super.onPrepareOptionsMenu(menu);
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
+        return true;
     }
 
     @Override
@@ -214,5 +219,4 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
         if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
-    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 }

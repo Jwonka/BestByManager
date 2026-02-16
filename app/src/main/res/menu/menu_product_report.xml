@@ -8,7 +8,7 @@
 
     <item
         android:title="@string/product_details"
-        android:id="@+id/employeeDetails"/>
+        android:id="@+id/productDetails"/>
 
     <item
         android:title="@string/product_list"

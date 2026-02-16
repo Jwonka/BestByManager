@@ -1,51 +1,38 @@
 package com.bestbymanager.app.UI.activities;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
-import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.databinding.ActivityMainBinding;
 import com.bestbymanager.app.utilities.AdminMenu;
 
 public class MainActivity extends BaseEmployeeRequiredActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Session.get().preload(this);
-
+    protected void onGatePassed() {
         setTitle(R.string.main_screen);
+
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        final View rootView = binding.getRoot();
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            var systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
-        binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductDetails.class)));
-        binding.productSearchButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductSearch.class)));
-        binding.productListButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProductList.class)));
-        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, UserList.class).putExtra("selectMode", true)));
-        binding.aboutButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AboutActivity.class)));
+        binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(this, ProductDetails.class)));
+        binding.productSearchButton.setOnClickListener(v -> startActivity(new Intent(this, ProductSearch.class)));
+        binding.productListButton.setOnClickListener(v -> startActivity(new Intent(this, ProductList.class)));
+        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(this, EmployeeList.class).putExtra("selectMode", true)));
+        binding.aboutButton.setOnClickListener(v -> startActivity(new Intent(this, AboutActivity.class)));
     }
 
     @Override
@@ -57,9 +44,11 @@ public class MainActivity extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isAdmin = Session.get().currentUserIsAdmin();
-        menu.findItem(R.id.adminPage).setVisible(isAdmin);
-        AdminMenu.setVisibility(menu);
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
         return true;
     }
 

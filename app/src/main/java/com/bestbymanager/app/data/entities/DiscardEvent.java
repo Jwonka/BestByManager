@@ -6,16 +6,14 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
 import java.time.LocalDate;
-
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(
         tableName = "discard_event",
         indices = {
                 @Index(value = {"productID"}),
-                @Index(value = {"userID"}),
+                @Index(value = {"employeeID"}),
                 @Index(value = {"createdAt"})
         },
         foreignKeys = {
@@ -26,9 +24,9 @@ import static androidx.room.ForeignKey.CASCADE;
                         onDelete = CASCADE
                 ),
                 @ForeignKey(
-                        entity = User.class,
-                        parentColumns = "userID",
-                        childColumns = "userID",
+                        entity = Employee.class,
+                        parentColumns = "employeeID",
+                        childColumns = "employeeID",
                         onDelete = CASCADE
                 )
         }
@@ -42,8 +40,8 @@ public class DiscardEvent {
     private long productID;
 
     @Nullable
-    @ColumnInfo(name = "userID")
-    private Long userID;
+    @ColumnInfo(name = "employeeID")
+    private Long employeeID;
 
     @ColumnInfo(name = "quantity")
     private int quantity;
@@ -56,9 +54,9 @@ public class DiscardEvent {
     @ColumnInfo(name = "createdAt")
     private LocalDate createdAt;
 
-    public DiscardEvent(long productID, @Nullable Long userID, int quantity, @Nullable String reason, @Nullable LocalDate createdAt) {
+    public DiscardEvent(long productID, @Nullable Long employeeID, int quantity, @Nullable String reason, @Nullable LocalDate createdAt) {
         this.productID = productID;
-        this.userID = userID;
+        this.employeeID = employeeID;
         this.quantity = quantity;
         this.reason = reason;
         this.createdAt = createdAt;
@@ -71,8 +69,8 @@ public class DiscardEvent {
     public void setProductID(long productID) { this.productID = productID; }
 
     @Nullable
-    public Long getUserID() { return userID; }
-    public void setUserID(@Nullable Long userID) { this.userID = userID; }
+    public Long getEmployeeID() { return employeeID; }
+    public void setEmployeeID(@Nullable Long employeeID) { this.employeeID = employeeID; }
 
     public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }

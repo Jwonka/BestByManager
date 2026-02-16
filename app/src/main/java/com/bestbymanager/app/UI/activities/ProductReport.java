@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
@@ -32,31 +31,21 @@ import java.util.List;
 
 public class ProductReport extends BaseEmployeeRequiredActivity {
     private ProductReportViewModel prViewModel;
-    private static final String EXTRA_START_DATE  = "startDate";
-    private static final String EXTRA_END_DATE    = "endDate";
-    private static final String EXTRA_MODE        = "mode";
-    private static final String EXTRA_BARCODE     = "barcode";
-    private static final String EXTRA_ALL_PRODUCTS= "allProducts";
-    private boolean emptyToastShown = false;
 
+    private static final String EXTRA_START_DATE   = "startDate";
+    private static final String EXTRA_END_DATE     = "endDate";
+    private static final String EXTRA_MODE         = "mode";
+    private static final String EXTRA_BARCODE      = "barcode";
+    private static final String EXTRA_ALL_PRODUCTS = "allProducts";
+
+    private boolean emptyToastShown = false;
     private ProductReportAdapter prAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.results);
 
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductReportBinding binding = ActivityProductReportBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        final View rootView = binding.getRoot();
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
+        // non-UI init only (safe before gate)
         Intent in = getIntent();
         Bundle args = new Bundle();
         args.putString(EXTRA_START_DATE, in.getStringExtra(EXTRA_START_DATE));
@@ -69,6 +58,22 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
         ).get(ProductReportViewModel.class);
+    }
+
+    @Override
+    protected void onGatePassed() {
+        setTitle(R.string.results);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        ActivityProductReportBinding binding = ActivityProductReportBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        final View rootView = binding.getRoot();
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         prAdapter = new ProductReportAdapter(
                 id -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", id)),
@@ -103,8 +108,12 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        AdminMenu.setVisibility(menu);
-        return super.onPrepareOptionsMenu(menu);
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
+        return true;
     }
 
     @Override
@@ -206,8 +215,8 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
             String reason = b.discardReason.getText() == null ? null : b.discardReason.getText().toString().trim();
             if (reason != null && reason.isEmpty()) reason = null;
 
-            long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductReport.this);
-            viewModel.discardExpiredProduct(row.productID, qty, reason, userId);
+            long employeeId = ActiveEmployeeManager.getActiveEmployeeId(ProductReport.this);
+            viewModel.discardExpiredProduct(row.productID, qty, reason, employeeId);
             dialog.dismiss();
         }));
 

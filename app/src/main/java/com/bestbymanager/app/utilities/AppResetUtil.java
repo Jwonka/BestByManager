@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.preference.PreferenceManager;
-import com.bestbymanager.app.UI.activities.LoginActivity;
+import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
 import com.bestbymanager.app.session.Session;
-import com.bestbymanager.app.data.database.ProductDatabaseBuilder;
+import com.bestbymanager.app.data.database.BestByManagerDatabase;
 import java.io.File;
 
 public final class AppResetUtil {
@@ -16,13 +16,13 @@ public final class AppResetUtil {
         Context app = a.getApplicationContext();
 
         try {
-            Session.get().logOut(app);
+            Session.get().lockKiosk(app);
             try {
-                ProductDatabaseBuilder db = ProductDatabaseBuilder.getDatabase(app);
+                BestByManagerDatabase db = BestByManagerDatabase.getDatabase(app);
                 if (db != null) db.close();
             } catch (Throwable ignored) {}
 
-            app.deleteDatabase(ProductDatabaseBuilder.DB_NAME);
+            app.deleteDatabase(BestByManagerDatabase.DB_NAME);
 
             app.getSharedPreferences("app_prefs", Context.MODE_PRIVATE).edit().clear().apply();
             app.getSharedPreferences("bestby_session", Context.MODE_PRIVATE).edit().clear().apply();
@@ -30,7 +30,7 @@ public final class AppResetUtil {
             PreferenceManager.getDefaultSharedPreferences(app).edit().clear().apply();
             deleteRecursively(app.getCacheDir());
 
-            Intent i = new Intent(a, LoginActivity.class)
+            Intent i = new Intent(a, UnlockKioskActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             a.startActivity(i);
             a.finishAffinity();

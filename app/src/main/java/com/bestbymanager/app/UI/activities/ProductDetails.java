@@ -18,7 +18,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import androidx.core.graphics.Insets;
 import androidx.core.os.BundleCompat;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -76,6 +75,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     private ProductDetailsViewModel productViewModel;
     private static final String TAG = "ProductDetails";
     private static final int REQ_CAMERA = 10;
+
     private EditText name, quantity, weight, brand, editExp, barcode;
     Button saveButton;
     Button clearButton;
@@ -92,9 +92,11 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     @Nullable private Call<ProductResponse> inFlightLookupCall;
+
     private static final String STATE_IMAGE_URI = "IMAGE_URI";
-    @androidx.annotation.Nullable
-    private static Uri restoreImageUri(@androidx.annotation.Nullable Bundle s) {
+
+    @Nullable
+    private static Uri restoreImageUri(@Nullable Bundle s) {
         return (s == null) ? null : BundleCompat.getParcelable(s, STATE_IMAGE_URI, Uri.class);
     }
 
@@ -102,8 +104,9 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     protected void onCreate(Bundle s) {
         super.onCreate(s);
 
+        // NO UI WORK HERE (prevents one-frame flash when locked / no active employee)
         imageUri = restoreImageUri(s);
-        setTitle(R.string.product_details);
+
         takePictureLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 ok -> {
@@ -111,113 +114,45 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                     handleImage(imageUri);
                 });
 
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
-        super.setContentView(binding.getRoot());
-
-        final View rootView = binding.getRoot();
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
+        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                String code = result.getContents();
+                if (barcode != null) barcode.setText(code);
+                lookupByBarcode(code);
             }
         });
 
-        TextView attribution = findViewById(R.id.image_attribution);
-        attribution.setLinkTextColor(ContextCompat.getColor(this, R.color.dark_green));
-
-        brand = binding.editBrand;
-        name = binding.editProductName;
-        weight = binding.editWeight;
-        quantity = binding.editQuantity;
-        editExp = binding.editExpiration;
-        barcode = binding.editBarcode;
-        category = binding.spinnerCategory;
-        isle = binding.spinnerIsle;
-        preview = binding.imagePreview;
-        TextInputLayout barcodeLayout = binding.barcodeInputLayout;
-        TextInputLayout expirationLayout = binding.editExpirationLayout;
-        expirationLayout.setEndIconOnClickListener(v -> showEarlyWarningDialog());
-        applyEarlyBellIcon(expirationLayout);
-        modeSwitch = binding.switchMode;
-        saveButton = binding.saveProductButton;
-        clearButton = binding.clearProductButton;
-        binding.imagePreview.setOnClickListener(v -> { if (ensureCameraPermission()) { launchCamera(); } });
-        modeSwitch.setOnCheckedChangeListener((button, isChecked) -> {
-            if (isChecked) {
-                // “Add new expiration” mode
-                saveButton.setText(R.string.add_new_expiration);
-            } else {
-                // “Save / update existing” mode
-                saveButton.setText(R.string.save_product);
-            }
-        });
-        modeSwitch.setChecked(false);
-        modeSwitch.setEnabled(false);
-        clearButton.setOnClickListener(v -> clearForm());
-        saveButton.setOnClickListener(v -> saveProduct());
-
-        String[] isleLabels = getResources().getStringArray(R.array.isles);
-        ArrayAdapter<String> isleAdapter = new ArrayAdapter<>(
-                this,
-                R.layout.spinner_item_center_bold,
-                isleLabels
-        );
-        isleAdapter.setDropDownViewResource(R.layout.spinner_item_center_bold);
-        isle.setAdapter(isleAdapter);
-        isle.setSelection(0, false);
-
-        adapter = new ArrayAdapter<>(
-                this,
-                R.layout.spinner_item_center_bold,
-                getResources().getStringArray(R.array.product_categories)) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-        };
-
-        adapter.setDropDownViewResource(R.layout.spinner_item_center_bold);
-        category.setAdapter(adapter);
-        category.setSelection(0, false);
-
-        if (imageUri != null) {
-            handleImage(imageUri);
-        }
-
+        // callback can be built here; it only touches views after onGatePassed() initializes them
         lookupCallback = new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ProductResponse> call, @NonNull Response<ProductResponse> response) {
-
                 if (isFinishing() || isDestroyed()) return;
 
                 if (response.isSuccessful() && response.body() != null && response.body().status == 1) {
                     ProductData data = response.body().product;
                     runOnUiThread(() -> {
                         if (isFinishing() || isDestroyed()) return;
+                        if (brand == null || name == null || weight == null || barcode == null) return;
+
                         brand.setText(data.brands);
                         name.setText(data.productName);
                         weight.setText(data.weight);
                         barcode.setText(data.barcode);
-                        String categories = data.category;
-                        String[] parts;
 
-                        if (categories != null && !categories.isEmpty()) {
-                            parts = categories.split("\\s*,\\s*");
-                            if (parts.length > 0) {
-                                String primary = parts[0];
-                                int position = adapter.getPosition(primary);
-                                if (position >= 0) category.setSelection(position);
+                        String categoriesStr = data.category;
+                        if (category != null && adapter != null) {
+                            if (categoriesStr != null && !categoriesStr.isEmpty()) {
+                                String[] parts = categoriesStr.split("\\s*,\\s*");
+                                if (parts.length > 0) {
+                                    int pos = adapter.getPosition(parts[0]);
+                                    if (pos >= 0) category.setSelection(pos);
+                                }
+                            } else {
+                                category.setSelection(0, false);
                             }
-                        } else {
-                            category.setSelection(0, false);
                         }
 
-                        if (data.imageUri != null && !data.imageUri.isEmpty()) {
+                        if (preview != null && data.imageUri != null && !data.imageUri.isEmpty()) {
                             Glide.with(preview)
                                     .asBitmap()
                                     .load(data.imageUri)
@@ -225,12 +160,14 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                                     .into(new CustomTarget<Bitmap>() {
                                         @Override
                                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                            if (preview == null) return;
                                             preview.setImageBitmap(resource);
                                             thumbBlob = Converters.fromBitmap(resource);
                                         }
 
                                         @Override
                                         public void onLoadCleared(@Nullable Drawable placeholder) {
+                                            if (preview == null) return;
                                             preview.setImageDrawable(placeholder);
                                             thumbBlob = null;
                                         }
@@ -249,27 +186,84 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 Log.e(TAG, "Failed to fetch product", t);
             }
         };
+    }
+
+    @Override
+    protected void onGatePassed() {
+        setTitle(R.string.product_details);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        final View rootView = binding.getRoot();
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        TextView attribution = findViewById(R.id.image_attribution);
+        attribution.setLinkTextColor(ContextCompat.getColor(this, R.color.dark_green));
+
+        brand = binding.editBrand;
+        name = binding.editProductName;
+        weight = binding.editWeight;
+        quantity = binding.editQuantity;
+        editExp = binding.editExpiration;
+        barcode = binding.editBarcode;
+        category = binding.spinnerCategory;
+        isle = binding.spinnerIsle;
+        preview = binding.imagePreview;
+
+        TextInputLayout barcodeLayout = binding.barcodeInputLayout;
+        TextInputLayout expirationLayout = binding.editExpirationLayout;
+        expirationLayout.setEndIconOnClickListener(v -> showEarlyWarningDialog());
+        applyEarlyBellIcon(expirationLayout);
+
+        modeSwitch = binding.switchMode;
+        saveButton = binding.saveProductButton;
+        clearButton = binding.clearProductButton;
+
+        binding.imagePreview.setOnClickListener(v -> { if (ensureCameraPermission()) { launchCamera(); } });
+
+        modeSwitch.setOnCheckedChangeListener((button, isChecked) -> {
+            if (isChecked) saveButton.setText(R.string.add_new_expiration);
+            else saveButton.setText(R.string.save_product);
+        });
+        modeSwitch.setChecked(false);
+        modeSwitch.setEnabled(false);
+
+        clearButton.setOnClickListener(v -> clearForm());
+        saveButton.setOnClickListener(v -> saveProduct());
+
+        String[] isleLabels = getResources().getStringArray(R.array.isles);
+        ArrayAdapter<String> isleAdapter = new ArrayAdapter<>(this, R.layout.spinner_item_center_bold, isleLabels);
+        isleAdapter.setDropDownViewResource(R.layout.spinner_item_center_bold);
+        isle.setAdapter(isleAdapter);
+        isle.setSelection(0, false);
+
+        adapter = new ArrayAdapter<>(this, R.layout.spinner_item_center_bold, getResources().getStringArray(R.array.product_categories)) {
+            @Override public boolean isEnabled(int position) { return position != 0; }
+        };
+        adapter.setDropDownViewResource(R.layout.spinner_item_center_bold);
+        category.setAdapter(adapter);
+        category.setSelection(0, false);
+
+        if (imageUri != null) handleImage(imageUri);
 
         productViewModel = new ViewModelProvider(this,
                 new SavedStateViewModelFactory(getApplication(), this))
                 .get(ProductDetailsViewModel.class);
 
         productViewModel.getProduct().observe(this, product -> {
-            if (product == null) { return; }
+            if (product == null) return;
             currentProduct = product;
             populateForm(product);
             thumbBlob = product.getThumbnail();
         });
 
         bindFutureDateField(editExp, this);
-
-        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) {
-                String code = result.getContents();
-                barcode.setText(code);
-                lookupByBarcode(code);
-            }
-        });
 
         barcodeLayout.setEndIconOnClickListener(view -> {
             if (ensureCameraPermission()) {
@@ -289,6 +283,12 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        if (imageUri != null) out.putParcelable(STATE_IMAGE_URI, imageUri);
     }
 
     @Override
@@ -336,10 +336,14 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean hasProduct = currentProduct != null;
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
 
         MenuItem delete = menu.findItem(R.id.deleteProduct);
         if (delete != null) delete.setVisible(hasProduct);
-        AdminMenu.setVisibility(menu);
+
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
 
         // show discard whenever a product exists and there is on-hand qty
         MenuItem discard = menu.findItem(R.id.discardProduct);
@@ -402,8 +406,8 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                     String reason = reasonEt.getText() == null ? null : reasonEt.getText().toString().trim();
                     if (reason != null && reason.isEmpty()) reason = null;
 
-                    long userId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
-                    productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, userId);
+                    long employeeId = ActiveEmployeeManager.getActiveEmployeeId(ProductDetails.this);
+                    productViewModel.discardExpiredProduct(product.getProductID(), qty, reason, employeeId);
 
                     // optimistic UI: reduce displayed qty so it feels immediate
                     int newQty = product.getQuantity() - qty;
@@ -555,11 +559,6 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 src.getWidth(), src.getHeight(), m, true);
     }
 
-    @Override protected void onSaveInstanceState(@NonNull Bundle out) {
-        super.onSaveInstanceState(out);
-        if (imageUri != null) out.putParcelable(STATE_IMAGE_URI, imageUri);
-    }
-
     private static int clampSelection(int idx, Spinner spinner) {
         if (spinner == null || spinner.getAdapter() == null) return 0;
         int count = spinner.getAdapter().getCount();
@@ -652,7 +651,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
         toSave.setIsle(isle.getSelectedItemPosition());
         toSave.setExpirationDate(parseOrToday(editExp.getText().toString().trim()));
         toSave.setPurchaseDate(LocalDate.now());
-        toSave.setUserID(currentUserId);
+        toSave.setEmployeeID(currentUserId);
         toSave.setBarcode(barcodeTxt);
 
         if (thumbBlob == null && currentProduct != null) {

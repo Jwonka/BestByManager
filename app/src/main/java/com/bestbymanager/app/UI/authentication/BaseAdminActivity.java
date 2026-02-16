@@ -13,11 +13,11 @@ public abstract class BaseAdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Session.get().preload(this);
-        if (!Session.get().currentUserIsAdmin()) {
+
+        if (!Session.get().isAdmin()) {
             Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
             finish();
         }
     }

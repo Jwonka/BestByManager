@@ -16,7 +16,7 @@ import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityResetPasswordBinding;
 
-public class ResetPasswordActivity  extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
     private ResetPasswordAction action;
 
     @Override protected void onCreate(Bundle s) {
@@ -41,7 +41,7 @@ public class ResetPasswordActivity  extends AppCompatActivity {
 
         boolean recoveryMode = getIntent().getBooleanExtra("recovery_mode", false);
 
-        long userID = getIntent().getLongExtra("userId", -1);
+        long employeeID = getIntent().getLongExtra("employeeId", -1);
 
         Repository repository = new Repository(getApplication());
 
@@ -61,25 +61,25 @@ public class ResetPasswordActivity  extends AppCompatActivity {
             return;
         }
 
-        if (userID < 0) {
-            Long sid = Session.get().userId();
-            if (sid != null && sid > 0) userID = sid;
+        if (employeeID < 0) {
+            Long sid = Session.get().limitedEmployeeId();
+            if (sid != null && sid > 0) employeeID = sid;
             else { finish(); return; }
         }
-        initUi(binding, repository, userID);
+        initUi(binding, repository, employeeID);
     }
 
-    private void initUi(ActivityResetPasswordBinding binding, Repository repository, long userID) {
-        repository.getUser(userID).observe(this, user -> {
-            if (user != null) binding.usernameLabel.setText(user.getUserName());
+    private void initUi(ActivityResetPasswordBinding binding, Repository repository, long employeeID) {
+        repository.getEmployee(employeeID).observe(this, employee -> {
+            if (employee != null && binding.employeeNameLabel != null) { binding.employeeNameLabel.setText(employee.getEmployeeName()); }
         });
 
         action = new ResetPasswordAction(
                 this,
-                binding.usernameLabel,
+                binding.employeeNameLabel,
                 binding.passwordInput,
                 binding.passwordConfirmationInput,
-                userID,
+                employeeID,
                 repository
         );
 
@@ -91,4 +91,3 @@ public class ResetPasswordActivity  extends AppCompatActivity {
         binding.resetButton.setOnClickListener(v -> action.run());
     }
 }
-

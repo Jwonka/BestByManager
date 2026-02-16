@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.databinding.ActivityAboutBinding;
-import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 
 public class AboutActivity extends AppCompatActivity {
@@ -70,7 +70,11 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        AdminMenu.setVisibility(menu);
+        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
+        MenuItem adminItem = menu.findItem(R.id.adminPage);
+
+        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        AdminMenu.setVisibility(this, menu);
         return true;
     }
 

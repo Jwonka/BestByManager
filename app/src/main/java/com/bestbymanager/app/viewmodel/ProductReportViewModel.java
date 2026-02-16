@@ -65,8 +65,8 @@ public class ProductReportViewModel extends AndroidViewModel {
         refresh.setValue(v == null ? 1 : v + 1);
     }
 
-    public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long userId) {
-        repository.discardExpiredProduct(productID, quantity, reason, userId);
+    public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long employeeId) {
+        repository.discardExpiredProduct(productID, quantity, reason, employeeId);
         refresh();
     }
 }

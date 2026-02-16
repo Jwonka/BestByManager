@@ -14,22 +14,22 @@ import java.util.Arrays;
 /** @noinspection NotNullFieldNotInitialized, unused */
 @Entity(tableName = "product",
         indices = {
-                @Index(value = "userID"),
+                @Index(value = "employeeID"),
                 @Index(value = {"expirationDate", "brand"}),
                 @Index(value = {"barcode", "expirationDate"}),
-                @Index(value = {"userID", "expirationDate"}),
+                @Index(value = {"employeeID", "expirationDate"}),
                 @Index(value = {"productName", "expirationDate"})
         },
         foreignKeys = @ForeignKey(
-                entity = User.class,
-                parentColumns = "userID",
-                childColumns = "userID",
+                entity = Employee.class,
+                parentColumns = "employeeID",
+                childColumns = "employeeID",
                 onDelete = CASCADE))
 public class Product {
     @PrimaryKey(autoGenerate = true)
     private long productID;
 
-    public long userID;
+    public long employeeID;
     private String brand;
     @NonNull
     private String productName;
@@ -60,7 +60,7 @@ public class Product {
 
     // Constructor used by Room to read the database
     public Product(long productID,
-                   long userID,
+                   long employeeID,
                    @NonNull String productName,
                    @NonNull LocalDate expirationDate,
                    int quantity,
@@ -75,7 +75,7 @@ public class Product {
                    byte[] thumbnail) {
 
         this.productID = productID;
-        this.userID = userID;
+        this.employeeID = employeeID;
         this.brand = brand;
         this.productName = productName;
         this.expirationDate = expirationDate;
@@ -95,8 +95,8 @@ public class Product {
     }
     public void setProductID(long productID) { this.productID = productID; }
 
-    public long getUserID()   { return userID; }
-    public void setUserID(long id) { this.userID = id; }
+    public long getEmployeeID()   { return employeeID; }
+    public void setEmployeeID(long id) { this.employeeID = id; }
     @NonNull
     public String getProductName() {
         return productName;
@@ -133,7 +133,7 @@ public class Product {
     public String toString() {
         return "Product{" +
                 "productID=" + productID +
-                ", userID="+ userID +
+                ", employeeID="+ employeeID +
                 ", brand='" + brand + '\'' +
                 ", productName='" + productName + '\'' +
                 ", expirationDate='" + expirationDate + '\'' +

@@ -12,12 +12,12 @@ import com.bestbymanager.app.session.Session;
 
 public class ResetPasswordAction extends AuthenticationAction {
     private final EditText confirm;
-    private final long     userID;
+    private final long     employeeID;
 
-    public ResetPasswordAction(Context ctx, TextView username, EditText pwd, EditText confirm, long userID, Repository repository) {
-        super(ctx, username, pwd, repository, true);
+    public ResetPasswordAction(Context ctx, TextView employeeName, EditText pwd, EditText confirm, long employeeID, Repository repository) {
+        super(ctx, employeeName, pwd, repository, true);
         this.confirm = confirm;
-        this.userID  = userID;
+        this.employeeID  = employeeID;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ResetPasswordAction extends AuthenticationAction {
 
     @Override
     protected void performAuthorization(String name, String plainPwd) {
-        repository.changePassword(userID, plainPwd)
+        repository.changePassword(employeeID, plainPwd)
             .observe((LifecycleOwner) context, success -> {
                 if (Boolean.TRUE.equals(success)) {
                     Toast.makeText(context, "Password updated.", Toast.LENGTH_SHORT).show();

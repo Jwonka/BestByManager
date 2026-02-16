@@ -6,32 +6,28 @@ import androidx.annotation.Nullable;
 
 /** Pref-backed "active employee" selection for kiosk mode. */
 public final class ActiveEmployeeManager {
-
-    private static final String PREFS = "bestby_session";
-    private static final String K_ACTIVE_EMPLOYEE_ID = "activeEmployeeId";
-    private static final long UNKNOWN_ID = -1L;
-
     private ActiveEmployeeManager() {}
+    private static final String PREFS = "active_employee";
+    private static final String KEY_ID = "active_employee_id";
+    private static final String KEY_IS_ADMIN = "active_employee_is_admin";
+    public static final long UNKNOWN_ID = -1L;
+    private static SharedPreferences prefs(Context ctx) { return ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
 
-    private static SharedPreferences sp(Context context) {
-        return context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    }
+    public static void setActiveEmployeeId(Context ctx, long employeeId) { prefs(ctx).edit().putLong(KEY_ID, employeeId).apply(); }
 
-    public static long getActiveEmployeeId(Context context) {
-        return sp(context).getLong(K_ACTIVE_EMPLOYEE_ID, UNKNOWN_ID);
-    }
+    public static long getActiveEmployeeId(Context ctx) { return prefs(ctx).getLong(KEY_ID, UNKNOWN_ID); }
 
-    public static boolean hasActiveEmployee(Context context) {
-        return getActiveEmployeeId(context) > 0;
-    }
+    public static boolean hasActiveEmployee(Context ctx) { return getActiveEmployeeId(ctx) > 0; }
 
-    public static void setActiveEmployeeId(Context context, long userId) {
-        if (userId <= 0) throw new IllegalArgumentException("userId must be > 0");
-        sp(context).edit().putLong(K_ACTIVE_EMPLOYEE_ID, userId).apply();
-    }
+    public static void setActiveEmployeeIsAdmin(Context ctx, boolean isAdmin) { prefs(ctx).edit().putBoolean(KEY_IS_ADMIN, isAdmin).apply(); }
 
-    public static void clearActiveEmployee(Context context) {
-        sp(context).edit().remove(K_ACTIVE_EMPLOYEE_ID).apply();
+    public static boolean isActiveEmployeeAdmin(Context ctx) { return prefs(ctx).getBoolean(KEY_IS_ADMIN, false); }
+
+    public static void clearActiveEmployee(Context ctx) {
+        prefs(ctx).edit()
+                .remove(KEY_ID)
+                .remove(KEY_IS_ADMIN)
+                .apply();
     }
 
     /** Convenience for null semantics in callers. */

@@ -35,22 +35,22 @@
         </provider>
 
         <activity
-            android:name=".UI.activities.UserReport"
+            android:name=".UI.activities.EmployeeReport"
             android:windowSoftInputMode="adjustResize"
             android:exported="false"
-            android:parentActivityName=".UI.activities.UserSearch" />
+            android:parentActivityName=".UI.activities.EmployeeSearch" />
         <activity
-            android:name=".UI.activities.UserSearch"
+            android:name=".UI.activities.EmployeeSearch"
             android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:parentActivityName=".UI.activities.AdministratorActivity" />
         <activity
-            android:name=".UI.activities.UserDetails"
+            android:name=".UI.activities.EmployeeDetails"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".UI.activities.UserList" />
+            android:parentActivityName=".UI.activities.EmployeeList" />
         <activity
-            android:name=".UI.activities.UserList"
+            android:name=".UI.activities.EmployeeList"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.AdministratorActivity" />
@@ -93,7 +93,7 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="false"/>
         <activity
-            android:name=".UI.activities.LoginActivity"
+            android:name=".UI.activities.UnlockKioskActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:exported="false"/>
         <activity

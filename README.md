@@ -57,7 +57,7 @@
 - 📤 **Share** inventory summaries (text sharing)
 - 🔔 **Early warning reminders** (7‑day pre‑expiry alerts) via bell toggle on expiration date
 - 🗃️ **Offline storage** using Room database ![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-orange?style=flat-square&logo=lock&logoColor=white)
-- 🔐 **Admin mode**: First user account becomes administrator
+- 🔐 **Admin mode**: First employee account becomes administrator
 - 🛒 Built for small grocery stores, gas stations, or stockrooms ![Built in Wisconsin](https://img.shields.io/badge/Built%20with%20❤️-in%20Wisconsin-red?style=flat-square)
 
 ## Preview
@@ -104,7 +104,7 @@
   
 - Reset passwords for users
 
-- View **User-Level Reports** (grouped product activity by each user)
+- View **User-Level Reports** (grouped product activity by each employee)
   
 - Perform a full local data wipe (administrators only)
 
@@ -141,7 +141,7 @@ Password recovery options are intentionally **local and permission-based**:
 
 - 🔑 **Biometric-assisted self-reset (optional)**
   - If biometric authentication (PIN, pattern, fingerprint, or face) is enabled on the device,
-    a user may reset their own password after successful device authentication.
+    a employee may reset their own password after successful device authentication.
   - No data is deleted during this process.
 
 - 🧹 **Administrator data wipe**
