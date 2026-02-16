@@ -75,18 +75,6 @@ public class EmployeeList extends AppCompatActivity {
                 return;
             }
 
-            // Admin override: no PIN needed to select anyone
-            if (Session.get().isAdmin()) {
-                ActiveEmployeeManager.setActiveEmployeeId(EmployeeList.this, employeeID);
-
-                Toast.makeText(EmployeeList.this, "Employee selected.", Toast.LENGTH_SHORT).show();
-
-                startActivity(new Intent(EmployeeList.this, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                finish();
-                return;
-            }
-
             // Admin override: no PIN needed, but still set active+admin flag
             if (Session.get().isAdmin()) { onEmployeeSelected(employeeID); return; }
 
@@ -130,6 +118,8 @@ public class EmployeeList extends AppCompatActivity {
             if (e == null) return;
             ActiveEmployeeManager.setActiveEmployeeId(this, employeeId);
             ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, e.isAdmin());
+            
+            Toast.makeText(this, "Employee selected.", Toast.LENGTH_SHORT).show();
 
             startActivity(new Intent(this, MainActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
@@ -191,13 +181,9 @@ public class EmployeeList extends AppCompatActivity {
 
                         switch (res.code) {
                             case OK:
-                                ActiveEmployeeManager.setActiveEmployeeId(this, employeeId);
-                                Toast.makeText(this, "Employee selected.", Toast.LENGTH_SHORT).show();
                                 pinFlowInFlight = false;
                                 pinDialog = null;
                                 onEmployeeSelected(employeeId);
-                                startActivity(new Intent(this, MainActivity.class)
-                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                 finish();
                                 break;
 
