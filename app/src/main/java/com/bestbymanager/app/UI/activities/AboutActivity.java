@@ -31,6 +31,9 @@ public class AboutActivity extends AppCompatActivity {
         ActivityAboutBinding binding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        int year = java.time.Year.now().getValue();
+        binding.copyright.setText(getString(R.string.copyright, year));
+
         final View rootView = binding.getRoot();
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
