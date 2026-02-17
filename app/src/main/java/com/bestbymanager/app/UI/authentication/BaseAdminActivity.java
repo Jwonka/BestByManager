@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.activities.MainActivity;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.Session;
 
 public abstract class BaseAdminActivity extends AppCompatActivity {
@@ -14,7 +15,7 @@ public abstract class BaseAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Session.get().preload(this);
 
-        if (!Session.get().isAdmin()) {
+        if (!Session.get().isUnlocked() || !ActiveEmployeeManager.isActiveEmployeeAdmin(this)) {
             Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
