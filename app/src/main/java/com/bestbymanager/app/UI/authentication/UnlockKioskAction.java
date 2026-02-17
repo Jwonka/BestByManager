@@ -35,9 +35,7 @@ public class UnlockKioskAction extends AuthenticationAction {
 
                             Session.get().unlockKiosk(e, context);
                             ActiveEmployeeManager.clearActiveEmployee(context);
-
                             Router.routeAfterUnlock((Activity) context);
-                            ((Activity) context).finish();
                             break;
                         }
 

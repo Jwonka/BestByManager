@@ -2,7 +2,6 @@ package com.bestbymanager.app.utilities;
 
 import android.app.Activity;
 import android.content.Intent;
-
 import com.bestbymanager.app.UI.activities.EmployeeList;
 import com.bestbymanager.app.UI.activities.MainActivity;
 import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
