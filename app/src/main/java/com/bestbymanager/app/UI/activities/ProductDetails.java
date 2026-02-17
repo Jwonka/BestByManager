@@ -329,20 +329,19 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_details, menu);
-        AdminMenu.inflateIfAdmin(this, menu);
+        AdminMenu.inflateKioskActions(this, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean hasProduct = currentProduct != null;
-        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
 
         MenuItem delete = menu.findItem(R.id.deleteProduct);
         if (delete != null) delete.setVisible(hasProduct);
 
         MenuItem adminItem = menu.findItem(R.id.adminPage);
-        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        if (adminItem != null) adminItem.setVisible(ActiveEmployeeManager.isActiveEmployeeAdmin(this));
         AdminMenu.setVisibility(this, menu);
 
         // show discard whenever a product exists and there is on-hand qty

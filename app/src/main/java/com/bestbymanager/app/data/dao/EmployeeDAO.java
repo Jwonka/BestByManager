@@ -49,6 +49,12 @@ public interface EmployeeDAO {
     @Query("SELECT employeeID FROM employee WHERE isAdmin = 1 ORDER BY employeeID ASC LIMIT 1")
     Long getFirstAdminId();
 
+    @Query("SELECT employeeID FROM employee LIMIT 1")
+    long getOnlyEmployeeIdBlocking();
+
+    @Query("SELECT isAdmin FROM employee WHERE employeeID = :employeeId LIMIT 1")
+    boolean isEmployeeAdminBlocking(long employeeId);
+
     @Transaction
     default String setTempPassword(long employeeID) {
         String tmp = PasswordUtil.generateTempPassword();

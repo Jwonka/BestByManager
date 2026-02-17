@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.lifecycle.LifecycleOwner;
-import com.bestbymanager.app.UI.activities.MainActivity;
+import com.bestbymanager.app.utilities.Router;
 import com.bestbymanager.app.UI.activities.ResetPasswordActivity;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.data.entities.Employee;
@@ -34,11 +34,9 @@ public class UnlockKioskAction extends AuthenticationAction {
                             }
 
                             Session.get().unlockKiosk(e, context);
-                            ActiveEmployeeManager.setActiveEmployeeId(context, e.getEmployeeID());
-                            ActiveEmployeeManager.setActiveEmployeeIsAdmin(context, e.isAdmin());
+                            ActiveEmployeeManager.clearActiveEmployee(context);
 
-                            context.startActivity(new Intent(context, MainActivity.class)
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            Router.routeAfterUnlock((Activity) context);
                             ((Activity) context).finish();
                             break;
                         }

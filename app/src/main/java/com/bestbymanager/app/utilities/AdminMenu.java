@@ -1,11 +1,9 @@
 package com.bestbymanager.app.utilities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.bestbymanager.app.UI.activities.EmployeeList;
-import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
+
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.R;
@@ -14,7 +12,7 @@ public final class AdminMenu {
     private AdminMenu() {}
 
     /** Call from onCreateOptionsMenu */
-    public static void inflateIfAdmin(Activity a, Menu menu) {
+    public static void inflateKioskActions(Activity a, Menu menu) {
         // Always inflate the menu that contains BOTH actions.
         a.getMenuInflater().inflate(R.menu.menu_kiosk_actions, menu);
     }
@@ -38,24 +36,15 @@ public final class AdminMenu {
 
         if (id == R.id.action_switch_employee) {
             ActiveEmployeeManager.clearActiveEmployee(a);
-
-            a.startActivity(new Intent(a, EmployeeList.class)
-                    .putExtra("selectMode", true)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            a.finish();
+            Router.routeAfterUnlock(a);  // will send to EmployeeList(selectMode=true) when >1
             return true;
         }
 
         if (id == R.id.action_lock_kiosk) {
             // admin-only hard lock
             if (!ActiveEmployeeManager.isActiveEmployeeAdmin(a)) return true;
-
-            ActiveEmployeeManager.clearActiveEmployee(a);
-            Session.get().lockKiosk(a);
-
-            a.startActivity(new Intent(a, UnlockKioskActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            a.finish();
+            Session.get().lockKiosk(a); // clear active employee
+            Router.routeAfterUnlock(a);
             return true;
         }
         return false;

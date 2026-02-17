@@ -23,7 +23,6 @@ import com.bestbymanager.app.UI.adapter.EmployeeAdapter;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityEmployeeListBinding;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
-import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.EmployeeListViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -74,9 +73,6 @@ public class EmployeeList extends AppCompatActivity {
                 startActivity(new Intent(EmployeeList.this, EmployeeDetails.class).putExtra("employeeID", employeeID));
                 return;
             }
-
-            // Admin override: no PIN needed, but still set active+admin flag
-            if (Session.get().isAdmin()) { onEmployeeSelected(employeeID); return; }
 
             if (pinFlowInFlight) { return; }
             pinFlowInFlight = true;
@@ -184,7 +180,6 @@ public class EmployeeList extends AppCompatActivity {
                                 pinFlowInFlight = false;
                                 pinDialog = null;
                                 onEmployeeSelected(employeeId);
-                                finish();
                                 break;
 
                             case NO_PIN_SET:
@@ -227,7 +222,7 @@ public class EmployeeList extends AppCompatActivity {
         // If selecting and nothing selected yet no menu.
         if (selectMode && !alreadySelected) return false;
         getMenuInflater().inflate(R.menu.menu_employee_list, menu);
-        AdminMenu.inflateIfAdmin(this, menu);
+        AdminMenu.inflateKioskActions(this, menu);
         return true;
     }
 

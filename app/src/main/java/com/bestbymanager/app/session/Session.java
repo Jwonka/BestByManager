@@ -70,6 +70,8 @@ public final class Session {
     public synchronized void lockKiosk(Context context) {
         Context app = context.getApplicationContext();
 
+        ActiveEmployeeManager.clearActiveEmployee(app);
+
         // clear in-memory
         currentAdmin = null;
         unlockedAdminId = null;

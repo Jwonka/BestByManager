@@ -22,6 +22,20 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
         io.execute(() -> {
             Repository repo = new Repository(getApplication());
             int count = repo.employeeCountBlocking();
+            boolean unlocked = Session.get().isUnlocked();
+            boolean hasActive = ActiveEmployeeManager.hasActiveEmployee(this);
+
+            long onlyId = -1L;
+            boolean onlyIsAdmin = false;
+            boolean shouldAutoSelect = unlocked && !hasActive && count == 1;
+
+            if (shouldAutoSelect) {
+                onlyId = repo.getOnlyEmployeeIdBlocking();
+                onlyIsAdmin = repo.isEmployeeAdminBlocking(onlyId);
+            }
+
+            final long fOnlyId = onlyId;
+            final boolean fOnlyIsAdmin = onlyIsAdmin;
 
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed()) return;
@@ -35,7 +49,7 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
                 }
 
                 // 2) Kiosk locked → require admin unlock
-                if (!Session.get().isUnlocked()) {
+                if (!unlocked) {
                     startActivity(new Intent(this, UnlockKioskActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     finish();
@@ -44,11 +58,18 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
 
                 // 3) Kiosk unlocked but no active employee selected
                 if (!ActiveEmployeeManager.hasActiveEmployee(this)) {
-                    startActivity(new Intent(this, EmployeeList.class)
-                            .putExtra("selectMode", true)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    finish();
-                    return;
+                    // auto-select when exactly 1 employee exists
+                    if (count == 1 && fOnlyId > 0) {
+                        ActiveEmployeeManager.setActiveEmployeeId(this, fOnlyId);
+                        ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, fOnlyIsAdmin);
+                    } else {
+
+                        startActivity(new Intent(this, EmployeeList.class)
+                                .putExtra("selectMode", true)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        finish();
+                        return;
+                    }
                 }
 
                 if (gatePassed) return;

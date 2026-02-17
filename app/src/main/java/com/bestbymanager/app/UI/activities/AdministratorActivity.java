@@ -70,16 +70,14 @@ public class AdministratorActivity extends BaseAdminActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_administrator_activity, menu);
-        AdminMenu.inflateIfAdmin(this, menu);
+        AdminMenu.inflateKioskActions(this, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean activeIsAdmin = ActiveEmployeeManager.isActiveEmployeeAdmin(this);
         MenuItem adminItem = menu.findItem(R.id.adminPage);
-
-        if (adminItem != null) adminItem.setVisible(activeIsAdmin);
+        if (adminItem != null) adminItem.setVisible(ActiveEmployeeManager.isActiveEmployeeAdmin(this));
         AdminMenu.setVisibility(this, menu);
         return true;
     }

@@ -67,7 +67,7 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_about_activity, menu);
-        AdminMenu.inflateIfAdmin(this, menu);
+        AdminMenu.inflateKioskActions(this, menu);
         return true;
     }
 

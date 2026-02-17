@@ -27,6 +27,7 @@ import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.databinding.ActivityUnlockKioskBinding;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.utilities.Router;
 import com.google.android.material.button.MaterialButton;
 
 public class UnlockKioskActivity extends AppCompatActivity {
@@ -43,19 +44,8 @@ public class UnlockKioskActivity extends AppCompatActivity {
 
         Session.get().preload(this);
 
-        // If kiosk already unlocked (and not in forced reset)
         if (Session.get().isUnlocked() && !Session.get().requiresPasswordReset()) {
-                // Active employee navigates to home screen
-            if (ActiveEmployeeManager.hasActiveEmployee(this)) {
-                startActivity(new Intent(this, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            } else {  // go straight to employee switch/select
-                startActivity(new Intent(this, EmployeeList.class)
-                        .putExtra("selectMode", true)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            }
-
-            finish();
+            Router.routeAfterUnlock(this);
             return;
         }
 
