@@ -41,14 +41,8 @@ public class EmployeeDetails extends BaseAdminActivity {
     protected void onCreate(Bundle s) {
         super.onCreate(s);
 
-        // BaseAdminActivity should enforce admin; this is a hard-stop safety check.
-        Session.get().preload(this);
-        if (!Session.get().isUnlocked() || !Session.get().isAdmin()) {
-            Toast.makeText(this, "Owner admin required.", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-            return;
-        }
+        // BaseAdminActivity should enforce admin
+        if (isFinishing() || isDestroyed()) return;
 
         setTitle(R.string.employee_details);
 
@@ -162,7 +156,6 @@ public class EmployeeDetails extends BaseAdminActivity {
 
         Employee employee = isNew ? new Employee() : currentEmployee;
         employee.setEmployeeName(name.getText().toString().trim());
-        employee.setAdmin(false);
 
         if (isNew) {
             String temp = generateTempPassword();
