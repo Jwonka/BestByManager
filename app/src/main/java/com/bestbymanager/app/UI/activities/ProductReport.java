@@ -120,7 +120,7 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
         if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }
-        if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, ProductDetails.class)); return true; }
+        if (item.getItemId() == R.id.productDetails) { startActivity(new Intent(this, ProductDetails.class)); return true; }
         if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
         if (item.getItemId() == R.id.action_copy) { copyToClipboard(); return true; }
         if (item.getItemId() == R.id.action_share) { shareReport(); return true; }

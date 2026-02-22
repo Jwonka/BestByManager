@@ -27,37 +27,33 @@ public class ResetPasswordActivity extends AppCompatActivity {
         ActivityResetPasswordBinding binding = ActivityResetPasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        final View rootView = binding.getRoot();
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(),  (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
         boolean recoveryMode = getIntent().getBooleanExtra("recovery_mode", false);
 
-        long employeeID = getIntent().getLongExtra("employeeId", -1);
+        long employeeID = getIntent().getLongExtra("employeeId", -1L);
 
         Repository repository = new Repository(getApplication());
 
         if (recoveryMode) {
-            // recovery ALWAYS targets the first admin only
-            new Thread(() -> {
-                Long adminId = repository.getFirstAdminIdBlocking();
-                runOnUiThread(() -> {
-                    if (adminId == null || adminId <= 0) {
-                        Toast.makeText(this, "No admin account found.", Toast.LENGTH_SHORT).show();
-                        finish();
-                        return;
-                    }
-                    initUi(binding, repository, adminId);
-                });
-            }).start();
+            if (employeeID <= 0) {
+                Toast.makeText(this, "Missing admin target.", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+            repository.getEmployee(employeeID).observe(this, employee -> {
+                if (employee == null || !employee.isAdmin()) {
+                    Toast.makeText(this, "Invalid admin target.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+                initUi(binding, repository, employeeID);
+            });
             return;
         }
 
@@ -71,7 +67,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void initUi(ActivityResetPasswordBinding binding, Repository repository, long employeeID) {
         repository.getEmployee(employeeID).observe(this, employee -> {
-            if (employee != null && binding.employeeNameLabel != null) { binding.employeeNameLabel.setText(employee.getEmployeeName()); }
+            if (employee != null) { binding.employeeNameLabel.setText(employee.getEmployeeName()); }
         });
 
         action = new ResetPasswordAction(

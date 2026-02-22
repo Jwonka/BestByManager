@@ -1,5 +1,6 @@
 package com.bestbymanager.app.UI.authentication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import android.content.Context;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import java.util.List;
 import java.util.concurrent.Executor;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.activities.ResetPasswordActivity;
+import com.bestbymanager.app.data.database.Repository;
+import com.bestbymanager.app.data.entities.Employee;
 import com.bestbymanager.app.session.DeviceOwnerManager;
 
 public class RecoveryActivity extends AppCompatActivity {
@@ -36,8 +40,9 @@ public class RecoveryActivity extends AppCompatActivity {
         long enrolledOwnerId = sp.getLong(KEY_RECOVERY_OWNER_ID, -1L);
         long currentOwnerId = DeviceOwnerManager.getOwnerEmployeeId(this);
 
+        if (btn != null) btn.setEnabled(false);
+
         if (!enabled || enrolledOwnerId <= 0 || enrolledOwnerId != currentOwnerId) {
-            if (btn != null) btn.setEnabled(false);
             if (err != null) {
                 err.setVisibility(View.VISIBLE);
                 err.setText(R.string.recovery_not_enabled);
@@ -53,7 +58,6 @@ public class RecoveryActivity extends AppCompatActivity {
         );
 
         if (canAuth != BiometricManager.BIOMETRIC_SUCCESS) {
-            btn.setEnabled(false);
             err.setVisibility(View.VISIBLE);
             err.setText(R.string.recover_account);
             err.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS)));
@@ -65,10 +69,8 @@ public class RecoveryActivity extends AppCompatActivity {
 
         biometricPrompt = new BiometricPrompt(this, executor,
                 new BiometricPrompt.AuthenticationCallback() {
-                    @Override public void onAuthenticationSucceeded(
-                            @NonNull BiometricPrompt.AuthenticationResult result) {
-                        // enable password reset UI (show fields + confirm button)
-                        showResetUi();
+                    @Override public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                        showAdminPickerThenReset();
                     }
 
                     @Override
@@ -86,15 +88,41 @@ public class RecoveryActivity extends AppCompatActivity {
                 )
                 .build();
 
-        findViewById(R.id.btn_verify_device).setOnClickListener(v ->
-                biometricPrompt.authenticate(promptInfo)
-        );
+        if (btn != null) {
+            btn.setEnabled(true);
+            btn.setOnClickListener(v -> biometricPrompt.authenticate(promptInfo));
+        }
     }
 
-    private void showResetUi() {
-        Intent i = new Intent(this, ResetPasswordActivity.class);
-        i.putExtra("recovery_mode", true);
-        startActivity(i);
-        finish();
+    private void showAdminPickerThenReset() {
+        Repository repo = new Repository(getApplication());
+
+        new Thread(() -> {
+            List<Employee> admins = repo.getAdminsBlocking();
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+
+                if (admins == null || admins.isEmpty()) {
+                    Toast.makeText(this, "No admin account found.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String[] labels = new String[admins.size()];
+                for (int i = 0; i < admins.size(); i++) labels[i] = admins.get(i).getEmployeeName();
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Select admin to reset")
+                        .setItems(labels, (d, which) -> {
+                            long adminId = admins.get(which).getEmployeeID();
+                            Intent i = new Intent(this, ResetPasswordActivity.class);
+                            i.putExtra("recovery_mode", true);
+                            i.putExtra("employeeId", adminId);
+                            startActivity(i);
+                            finish();
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            });
+        }).start();
     }
 }

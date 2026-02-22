@@ -27,7 +27,6 @@ import com.bestbymanager.app.utilities.AppResetUtil;
 import com.bestbymanager.app.session.DeviceOwnerManager;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -42,7 +41,7 @@ public class AdministratorActivity extends BaseAdminActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.admin);
-        
+
         repo = new Repository(getApplication());
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityAdministratorBinding binding = ActivityAdministratorBinding.inflate(getLayoutInflater());
@@ -133,8 +132,6 @@ public class AdministratorActivity extends BaseAdminActivity {
                         .putBoolean(KEY_RECOVERY_ENABLED, true)
                         .putLong(KEY_RECOVERY_OWNER_ID, ownerId)
                         .apply();
-                getSharedPreferences(SECURITY_PREFS, Context.MODE_PRIVATE)
-                        .edit().putBoolean(KEY_RECOVERY_ENABLED, true).apply();
                 Toast.makeText(AdministratorActivity.this, R.string.recovery_enabled_toast, Toast.LENGTH_SHORT).show();
             }
         });
@@ -152,6 +149,7 @@ public class AdministratorActivity extends BaseAdminActivity {
     }
 
     private void promptAuthThenConfirmReset() {
+        if (!DeviceOwnerManager.isActiveEmployeeOwner(this)) { Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show(); return; }
         if (isDeviceAuthUnavailable()) { Toast.makeText(this, R.string.recovery_auth_unavailable, Toast.LENGTH_SHORT).show(); return; }
 
         Executor ex = ContextCompat.getMainExecutor(this);
@@ -196,20 +194,12 @@ public class AdministratorActivity extends BaseAdminActivity {
     }
 
     private void promptAuthThenTransferOwnership() {
-        if (!DeviceOwnerManager.isActiveEmployeeOwner(this)) {
-            Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (isDeviceAuthUnavailable()) {
-            Toast.makeText(this, R.string.recovery_auth_unavailable, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (!DeviceOwnerManager.isActiveEmployeeOwner(this)) { Toast.makeText(this, R.string.not_authorized, Toast.LENGTH_SHORT).show(); return; }
+        if (isDeviceAuthUnavailable()) { Toast.makeText(this, R.string.recovery_auth_unavailable, Toast.LENGTH_SHORT).show(); return; }
 
         Executor ex = ContextCompat.getMainExecutor(this);
         BiometricPrompt bp = new BiometricPrompt(this, ex, new BiometricPrompt.AuthenticationCallback() {
-            @Override public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                showAdminPickerAndTransfer();
-            }
+            @Override public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) { showAdminPickerAndTransfer(); }
         });
 
         BiometricPrompt.PromptInfo pi = new BiometricPrompt.PromptInfo.Builder()
@@ -225,36 +215,30 @@ public class AdministratorActivity extends BaseAdminActivity {
     }
 
     private void showAdminPickerAndTransfer() {
-        repo.getAdmins().observe(this, admins -> {
-            if (admins == null || admins.isEmpty()) {
-                Toast.makeText(this, "No admins found.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        new Thread(() -> {
+            List<Employee> admins = repo.getAdminsBlocking();
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
 
-            long currentOwnerId = DeviceOwnerManager.getOwnerEmployeeId(this);
+                if (admins == null || admins.isEmpty()) { Toast.makeText(this, "No admins found.", Toast.LENGTH_SHORT).show(); return; }
 
-            List<Employee> choices = new ArrayList<>();
-            for (Employee e : admins) {
-                if (e != null && e.getEmployeeID() != currentOwnerId) choices.add(e);
-            }
+                long currentOwnerId = DeviceOwnerManager.getOwnerEmployeeId(this);
 
-            if (choices.isEmpty()) {
-                Toast.makeText(this, "No other admin available.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+                List<Employee> choices = new ArrayList<>();
+                for (Employee e : admins) { if (e != null && e.getEmployeeID() != currentOwnerId) choices.add(e); }
 
-            String[] labels = new String[choices.size()];
-            for (int i = 0; i < choices.size(); i++) labels[i] = choices.get(i).getEmployeeName();
+                if (choices.isEmpty()) { Toast.makeText(this, "No other admin available.", Toast.LENGTH_SHORT).show(); return; }
 
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.transfer_ownership)
-                    .setItems(labels, (d, which) -> {
-                        Employee target = choices.get(which);
-                        confirmTransfer(target);
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show();
-        });
+                String[] labels = new String[choices.size()];
+                for (int i = 0; i < choices.size(); i++) labels[i] = choices.get(i).getEmployeeName();
+
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.transfer_ownership)
+                        .setItems(labels, (d, which) -> confirmTransfer(choices.get(which)))
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            });
+        }).start();
     }
 
     private void confirmTransfer(@NonNull Employee target) {

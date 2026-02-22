@@ -49,6 +49,8 @@ public interface EmployeeDAO {
     @Query("SELECT * FROM employee WHERE isAdmin = 1 ORDER BY employeeName COLLATE NOCASE ASC, employeeID ASC")
     LiveData<List<Employee>> getAdmins();
 
+    @Query("SELECT * FROM Employee WHERE isAdmin = 1 ORDER BY employeeName COLLATE NOCASE")
+    List<Employee> getAdminsBlocking();
     @Query("SELECT employeeID FROM employee WHERE isAdmin = 1 ORDER BY employeeID ASC LIMIT 1")
     Long getFirstAdminId();
 

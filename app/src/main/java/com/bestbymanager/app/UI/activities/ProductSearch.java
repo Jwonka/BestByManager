@@ -213,7 +213,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
-        if (item.getItemId() == R.id.employeeDetails) { startActivity(new Intent(this, ProductDetails.class)); return true;  }
+        if (item.getItemId() == R.id.productDetails) { startActivity(new Intent(this, ProductDetails.class)); return true;  }
         if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
