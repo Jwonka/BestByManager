@@ -33,36 +33,41 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return insets;
         });
 
-        boolean recoveryMode = getIntent().getBooleanExtra("recovery_mode", false);
+        final boolean recoveryMode = getIntent().getBooleanExtra("recovery_mode", false);
 
-        long employeeID = getIntent().getLongExtra("employeeId", -1L);
+       long idFromIntent = getIntent().getLongExtra("employeeId", -1L);
 
-        Repository repository = new Repository(getApplication());
+        if (!recoveryMode && idFromIntent < 0) {
+            Long sid = Session.get().limitedEmployeeId();
+            idFromIntent = (sid != null && sid > 0) ? sid : -1L;
+        }
+
+        final long targetId = idFromIntent;
+        final Repository repository = new Repository(getApplication());
 
         if (recoveryMode) {
-            if (employeeID <= 0) {
+            if (targetId <= 0) {
                 Toast.makeText(this, "Missing admin target.", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }
 
-            repository.getEmployee(employeeID).observe(this, employee -> {
+            repository.getEmployee(targetId).observe(this, employee -> {
                 if (employee == null || !employee.isAdmin()) {
                     Toast.makeText(this, "Invalid admin target.", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
                 }
-                initUi(binding, repository, employeeID);
+                initUi(binding, repository, targetId);
             });
             return;
         }
 
-        if (employeeID < 0) {
-            Long sid = Session.get().limitedEmployeeId();
-            if (sid != null && sid > 0) employeeID = sid;
-            else { finish(); return; }
+        if (targetId <= 0) {
+            finish();
+            return;
         }
-        initUi(binding, repository, employeeID);
+        initUi(binding, repository, targetId);
     }
 
     private void initUi(ActivityResetPasswordBinding binding, Repository repository, long employeeID) {
