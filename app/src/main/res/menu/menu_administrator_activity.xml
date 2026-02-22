@@ -16,4 +16,9 @@
         android:id="@+id/menu_reset_app_data"
         android:title="@string/reset_app_menu"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_transfer_ownership"
+        android:title="@string/transfer_ownership"
+        app:showAsAction="never"/>
 </menu>

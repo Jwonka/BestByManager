@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.bestbymanager.app.UI.activities.MainActivity;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.session.DeviceOwnerManager;
 import com.bestbymanager.app.session.Session;
 
 public class SetupOwnerAction extends AuthenticationAction {
@@ -28,6 +29,7 @@ public class SetupOwnerAction extends AuthenticationAction {
 
                     // First employee is admin in Repository.insertEmployee(...)
                     Session.get().unlockKiosk(employee, context);
+                    DeviceOwnerManager.setOwnerEmployeeId(context, employee.getEmployeeID());
                     ActiveEmployeeManager.setActiveEmployeeId(context, employee.getEmployeeID());
                     ActiveEmployeeManager.setActiveEmployeeIsAdmin(context, employee.isAdmin());
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.preference.PreferenceManager;
 import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
+import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.session.DeviceOwnerManager;
 import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.data.database.BestByManagerDatabase;
 import java.io.File;
@@ -14,6 +16,9 @@ public final class AppResetUtil {
 
     public static void wipeAllAndRestart(Activity a) {
         Context app = a.getApplicationContext();
+        if (!Session.get().isUnlocked() || !ActiveEmployeeManager.isActiveEmployeeAdmin(app) || !DeviceOwnerManager.isActiveEmployeeOwner(app)) {
+            return;
+        }
 
         try {
             Session.get().lockKiosk(app);

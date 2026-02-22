@@ -15,12 +15,14 @@ import androidx.core.content.ContextCompat;
 import java.util.concurrent.Executor;
 import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.activities.ResetPasswordActivity;
+import com.bestbymanager.app.session.DeviceOwnerManager;
 
 public class RecoveryActivity extends AppCompatActivity {
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private static final String SECURITY_PREFS = "security_prefs";
     private static final String KEY_RECOVERY_ENABLED = "recovery_enabled";
+    private static final String KEY_RECOVERY_OWNER_ID = "recovery_owner_id";
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +31,12 @@ public class RecoveryActivity extends AppCompatActivity {
         final View btn = findViewById(R.id.btn_verify_device);
         final TextView err = findViewById(R.id.recovery_error);
 
-        boolean enabled = getSharedPreferences(SECURITY_PREFS, Context.MODE_PRIVATE)
-                .getBoolean(KEY_RECOVERY_ENABLED, false);
-        if (!enabled) {
+        var sp = getSharedPreferences(SECURITY_PREFS, Context.MODE_PRIVATE);
+        boolean enabled = sp.getBoolean(KEY_RECOVERY_ENABLED, false);
+        long enrolledOwnerId = sp.getLong(KEY_RECOVERY_OWNER_ID, -1L);
+        long currentOwnerId = DeviceOwnerManager.getOwnerEmployeeId(this);
+
+        if (!enabled || enrolledOwnerId <= 0 || enrolledOwnerId != currentOwnerId) {
             if (btn != null) btn.setEnabled(false);
             if (err != null) {
                 err.setVisibility(View.VISIBLE);

@@ -76,6 +76,7 @@ public class Repository {
     }
 
     public Long getFirstAdminIdBlocking() { return mEmployeeDAO.getFirstAdminId(); }
+    public LiveData<List<Employee>> getAdmins() { return mEmployeeDAO.getAdmins(); }
     public int employeeCountBlocking() { return mEmployeeDAO.employeeCount(); }
     public long getOnlyEmployeeIdBlocking() { return mEmployeeDAO.getOnlyEmployeeIdBlocking(); }
     public boolean isEmployeeAdminBlocking(long employeeId) { return mEmployeeDAO.isEmployeeAdminBlocking(employeeId); }
