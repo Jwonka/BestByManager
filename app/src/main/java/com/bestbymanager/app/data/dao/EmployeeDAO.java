@@ -34,6 +34,9 @@ public interface EmployeeDAO {
     @Query("SELECT * FROM employee WHERE employeeID = :employeeID LIMIT 1")
     LiveData<Employee> findByEmployeeID(long employeeID);
 
+    @Query("SELECT COUNT(1) FROM Employee WHERE employeeID = :employeeId")
+    int employeeExists(long employeeId);
+
     @Query("SELECT COUNT(*) FROM employee")
     int employeeCount();
 

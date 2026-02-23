@@ -23,11 +23,11 @@ public final class Router {
             int count = 0;
             try { count = repo.employeeCountBlocking(); } catch (Throwable ignored) {}
 
+            boolean unlocked = Session.get().isUnlocked() && !Session.get().requiresPasswordReset();
+
             // if exactly 1 employee and unlocked, auto-select
             long onlyId = -1L;
             boolean onlyIsAdmin = false;
-            boolean unlocked = Session.get().isUnlocked() && !Session.get().requiresPasswordReset();
-
             if (unlocked && count == 1) {
                 try {
                     onlyId = repo.getOnlyEmployeeIdBlocking();
@@ -35,10 +35,24 @@ public final class Router {
                 } catch (Throwable ignored) {}
             }
 
+            // validate active employee still exists (handles deleted active employee)
+            boolean hasActive = ActiveEmployeeManager.hasActiveEmployee(a);
+            boolean activeExists = true;
+            if (hasActive) {
+                try {
+                    long activeId = ActiveEmployeeManager.getActiveEmployeeId(a);
+                    activeExists = repo.employeeExistsBlocking(activeId);
+                } catch (Throwable ignored) {
+                    activeExists = true; // fail open to avoid accidental lockout on DB errors
+                }
+            }
+
             final int fCount = count;
             final boolean fUnlocked = unlocked;
             final long fOnlyId = onlyId;
             final boolean fOnlyIsAdmin = onlyIsAdmin;
+            final boolean fHasActive = hasActive;
+            final boolean fActiveExists = activeExists;
 
             a.runOnUiThread(() -> {
                 if (a.isFinishing() || a.isDestroyed()) return;
@@ -59,8 +73,17 @@ public final class Router {
                     return;
                 }
 
+                if (fHasActive && !fActiveExists) {
+                    ActiveEmployeeManager.clearActiveEmployee(a);
+                    a.startActivity(new Intent(a, EmployeeList.class)
+                            .putExtra("selectMode", true)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    a.finish();
+                    return;
+                }
+
                 // Unlocked but no active employee -> selection (or auto-select if only 1)
-                if (!ActiveEmployeeManager.hasActiveEmployee(a)) {
+                if (!fHasActive) {
                     if (fCount == 1 && fOnlyId > 0) {
                         ActiveEmployeeManager.setActiveEmployeeId(a, fOnlyId);
                         ActiveEmployeeManager.setActiveEmployeeIsAdmin(a, fOnlyIsAdmin);

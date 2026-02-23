@@ -2,6 +2,7 @@ package com.bestbymanager.app.UI.authentication;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+import com.bestbymanager.app.UI.activities.MainActivity;
 import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
 import com.bestbymanager.app.UI.activities.EmployeeList;
 import com.bestbymanager.app.data.database.Repository;
@@ -13,6 +14,7 @@ import java.util.concurrent.Executors;
 public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private volatile boolean gatePassed = false;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -21,55 +23,90 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
 
         io.execute(() -> {
             Repository repo = new Repository(getApplication());
-            int count = repo.employeeCountBlocking();
-            boolean unlocked = Session.get().isUnlocked();
+            int count = 0;
+            try { count = repo.employeeCountBlocking(); } catch (Throwable ignored) {}
+
+            boolean unlocked = Session.get().isUnlocked() && !Session.get().requiresPasswordReset();
             boolean hasActive = ActiveEmployeeManager.hasActiveEmployee(this);
+
+            // validate active employee still exists (deleted active employee case)
+            boolean activeExists = true;
+            if (hasActive) {
+                try {
+                    long activeId = ActiveEmployeeManager.getActiveEmployeeId(this);
+                    activeExists = repo.employeeExistsBlocking(activeId);
+                } catch (Throwable ignored) {
+                    activeExists = true; // fail open for DB errors
+                }
+            }
 
             long onlyId = -1L;
             boolean onlyIsAdmin = false;
             boolean shouldAutoSelect = unlocked && !hasActive && count == 1;
 
             if (shouldAutoSelect) {
-                onlyId = repo.getOnlyEmployeeIdBlocking();
-                onlyIsAdmin = repo.isEmployeeAdminBlocking(onlyId);
+                try {
+                    onlyId = repo.getOnlyEmployeeIdBlocking();
+                    onlyIsAdmin = repo.isEmployeeAdminBlocking(onlyId);
+                } catch (Throwable ignored) {}
             }
 
+            final int fCount = count;
+            final boolean fUnlocked = unlocked;
+            final boolean fHasActive = hasActive;
+            final boolean fActiveExists = activeExists;
             final long fOnlyId = onlyId;
             final boolean fOnlyIsAdmin = onlyIsAdmin;
+            final boolean fAutoSelect = shouldAutoSelect && onlyId > 0;
 
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed()) return;
 
                 // 1) No employees → first-time setup (unlock/admin creation)
-                if (count == 0) {
+                if (fCount == 0) {
                     startActivity(new Intent(this, UnlockKioskActivity.class)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     finish();
                     return;
                 }
 
-                // 2) Kiosk locked → require admin unlock
-                if (!unlocked) {
+                // 2) Kiosk locked → require admin unlock OR reset required
+                if (!fUnlocked) {
                     startActivity(new Intent(this, UnlockKioskActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    finish();
+                    return;
+                }
+
+                // active employee was deleted -> force selection
+                if (fHasActive && !fActiveExists) {
+                    ActiveEmployeeManager.clearActiveEmployee(this);
+                    startActivity(new Intent(this, EmployeeList.class)
+                            .putExtra("selectMode", true)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     finish();
                     return;
                 }
 
                 // 3) Kiosk unlocked but no active employee selected
-                if (!ActiveEmployeeManager.hasActiveEmployee(this)) {
+                if (!fHasActive) {
                     // auto-select when exactly 1 employee exists
-                    if (count == 1 && fOnlyId > 0) {
+                    if (fAutoSelect) {
                         ActiveEmployeeManager.setActiveEmployeeId(this, fOnlyId);
                         ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, fOnlyIsAdmin);
-                    } else {
 
-                        startActivity(new Intent(this, EmployeeList.class)
-                                .putExtra("selectMode", true)
+                        // selection just occurred -> collapse to Main
+                        startActivity(new Intent(this, MainActivity.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         finish();
                         return;
                     }
+
+                    startActivity(new Intent(this, EmployeeList.class)
+                            .putExtra("selectMode", true)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    finish();
+                    return;
                 }
 
                 if (gatePassed) return;

@@ -80,6 +80,7 @@ public class Repository {
     public LiveData<List<Employee>> getAdmins() { return mEmployeeDAO.getAdmins(); }
     public int employeeCountBlocking() { return mEmployeeDAO.employeeCount(); }
     public long getOnlyEmployeeIdBlocking() { return mEmployeeDAO.getOnlyEmployeeIdBlocking(); }
+    public boolean employeeExistsBlocking(long employeeId) { return employeeId > 0 && mEmployeeDAO.employeeExists(employeeId) > 0; }
     public boolean isEmployeeAdminBlocking(long employeeId) { return mEmployeeDAO.isEmployeeAdminBlocking(employeeId); }
     public LiveData<List<ProductReportRow>> getAllProducts() { return mProductDAO.getAllProducts(); }
     public LiveData<List<EmployeeReportRow>> getAllEntries(LocalDate today) { return mEmployeeDAO.getAllEntries(today); }
