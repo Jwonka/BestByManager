@@ -160,7 +160,17 @@ public class EmployeeDetails extends BaseAdminActivity {
 
         Employee employee = isNew ? new Employee() : currentEmployee;
         employee.setEmployeeName(name.getText().toString().trim());
-        if (adminSwitch.getVisibility() == View.VISIBLE) { employee.setAdmin(adminSwitch.isChecked()); }
+        boolean canEditAdmin = DeviceOwnerManager.isActiveEmployeeOwner(this) && adminSwitch.getVisibility() == View.VISIBLE;
+
+        if (canEditAdmin) {
+            employee.setAdmin(adminSwitch.isChecked());
+        } else if (!isNew) {
+            // keep existing admin flag (prevents accidental demotion/promotion)
+            employee.setAdmin(currentEmployee.isAdmin());
+        } else {
+            // creating new employee as non-owner -> always non-admin
+            employee.setAdmin(false);
+        }
 
         if (isNew) {
             String temp = generateTempPassword();
