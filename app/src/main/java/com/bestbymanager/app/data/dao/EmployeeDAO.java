@@ -28,6 +28,9 @@ public interface EmployeeDAO {
     @Delete
     void delete(Employee employee);
 
+    @Query("DELETE FROM employee WHERE employeeID = :employeeId")
+    void deleteById(long employeeId);
+
     @Query("SELECT * FROM employee WHERE employeeName = :name COLLATE NOCASE LIMIT 1")
     Employee findByName(String name);
 
@@ -60,8 +63,17 @@ public interface EmployeeDAO {
     @Query("SELECT employeeID FROM employee LIMIT 1")
     long getOnlyEmployeeIdBlocking();
 
+    @Query("SELECT * FROM employee WHERE employeeID = :employeeId LIMIT 1")
+    Employee findByEmployeeIDBlocking(long employeeId);
+
     @Query("SELECT isAdmin FROM employee WHERE employeeID = :employeeId LIMIT 1")
     boolean isEmployeeAdminBlocking(long employeeId);
+
+    @Query("SELECT COUNT(*) FROM employee WHERE isAdmin = 1")
+    int adminCountBlocking();
+
+    @Query("SELECT isAdmin FROM employee WHERE employeeID = :employeeId LIMIT 1")
+    Integer isAdminNullableBlocking(long employeeId);
 
     @Transaction
     default String setTempPassword(long employeeID) {

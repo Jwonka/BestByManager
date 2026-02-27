@@ -2,7 +2,6 @@ package com.bestbymanager.app.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.annotation.Nullable;
 
 public final class DeviceOwnerManager {

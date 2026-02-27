@@ -506,6 +506,32 @@ public class Repository {
         return out;
     }
 
+    public int adminCountBlocking() { return mEmployeeDAO.adminCountBlocking(); }
+
+    public void setAdminFlagGuarded(long targetEmployeeId, boolean makeAdmin, long ownerId) {
+        executor.execute(() -> {
+            // never allow owner to become non-admin (owner must always be admin)
+            if (targetEmployeeId == ownerId && !makeAdmin) return;
+
+            if (!makeAdmin) {
+                boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetEmployeeId);
+                if (targetIsAdmin && mEmployeeDAO.adminCountBlocking() <= 1) return; // last admin
+            }
+            mEmployeeDAO.setAdminFlag(targetEmployeeId, makeAdmin);
+        });
+    }
+
+    public void deleteEmployeeGuarded(long targetEmployeeId, long ownerId) {
+        executor.execute(() -> {
+            if (targetEmployeeId == ownerId) return; // never delete owner
+
+            boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetEmployeeId);
+            if (targetIsAdmin && mEmployeeDAO.adminCountBlocking() <= 1) return; // never delete last admin
+
+            mEmployeeDAO.deleteById(targetEmployeeId);
+        });
+    }
+
     private void showToast(String msg) {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show());
     }
