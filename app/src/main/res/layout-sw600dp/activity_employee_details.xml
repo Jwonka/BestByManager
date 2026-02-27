@@ -57,18 +57,30 @@
                     tools:ignore="TextContrastCheck,VisualLintTextFieldSize"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_is_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:text="@string/admin"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/employee_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom_actions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xl"
-                app:layout_constraintTop_toBottomOf="@id/employee_input_layout"
+                app:layout_constraintTop_toBottomOf="@id/switch_is_admin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/save_user_button"
+                    android:id="@+id/save_employee_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -87,7 +99,7 @@
                     android:text="@string/reset_password"
                     android:layout_marginTop="@dimen/spacing_l"
                     android:paddingHorizontal="@dimen/padding_s"
-                    app:layout_constraintTop_toBottomOf="@id/save_user_button"
+                    app:layout_constraintTop_toBottomOf="@id/save_employee_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/clear_employee_button"/>
 
@@ -99,7 +111,7 @@
                     android:text="@string/clear"
                     android:layout_marginTop="@dimen/spacing_l"
                     android:paddingHorizontal="@dimen/padding_s"
-                    app:layout_constraintTop_toBottomOf="@id/save_user_button"
+                    app:layout_constraintTop_toBottomOf="@id/save_employee_button"
                     app:layout_constraintStart_toEndOf="@id/generate_temp_pwd"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>

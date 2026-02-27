@@ -59,6 +59,17 @@
                 tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_is_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:text="@string/admin"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/employee_name_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom_actions"
                 android:layout_width="wrap_content"
@@ -70,9 +81,10 @@
                 android:layout_marginStart="@dimen/padding_xxs"
                 android:layout_marginEnd="@dimen/padding_xxs"
                 android:paddingBottom="@dimen/spacing_s"
-                app:layout_constraintTop_toBottomOf="@id/employee_name_input_layout"
+                app:layout_constraintTop_toBottomOf="@id/switch_is_admin"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_employee_button"
@@ -99,8 +111,7 @@
                     android:paddingHorizontal="@dimen/padding_s"
                     app:layout_constraintTop_toBottomOf="@id/save_employee_button"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/clear_employee_button"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintEnd_toStartOf="@id/clear_employee_button" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/clear_employee_button"
@@ -113,8 +124,7 @@
                     android:text="@string/clear"
                     app:layout_constraintStart_toEndOf="@id/generate_temp_pwd"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/save_employee_button"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/save_employee_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

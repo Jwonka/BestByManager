@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,7 +25,8 @@ import com.bestbymanager.app.R;
 import com.bestbymanager.app.UI.authentication.BaseAdminActivity;
 import com.bestbymanager.app.data.entities.Employee;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
-import com.bestbymanager.app.session.Session;
+import com.bestbymanager.app.session.DeviceOwnerManager;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.bestbymanager.app.databinding.ActivityEmployeeDetailsBinding;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.viewmodel.EmployeeDetailsViewModel;
@@ -36,6 +36,7 @@ public class EmployeeDetails extends BaseAdminActivity {
     private EditText name;
     private Button password;
     private Employee currentEmployee;
+    private SwitchMaterial adminSwitch;
 
     @Override
     protected void onCreate(Bundle s) {
@@ -48,26 +49,27 @@ public class EmployeeDetails extends BaseAdminActivity {
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityEmployeeDetailsBinding binding = ActivityEmployeeDetailsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        super.setContentView(binding.getRoot());
 
-        final View rootView = binding.getRoot();
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
         name = binding.editEmployeeName;
         Button saveButton = binding.saveEmployeeButton;
         Button clearButton = binding.clearEmployeeButton;
         password = binding.generateTempPwd;
+        adminSwitch = binding.switchIsAdmin;
+
+        // owner-only toggle
+        boolean isOwner = DeviceOwnerManager.isActiveEmployeeOwner(this);
+        adminSwitch.setEnabled(isOwner);
+        adminSwitch.setVisibility(isOwner ? View.VISIBLE : View.GONE);
 
         clearButton.setOnClickListener(v -> clearForm());
-        if (saveButton != null) { saveButton.setOnClickListener(v -> saveEmployee()); }
+        saveButton.setOnClickListener(v -> saveEmployee());
 
         password.setOnClickListener(v -> {
             if (currentEmployee == null) {
@@ -138,6 +140,7 @@ public class EmployeeDetails extends BaseAdminActivity {
 
     private void populateForm(Employee employee) {
         name.setText(employee.getEmployeeName());
+        if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(employee.isAdmin());
         password.setEnabled(true);
         invalidateOptionsMenu();
     }
@@ -145,6 +148,7 @@ public class EmployeeDetails extends BaseAdminActivity {
     private void clearForm() {
         name.setText("");
         currentEmployee = null;
+        if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(false);
         password.setEnabled(false);
         invalidateOptionsMenu();
     }
@@ -156,6 +160,7 @@ public class EmployeeDetails extends BaseAdminActivity {
 
         Employee employee = isNew ? new Employee() : currentEmployee;
         employee.setEmployeeName(name.getText().toString().trim());
+        if (adminSwitch.getVisibility() == View.VISIBLE) { employee.setAdmin(adminSwitch.isChecked()); }
 
         if (isNew) {
             String temp = generateTempPassword();
@@ -172,6 +177,12 @@ public class EmployeeDetails extends BaseAdminActivity {
                     });
         } else {
             employeeViewModel.update(employee);
+            // if you edited the active employee, sync pref admin flag
+            if (ActiveEmployeeManager.hasActiveEmployee(this)
+                    && ActiveEmployeeManager.getActiveEmployeeId(this) == employee.getEmployeeID()) {
+                ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, employee.isAdmin());
+            }
+
             Toast.makeText(this, employee.getEmployeeName() + " saved.", Toast.LENGTH_SHORT).show();
         }
     }
