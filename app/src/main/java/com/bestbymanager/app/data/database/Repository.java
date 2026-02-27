@@ -270,10 +270,14 @@ public class Repository {
         executor.execute(() -> {
             Employee employee = mEmployeeDAO.findByName(employeeName);
 
-            boolean ok = employee != null
-                    && employee.getHash() != null
-                    && !employee.getHash().isEmpty()
-                    && BCrypt.checkpw(plainPassword, employee.getHash());
+            if (employee == null) {
+                pass.postValue(new UnlockKioskResult(UnlockKioskResult.Code.BAD_CREDENTIALS, null));
+                return;
+            }
+
+            String hash = employee.getHash(); // field is @NonNull in entity, so this won't be null
+            boolean ok = !hash.trim().isEmpty() && BCrypt.checkpw(plainPassword, hash);
+
 
             if (!ok) {
                 pass.postValue(new UnlockKioskResult(UnlockKioskResult.Code.BAD_CREDENTIALS, null));
@@ -476,7 +480,6 @@ public class Repository {
                 }
                 mEmployeeDAO.clearEmployeePinLockout(employeeId);
                 fails = 0;
-                lockedUntil = null;
             }
 
             boolean hasPin = storedHash != null && !storedHash.trim().isEmpty();
