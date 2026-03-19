@@ -345,9 +345,6 @@ public class Repository {
         return result;
     }
 
-    public void updateEmployee(Employee employee) { executor.execute(() -> mEmployeeDAO.update(employee)); }
-    public void deleteEmployee(Employee employee) { executor.execute(() -> mEmployeeDAO.delete(employee)); }
-
     public interface TempPwdCallback { void onResult(boolean ok, String plainTemp); }
 
     public LiveData<String> resetPassword(long employeeID) {
@@ -434,7 +431,6 @@ public class Repository {
             if (lockedUntil != null && lockedUntil <= System.currentTimeMillis()) {
                 mEmployeeDAO.clearEmployeePinLockout(employeeId);
                 fails = 0;
-                lockedUntil = null;
             }
 
             boolean hasPin = hash != null && !hash.trim().isEmpty();
@@ -524,15 +520,55 @@ public class Repository {
         });
     }
 
-    public void deleteEmployeeGuarded(long targetEmployeeId, long ownerId) {
+    public LiveData<Boolean> updateEmployeeGuarded(@NonNull Employee employee, long ownerId) {
+        MutableLiveData<Boolean> out = new MutableLiveData<>();
         executor.execute(() -> {
-            if (targetEmployeeId == ownerId) return; // never delete owner
+            try {
+                long targetId = employee.getEmployeeID();
+                boolean targetIsOwner = targetId == ownerId;
+                boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetId);
 
-            boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetEmployeeId);
-            if (targetIsAdmin && mEmployeeDAO.adminCountBlocking() <= 1) return; // never delete last admin
+                if (targetIsOwner && !employee.isAdmin()) {
+                    out.postValue(false);
+                    return;
+                }
 
-            mEmployeeDAO.deleteById(targetEmployeeId);
+                if (targetIsAdmin && !employee.isAdmin() && mEmployeeDAO.adminCountBlocking() <= 1) {
+                    out.postValue(false);
+                    return;
+                }
+
+                mEmployeeDAO.update(employee);
+                out.postValue(true);
+            } catch (Exception e) {
+                out.postValue(false);
+            }
         });
+        return out;
+    }
+
+    public LiveData<Boolean> deleteEmployeeGuarded(long targetEmployeeId, long ownerId) {
+        MutableLiveData<Boolean> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                if (targetEmployeeId == ownerId) {
+                    out.postValue(false);
+                    return;
+                }
+
+                boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetEmployeeId);
+                if (targetIsAdmin && mEmployeeDAO.adminCountBlocking() <= 1) {
+                    out.postValue(false);
+                    return;
+                }
+
+                mEmployeeDAO.deleteById(targetEmployeeId);
+                out.postValue(true);
+            } catch (Exception e) {
+                out.postValue(false);
+            }
+        });
+        return out;
     }
 
     private void showToast(String msg) {

@@ -124,14 +124,27 @@ public class EmployeeDetails extends BaseAdminActivity {
         if (item.getItemId() == R.id.employeeList) { startActivity(new Intent(this, EmployeeList.class)); return true; }
 
         if (item.getItemId() == R.id.deleteEmployee) {
-            if (currentEmployee != null) {
-                employeeViewModel.delete(currentEmployee);
-                clearForm();
-                Toast.makeText(this, "Employee deleted.", Toast.LENGTH_SHORT).show();
-            } else {
+            if (currentEmployee == null) {
                 Toast.makeText(this, "Error deleting employee.", Toast.LENGTH_SHORT).show();
+                return true;
             }
-            finish();
+
+            long targetId = currentEmployee.getEmployeeID();
+            long ownerId = DeviceOwnerManager.getOwnerEmployeeId(this);
+
+            employeeViewModel.deleteGuarded(targetId, ownerId).observe(this, ok -> {
+                if (Boolean.TRUE.equals(ok)) {
+                    if (ActiveEmployeeManager.hasActiveEmployee(this)
+                            && ActiveEmployeeManager.getActiveEmployeeId(this) == targetId) {
+                        ActiveEmployeeManager.clearActiveEmployee(this);
+                    }
+                    clearForm();
+                    Toast.makeText(this, "Employee deleted.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "This employee can't be deleted.", Toast.LENGTH_SHORT).show();
+                }
+            });
             return true;
         }
 
@@ -186,14 +199,19 @@ public class EmployeeDetails extends BaseAdminActivity {
                         }
                     });
         } else {
-            employeeViewModel.update(employee);
-            // if you edited the active employee, sync pref admin flag
-            if (ActiveEmployeeManager.hasActiveEmployee(this)
-                    && ActiveEmployeeManager.getActiveEmployeeId(this) == employee.getEmployeeID()) {
-                ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, employee.isAdmin());
-            }
+            long ownerId = DeviceOwnerManager.getOwnerEmployeeId(this);
 
-            Toast.makeText(this, employee.getEmployeeName() + " saved.", Toast.LENGTH_SHORT).show();
+            employeeViewModel.updateGuarded(employee, ownerId).observe(this, ok -> {
+                if (Boolean.TRUE.equals(ok)) {
+                    if (ActiveEmployeeManager.hasActiveEmployee(this)
+                            && ActiveEmployeeManager.getActiveEmployeeId(this) == employee.getEmployeeID()) {
+                        ActiveEmployeeManager.setActiveEmployeeIsAdmin(this, employee.isAdmin());
+                    }
+                    Toast.makeText(this, employee.getEmployeeName() + " saved.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "This employee can't be changed.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

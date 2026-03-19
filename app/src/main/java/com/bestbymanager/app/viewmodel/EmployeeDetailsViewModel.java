@@ -33,8 +33,8 @@ public class EmployeeDetailsViewModel extends AndroidViewModel {
     }
     public LiveData<Employee> addEmployee(Employee employee, String plainPassword) { return repository.addEmployee(employee, plainPassword); }
 
-    public void update(Employee employee) { repository.updateEmployee(employee); }
+    public LiveData<Boolean> updateGuarded(Employee employee, long ownerId) { return repository.updateEmployeeGuarded(employee, ownerId); }
 
-    public void delete(Employee employee) { repository.deleteEmployee(employee); }
+    public LiveData<Boolean> deleteGuarded(long targetEmployeeId, long ownerId) { return repository.deleteEmployeeGuarded(targetEmployeeId, ownerId); }
     public LiveData<String> resetPassword(long employeeID) { return repository.resetPassword(employeeID);}
 }
