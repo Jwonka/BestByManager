@@ -61,7 +61,7 @@
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/employee_Details_button"
+                    android:id="@+id/employee_details_button"
                     style="@style/DarkGreenPillBig"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,7 +78,18 @@
                     android:layout_height="wrap_content"
                     android:text="@string/employee_list"
                     android:layout_marginTop="@dimen/spacing_m"
-                    app:layout_constraintTop_toBottomOf="@id/employee_Details_button"
+                    app:layout_constraintTop_toBottomOf="@id/employee_details_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_lock_after_idle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:text="@string/idle_lock"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@id/employee_list_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>

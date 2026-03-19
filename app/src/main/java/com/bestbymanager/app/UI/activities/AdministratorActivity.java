@@ -25,6 +25,7 @@ import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.utilities.AppResetUtil;
 import com.bestbymanager.app.session.DeviceOwnerManager;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import java.util.ArrayList;
@@ -58,6 +59,18 @@ public class AdministratorActivity extends BaseAdminActivity {
                 return insets;
             }
         });
+
+        SwitchMaterial lockAfterIdleSwitch = binding.switchLockAfterIdle;
+
+        boolean isOwner = DeviceOwnerManager.isActiveEmployeeOwner(this);
+        lockAfterIdleSwitch.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+        lockAfterIdleSwitch.setEnabled(isOwner);
+
+        if (isOwner) {
+            lockAfterIdleSwitch.setChecked(DeviceOwnerManager.isLockAfterIdleEnabled(this));
+            lockAfterIdleSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                    DeviceOwnerManager.setLockAfterIdleEnabled(this, isChecked));
+        }
 
         binding.employeeListButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdministratorActivity.this, EmployeeList.class);

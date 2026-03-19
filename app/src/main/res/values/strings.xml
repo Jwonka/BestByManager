@@ -125,4 +125,5 @@
     <string name="enable_password_recovery">Enable Password Recovery</string>
     <string name="recovery_enabled_toast">Password recovery enabled.</string>
     <string name="transfer_ownership">Transfer ownership</string>
+    <string name="idle_lock">Lock after idle</string>
 </resources>

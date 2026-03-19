@@ -55,6 +55,14 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
 
         // non-UI init only (safe before gate)
         BestByManagerDatabase.getDatabase(this);
+
+        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                ActivityProductSearchBinding binding =
+                        ActivityProductSearchBinding.bind(findViewById(android.R.id.content).getRootView());
+                binding.editBarcode.setText(result.getContents());
+            }
+        });
     }
 
     @Override
@@ -70,10 +78,6 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-        });
-
-        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) binding.editBarcode.setText(result.getContents());
         });
 
         binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
