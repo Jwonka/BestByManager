@@ -8,6 +8,7 @@ import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
 import com.bestbymanager.app.UI.activities.EmployeeList;
 import com.bestbymanager.app.data.database.Repository;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.session.DeviceOwnerManager;
 import com.bestbymanager.app.session.Session;
 import com.bestbymanager.app.utilities.IdleManager;
 import java.util.concurrent.ExecutorService;
@@ -67,12 +68,23 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
                 if (ActiveEmployeeManager.hasActiveEmployee(this) &&
                         IdleManager.isExpired(this)) {
 
-                    ActiveEmployeeManager.clearActiveEmployee(this);
+                    boolean lock = DeviceOwnerManager.isLockAfterIdleEnabled(this);
+
                     IdleManager.clear(this);
 
-                    startActivity(new Intent(this, EmployeeList.class)
-                            .putExtra("selectMode", true)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    if (lock) {
+                        Session.get().lockKiosk(this);
+
+                        startActivity(new Intent(this, UnlockKioskActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    } else {
+                        ActiveEmployeeManager.clearActiveEmployee(this);
+
+                        startActivity(new Intent(this, EmployeeList.class)
+                                .putExtra("selectMode", true)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    }
+
                     finish();
                     return;
                 }
