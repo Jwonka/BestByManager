@@ -114,22 +114,6 @@ public interface ProductDAO {
             "product.barcode AS barcode, " +
             "product.category AS category " +
             "FROM product " +
-            "JOIN employee ON product.employeeID = employee.employeeID " +
-            "ORDER BY product.expirationDate ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
-    List<ProductReportRow> getReportRows();
-
-    @Query("SELECT product.productID AS productID, " +
-            "product.brand AS brand, " +
-            "product.productName AS productName, " +
-            "product.expirationDate AS expirationDate, " +
-            "product.purchaseDate AS purchaseDate, " +
-            "product.quantity AS quantity, " +
-            "COALESCE((SELECT SUM(quantity) FROM discard_event WHERE discard_event.productID = product.productID), 0) AS discardedQuantity, " +
-            "COALESCE((SELECT reason FROM discard_event de WHERE de.productID = product.productID AND de.reason IS NOT NULL AND de.reason != '' ORDER BY de.createdAt DESC, de.id DESC LIMIT 1), NULL) AS lastDiscardNote, " +
-            "employee.employeeName AS enteredBy, " +
-            "product.barcode AS barcode, " +
-            "product.category AS category " +
-            "FROM product " +
             "JOIN employee ON employee.employeeID = product.employeeID " +
             "WHERE product.barcode = :barcode " +
             "ORDER BY product.expirationDate ASC, product.productName COLLATE NOCASE ASC, product.brand COLLATE NOCASE ASC, product.productID ASC")
