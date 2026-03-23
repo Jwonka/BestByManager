@@ -6,4 +6,7 @@
     <color name="black">#FFFFFF</color>        <!-- inverted: text and icons -->
     <color name="white">#121212</color>        <!-- inverted: main background -->
     <color name="gray">#1E1E1E</color>         <!-- title bar background in dark mode -->
+    <color name="light_green">#2E4A2E</color>    <!-- muted dark green -->
+    <color name="light_orange">#4A3A10</color>   <!-- muted dark amber -->
+    <color name="light_gray">#2A2A2A</color>     <!-- dark surface gray -->
 </resources>
