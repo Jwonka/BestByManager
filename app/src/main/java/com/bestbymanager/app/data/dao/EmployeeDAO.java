@@ -34,6 +34,9 @@ public interface EmployeeDAO {
     @Query("SELECT * FROM employee WHERE employeeName = :name COLLATE NOCASE LIMIT 1")
     Employee findByName(String name);
 
+    @Query("SELECT * FROM employee WHERE employeeName = :name COLLATE NOCASE LIMIT 1")
+    LiveData<Employee> getEmployeeByName(String name);
+
     @Query("SELECT * FROM employee WHERE employeeID = :employeeID LIMIT 1")
     LiveData<Employee> findByEmployeeID(long employeeID);
 

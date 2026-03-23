@@ -135,6 +135,7 @@ public class Repository {
     public LiveData<List<Product>> getProducts(LocalDate today){ return mProductDAO.getProducts(today); }
     public LiveData<Product> getProduct(long productID){ return mProductDAO.getProduct(productID); }
     public LiveData<Employee> getEmployee(long employeeID){ return mEmployeeDAO.getEmployee(employeeID); }
+    public LiveData<Employee> getEmployeeByName(String name) { return mEmployeeDAO.getEmployeeByName(name); }
     public LiveData<List<Employee>> getEmployees(){ return mEmployeeDAO.getEmployees(); }
     public LiveData<List<ProductReportRow>> getExpiring(LocalDate from, LocalDate selected) { return mProductDAO.getExpiring(from, selected); }
     public LiveData<List<Product>> getProductsByDateRange(LocalDate from, LocalDate selected) { return mProductDAO.getProductsByDateRange(from, selected); }

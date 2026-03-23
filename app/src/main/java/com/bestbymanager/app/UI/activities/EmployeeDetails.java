@@ -193,10 +193,16 @@ public class EmployeeDetails extends BaseAdminActivity {
                             currentEmployee = newEmployee;
                             populateForm(currentEmployee);
                             Toast.makeText(this, currentEmployee.getEmployeeName() + " saved.", Toast.LENGTH_SHORT).show();
-                            showPasswordResetDialog(temp, currentEmployee);
+                            if (newEmployee.isAdmin()) showPasswordResetDialog(temp, currentEmployee);
                         } else {
-                            Toast.makeText(this, "Name already taken.", Toast.LENGTH_SHORT).show();
-                        }
+                            employeeViewModel.findByName(employee.getEmployeeName())
+                                .observe(this, existing -> {
+                                    if (existing == null) return;
+                                    currentEmployee = existing;
+                                    populateForm(existing);
+                                    Toast.makeText(this, "Loaded existing record for "
+                                            + existing.getEmployeeName(), Toast.LENGTH_SHORT).show();
+                                });
                     });
         } else {
             long ownerId = DeviceOwnerManager.getOwnerEmployeeId(this);
