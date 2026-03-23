@@ -544,6 +544,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                     if (isFinishing() || isDestroyed() || preview == null) return;
                     preview.setImageBitmap(rotated);
                     thumbBlob = bytes;
+                    imageUri = null;
                 });
 
             } catch (Exception e) {
