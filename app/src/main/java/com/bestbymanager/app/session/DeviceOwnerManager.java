@@ -10,6 +10,7 @@ public final class DeviceOwnerManager {
     private static final String PREFS = "device_owner";
     private static final String KEY_OWNER_ID = "owner_employee_id";
     private static final String KEY_LOCK_AFTER_IDLE = "lock_after_idle";
+    private static final String KEY_OFFLINE_MODE = "offline_mode";
 
     private static SharedPreferences prefs(Context ctx) {
         return ctx.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -44,6 +45,14 @@ public final class DeviceOwnerManager {
 
     public static boolean isLockAfterIdleEnabled(Context ctx) {
         return prefs(ctx).getBoolean(KEY_LOCK_AFTER_IDLE, false);
+    }
+
+    public static void setOfflineModeEnabled(Context ctx, boolean enabled) {
+        prefs(ctx).edit().putBoolean(KEY_OFFLINE_MODE, enabled).apply();
+    }
+
+    public static boolean isOfflineModeEnabled(Context ctx) {
+        return prefs(ctx).getBoolean(KEY_OFFLINE_MODE, false);
     }
 
     /** Call when ownership changes so the new owner must re-enroll recovery. */

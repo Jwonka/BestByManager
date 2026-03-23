@@ -72,6 +72,16 @@ public class AdministratorActivity extends BaseAdminActivity {
                     DeviceOwnerManager.setLockAfterIdleEnabled(this, isChecked));
         }
 
+        SwitchMaterial offlineModeSwitch = binding.switchOfflineMode;
+        offlineModeSwitch.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+        offlineModeSwitch.setEnabled(isOwner);
+
+        if (isOwner) {
+            offlineModeSwitch.setChecked(DeviceOwnerManager.isOfflineModeEnabled(this));
+            offlineModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                    DeviceOwnerManager.setOfflineModeEnabled(this, isChecked));
+        }
+
         binding.employeeListButton.setOnClickListener(v -> {
             Intent intent = new Intent(AdministratorActivity.this, EmployeeList.class);
             startActivity(intent);

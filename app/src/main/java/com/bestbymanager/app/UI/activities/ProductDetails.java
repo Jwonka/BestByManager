@@ -6,6 +6,7 @@ import static com.bestbymanager.app.utilities.LocalDateBinder.parseOrToday;
 import androidx.appcompat.app.AlertDialog;
 import com.bestbymanager.app.UI.authentication.BaseEmployeeRequiredActivity;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
+import com.bestbymanager.app.session.DeviceOwnerManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
@@ -305,6 +306,8 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 if (local != null) {
                     currentProduct = local;
                     populateForm(local);
+                } else if (DeviceOwnerManager.isOfflineModeEnabled(this)) {
+                    toast("No local match. Offline mode is enabled.");
                 } else {
                    // Log.d(TAG, "→ No local hit – calling API");
                     if (inFlightLookupCall != null) inFlightLookupCall.cancel();
