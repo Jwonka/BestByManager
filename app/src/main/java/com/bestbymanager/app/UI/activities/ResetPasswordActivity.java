@@ -68,15 +68,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void initUi(ActivityResetPasswordBinding binding, Repository repository, long employeeID) {
-        repository.getEmployee(employeeID).observe(this, employee -> {
-            if (employee != null) {
-                binding.employeeNameLabel.setText(employee.getEmployeeName());
-                // Hand the Employee object to the action so performAuthorization
-                // can call Session.unlockKiosk() after a successful reset.
-                if (action != null) action.setEmployee(employee);
-            }
-        });
-
         action = new ResetPasswordAction(
                 this,
                 binding.employeeNameLabel,
@@ -85,6 +76,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 employeeID,
                 repository
         );
+
+        repository.getEmployee(employeeID).observe(this, employee -> {
+            if (employee != null) {
+                binding.employeeNameLabel.setText(employee.getEmployeeName());
+                action.setEmployee(employee); // action is always assigned before observe
+            }
+        });
 
         binding.passwordConfirmationInput.setOnEditorActionListener((v, id, e) -> {
             if (id == EditorInfo.IME_ACTION_DONE) { action.run(); return true; }
