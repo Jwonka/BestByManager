@@ -37,5 +37,9 @@ public class EmployeeDetailsViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> deleteGuarded(long targetEmployeeId, long ownerId) { return repository.deleteEmployeeGuarded(targetEmployeeId, ownerId); }
     public LiveData<String> resetPassword(long employeeID) { return repository.resetPassword(employeeID);}
-    public LiveData<Employee> findByName(String name) { return repository.getEmployeeByName(name); }
+    public LiveData<Employee> findByName(String name) {
+        MutableLiveData<Employee> out = new MutableLiveData<>();
+        new Thread(() -> out.postValue(repository.findByNameBlocking(name))).start();
+        return out;
+    }
 }
