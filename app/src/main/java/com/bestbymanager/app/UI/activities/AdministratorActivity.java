@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
@@ -25,6 +26,7 @@ import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.utilities.AdminMenu;
 import com.bestbymanager.app.utilities.AppResetUtil;
 import com.bestbymanager.app.session.DeviceOwnerManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -80,6 +82,9 @@ public class AdministratorActivity extends BaseAdminActivity {
             offlineModeSwitch.setChecked(DeviceOwnerManager.isOfflineModeEnabled(this));
             offlineModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                     DeviceOwnerManager.setOfflineModeEnabled(this, isChecked));
+            binding.themeButton.setOnClickListener(v -> showThemeDialog());
+        } else {
+            binding.themeButton.setVisibility(View.GONE);
         }
 
         binding.employeeListButton.setOnClickListener(v -> {
@@ -284,6 +289,36 @@ public class AdministratorActivity extends BaseAdminActivity {
                     invalidateOptionsMenu();
                     Toast.makeText(this, "Ownership transferred.", Toast.LENGTH_SHORT).show();
                 })
+                .show();
+    }
+
+    private void showThemeDialog() {
+        int current = DeviceOwnerManager.getThemeMode(this);
+        String[] options = {
+                getString(R.string.theme_follow_system),
+                getString(R.string.theme_light),
+                getString(R.string.theme_dark)
+        };
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.theme_title)
+                .setSingleChoiceItems(options, current, (dialog, which) -> {
+                    DeviceOwnerManager.setThemeMode(this, which);
+
+                    switch (which) {
+                        case 1:
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                            break;
+                        case 2:
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                            break;
+                        default:
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                            break;
+                    }
+                    dialog.dismiss();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 }

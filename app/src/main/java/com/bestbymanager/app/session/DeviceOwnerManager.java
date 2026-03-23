@@ -11,6 +11,16 @@ public final class DeviceOwnerManager {
     private static final String KEY_OWNER_ID = "owner_employee_id";
     private static final String KEY_LOCK_AFTER_IDLE = "lock_after_idle";
     private static final String KEY_OFFLINE_MODE = "offline_mode";
+    private static final String KEY_THEME = "app_theme";
+    // Values: 0 = follow system, 1 = light, 2 = dark
+
+    public static void setThemeMode(Context ctx, int mode) {
+        prefs(ctx).edit().putInt(KEY_THEME, mode).apply();
+    }
+
+    public static int getThemeMode(Context ctx) {
+        return prefs(ctx).getInt(KEY_THEME, 0); // default: follow system
+    }
 
     private static SharedPreferences prefs(Context ctx) {
         return ctx.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);

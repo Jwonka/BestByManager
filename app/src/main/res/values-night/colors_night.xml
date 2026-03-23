@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mint_green">#0F2A1D</color>   <!-- deep muted green background -->
+    <color name="sky_blue">#1A2A33</color>     <!-- blue-gray card surface -->
+    <color name="dark_green">#66BB6A</color>   <!-- lighter accent for contrast on dark -->
+    <color name="black">#FFFFFF</color>        <!-- inverted: text and icons -->
+    <color name="white">#121212</color>        <!-- inverted: main background -->
+    <color name="gray">#1E1E1E</color>         <!-- title bar background in dark mode -->
+</resources>
