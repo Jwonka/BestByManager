@@ -55,6 +55,16 @@
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".UI.activities.AdministratorActivity" />
         <activity
+            android:name=".UI.activities.PrivacyActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".UI.activities.MainActivity" />
+        <activity
+            android:name=".UI.activities.InstructionsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".UI.activities.MainActivity" />
+        <activity
             android:name=".UI.activities.AboutActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"

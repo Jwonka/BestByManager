@@ -21,4 +21,19 @@
         android:id="@+id/menu_transfer_ownership"
         android:title="@string/transfer_ownership"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/privacy"
+        android:title="@string/privacy_policy"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/instructions"
+        android:title="@string/menu_instructions"
+        app:showAsAction="never" />
 </menu>

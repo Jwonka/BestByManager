@@ -131,6 +131,9 @@ public class AdministratorActivity extends BaseAdminActivity {
         if (item.getItemId() == R.id.menu_enable_recovery) { promptAuthThenEnableRecovery(); return true; }
         if (item.getItemId() == R.id.menu_reset_app_data) { promptAuthThenConfirmReset(); return true; }
         if (item.getItemId() == R.id.menu_transfer_ownership) { promptAuthThenTransferOwnership(); return true; }
+        if (item.getItemId() == R.id.about) { startActivity(new Intent(this, AboutActivity.class)); return true; }
+        if (item.getItemId() == R.id.privacy) { startActivity(new Intent(this, PrivacyActivity.class)); return true; }
+        if (item.getItemId() == R.id.instructions) { startActivity(new Intent(this, InstructionsActivity.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 

@@ -7,4 +7,16 @@
         android:id="@+id/adminPage"
         android:icon="@drawable/ic_admin"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/privacy"
+        android:title="@string/privacy_policy"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/instructions"
+        android:title="@string/menu_instructions"
+        app:showAsAction="never" />
 </menu>

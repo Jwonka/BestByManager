@@ -127,4 +127,37 @@
     <string name="transfer_ownership">Transfer ownership</string>
     <string name="idle_lock">Lock after idle</string>
     <string name="offline_mode">Offline mode (disable product lookup)</string>
+    <!-- ── Privacy Policy ── -->
+    <string name="privacy">Privacy Policy</string>
+    <string name="privacy_data_title">Your Data</string>
+    <string name="privacy_data_body">All inventory, employee records, and settings are stored locally on this device only. Nothing is backed up to any external service.</string>
+    <string name="privacy_network_title">Network Activity</string>
+    <string name="privacy_network_body">No app data is transmitted except optional barcode lookup requests to Open Food Facts when offline mode is disabled. Open Food Facts is a free, open food product database. You can disable these lookups in Administrator settings by enabling offline mode.</string>
+    <string name="privacy_tracking_title">No Tracking</string>
+    <string name="privacy_tracking_body">Best By Manager contains no analytics, no crash reporting, no advertising, and no user accounts outside this device.</string>
+    <string name="privacy_permissions_title">Permissions</string>
+    <string name="privacy_permissions_body">• Camera — used only to capture product photos, stored locally on this device.\n\n• Notifications — used only for expiration reminders and 7-day early warning alerts (Android 13+).</string>
+
+    <!-- ── Instructions ── -->
+    <string name="instructions">Instructions</string>
+    <string name="instructions_setup_title">First-Time Setup</string>
+    <string name="instructions_setup_body">The first account created after installing the app becomes the owner and administrator automatically. The owner sets a password during setup and is the only account that can transfer ownership, enable recovery, or wipe app data.</string>
+    <string name="instructions_employees_title">Adding Employees</string>
+    <string name="instructions_employees_body">Go to Administrator → Employee Details. Enter the employee\'s name and save. A temporary password is generated for admin accounts. Non-admin employees set their own PIN the first time they select their name from the employee list.</string>
+    <string name="instructions_products_title">Adding Products</string>
+    <string name="instructions_products_body">Open Product Details from the main screen or product list. Scan or type a barcode — if the product exists locally or in Open Food Facts, fields will pre-fill. Enter brand, name, quantity, expiration date, weight, and category, then save.</string>
+    <string name="instructions_expiration_title">Expiration Tracking</string>
+    <string name="instructions_expiration_body">The Product List shows all active (non-expired) stock sorted by expiration date. Use Product Search to find expired items or items expiring within a date range. Tap the bell icon on the expiration field to enable a 7-day early warning reminder for a product.</string>
+    <string name="instructions_discard_title">Discard Tracking</string>
+    <string name="instructions_discard_body">When a product is loaded in Product Details, the overflow menu shows a Discard option. Enter the quantity discarded and an optional reason. Discards are recorded and included in employee reports.</string>
+    <string name="instructions_pin_title">Employee PIN Login</string>
+    <string name="instructions_pin_body">Employees select their name from the employee list. On first selection a PIN is required (4–8 digits). On future selections the PIN must be entered to confirm identity. After 5 failed attempts the account locks for 5 minutes.</string>
+    <string name="instructions_reports_title">Reports</string>
+    <string name="instructions_reports_body">Product Search generates product reports filterable by barcode, date range, or both. Employee Search generates employee reports showing entries, expired counts, and discard totals. Reports can be copied to clipboard or shared via any app.</string>
+    <string name="instructions_faq_label">For more help and frequently asked questions, visit:</string>
+    <string name="instructions_faq_link"><a href="https://jwonka.github.io/BestByManager/faq.html">Best By Manager FAQ</a></string>
+
+    <!-- ── Menu labels ── -->
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="menu_instructions">Instructions</string>
 </resources>
