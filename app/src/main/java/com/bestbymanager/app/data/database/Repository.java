@@ -509,19 +509,6 @@ public class Repository {
 
     public int adminCountBlocking() { return mEmployeeDAO.adminCountBlocking(); }
 
-    public void setAdminFlagGuarded(long targetEmployeeId, boolean makeAdmin, long ownerId) {
-        executor.execute(() -> {
-            // never allow owner to become non-admin (owner must always be admin)
-            if (targetEmployeeId == ownerId && !makeAdmin) return;
-
-            if (!makeAdmin) {
-                boolean targetIsAdmin = mEmployeeDAO.isEmployeeAdminBlocking(targetEmployeeId);
-                if (targetIsAdmin && mEmployeeDAO.adminCountBlocking() <= 1) return; // last admin
-            }
-            mEmployeeDAO.setAdminFlag(targetEmployeeId, makeAdmin);
-        });
-    }
-
     public LiveData<Boolean> updateEmployeeGuarded(@NonNull Employee employee, long ownerId) {
         MutableLiveData<Boolean> out = new MutableLiveData<>();
         executor.execute(() -> {
