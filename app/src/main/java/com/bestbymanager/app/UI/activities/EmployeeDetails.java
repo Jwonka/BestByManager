@@ -203,6 +203,7 @@ public class EmployeeDetails extends BaseAdminActivity {
                                     Toast.makeText(this, "Loaded existing record for "
                                             + existing.getEmployeeName(), Toast.LENGTH_SHORT).show();
                                 });
+                        }
                     });
         } else {
             long ownerId = DeviceOwnerManager.getOwnerEmployeeId(this);
