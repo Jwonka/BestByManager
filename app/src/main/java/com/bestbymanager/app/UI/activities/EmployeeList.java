@@ -140,7 +140,10 @@ public class EmployeeList extends AppCompatActivity {
                     String pin = input.getText() == null ? "" : input.getText().toString().trim();
                     repo.setEmployeePin(employeeId, pin).observe(this, ok -> {
                         if (Boolean.TRUE.equals(ok)) {
-                            showVerifyPinDialog(employeeId);
+                            // PIN stored successfully. Proceed directly to selection —
+                            // no verify step here; the user just typed the PIN correctly.
+                            pinFlowInFlight = false;
+                            onEmployeeSelected(employeeId);
                         } else {
                             Toast.makeText(this, "PIN must be 4-8 digits.", Toast.LENGTH_SHORT).show();
                             // keep gate true; re-prompt
@@ -209,8 +212,9 @@ public class EmployeeList extends AppCompatActivity {
 
         pinDialog.setOnDismissListener(d -> {
             pinDialog = null;
-            // if user somehow dismisses (system), don’t leave the gate stuck
-            pinFlowInFlight = false;
+            // pinFlowInFlight is intentionally NOT reset here.
+            // Terminal cases (OK, LOCKED, Cancel) reset it explicitly above.
+            // onStop() is the safety net for system-forced dismissals (screen off, etc.)
         });
         pinDialog.show();
     }
