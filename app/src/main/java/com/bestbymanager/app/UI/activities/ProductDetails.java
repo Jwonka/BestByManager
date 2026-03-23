@@ -533,6 +533,10 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 // 4) Create/store thumbnail bytes off-main-thread
                 byte[] bytes = Converters.fromBitmap(rotated);
 
+                // 5) Delete the temp camera file now that bytes are captured.
+                // Only deletes file:// URIs (camera captures we own). Content:// URIs (gallery) are never touched.
+                if ("file".equals(uri.getScheme())) { try { new File(uri.getPath()).delete(); } catch (Exception ignored) {} }
+
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed() || preview == null) return;
                     preview.setImageBitmap(rotated);
