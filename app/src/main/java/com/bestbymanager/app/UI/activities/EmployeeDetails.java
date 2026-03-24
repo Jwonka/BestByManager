@@ -171,7 +171,7 @@ public class EmployeeDetails extends BaseAdminActivity {
     private void populateForm(Employee employee) {
         name.setText(employee.getEmployeeName());
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(employee.isAdmin());
-        password.setEnabled(true);
+        password.setEnabled(employee.isAdmin());
         resetPin.setEnabled(true);
         invalidateOptionsMenu();
     }
