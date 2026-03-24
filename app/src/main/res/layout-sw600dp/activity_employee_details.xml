@@ -57,6 +57,22 @@
                     tools:ignore="TextContrastCheck,VisualLintTextFieldSize"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_s"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/employee_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Administrator · PIN set"
+                tools:visibility="visible"/>
+
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_is_admin"
                 android:layout_width="wrap_content"
@@ -64,10 +80,9 @@
                 android:layout_marginTop="@dimen/spacing_m"
                 android:text="@string/admin"
                 android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/employee_input_layout"
+                app:layout_constraintTop_toBottomOf="@id/status_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-
 
             <LinearLayout
                 android:id="@+id/bottom_actions"
@@ -82,7 +97,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <!-- Row 1 -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,7 +119,6 @@
                         android:text="@string/clear" />
                 </LinearLayout>
 
-                <!-- Row 2 -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -129,7 +142,6 @@
                         android:text="@string/reset_pin" />
                 </LinearLayout>
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

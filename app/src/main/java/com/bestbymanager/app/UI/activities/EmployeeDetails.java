@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ public class EmployeeDetails extends BaseAdminActivity {
     private Button resetPin;
     private Employee currentEmployee;
     private SwitchMaterial adminSwitch;
+    private TextView statusText;
 
     @Override
     protected void onCreate(Bundle s) {
@@ -63,6 +65,7 @@ public class EmployeeDetails extends BaseAdminActivity {
         Button clearButton = binding.clearEmployeeButton;
         password = binding.generateTempPwd;
         resetPin = binding.resetPinButton;
+        statusText = binding.statusText;
         adminSwitch = binding.switchIsAdmin;
 
         // owner-only toggle
@@ -174,16 +177,22 @@ public class EmployeeDetails extends BaseAdminActivity {
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(employee.isAdmin());
         password.setEnabled(employee.isAdmin());
         resetPin.setEnabled(true);
+
+        String role = employee.isAdmin() ? "Administrator" : "Standard Employee";
+        statusText.setText(role);
+        statusText.setVisibility(View.VISIBLE);
+
         invalidateOptionsMenu();
     }
 
     private void clearForm() {
         name.setText("");
-        setTitle(R.string.new_employee);
         currentEmployee = null;
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(false);
         password.setEnabled(false);
         resetPin.setEnabled(false);
+        statusText.setVisibility(View.GONE);
+        setTitle(R.string.new_employee);
         invalidateOptionsMenu();
     }
 
