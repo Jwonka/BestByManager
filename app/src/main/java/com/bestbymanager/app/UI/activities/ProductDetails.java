@@ -226,7 +226,13 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
         saveButton = binding.saveProductButton;
         clearButton = binding.clearProductButton;
 
-        binding.imagePreview.setOnClickListener(v -> { if (ensureCameraPermission()) { launchCamera(); } });
+        binding.imagePreview.setOnClickListener(v -> {
+            if (thumbBlob != null) {
+                showImagePreview();
+            } else {
+                if (ensureCameraPermission()) { launchCamera(); }
+            }
+        });
 
         modeSwitch.setOnCheckedChangeListener((button, isChecked) -> {
             if (isChecked) saveButton.setText(R.string.add_new_expiration);
@@ -353,6 +359,11 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             boolean showDiscard = hasProduct && currentProduct.getQuantity() > 0;
             discard.setVisible(showDiscard);
         }
+
+        // show replace photo whenever a product photo exists
+        MenuItem replacePhoto = menu.findItem(R.id.replacePhoto);
+        if (replacePhoto != null) replacePhoto.setVisible(thumbBlob != null);
+
         return true;
     }
 
@@ -362,6 +373,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
         if (item.getItemId() == R.id.productSearch) { startActivity(new Intent(this, ProductSearch.class)); return true; }
         if (item.getItemId() == R.id.productList) { startActivity(new Intent(this, ProductList.class)); return true; }
+        if (item.getItemId() == R.id.replacePhoto) { if (ensureCameraPermission()) { launchCamera(); } return true; }
         if (item.getItemId() == R.id.discardProduct) {
             if (currentProduct == null) { toast("No product loaded."); return true; }
             showDiscardDialog(currentProduct);
@@ -379,6 +391,22 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showImagePreview() {
+        if (thumbBlob == null) return;
+        Bitmap bmp = Converters.toBitmap(thumbBlob);
+        if (bmp == null) return;
+
+        ImageView imageView = new ImageView(this);
+        imageView.setImageBitmap(bmp);
+        imageView.setAdjustViewBounds(true);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+        new AlertDialog.Builder(this)
+                .setView(imageView)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void showDiscardDialog(@NonNull Product product) {

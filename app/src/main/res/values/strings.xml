@@ -127,6 +127,7 @@
     <string name="transfer_ownership">Transfer ownership</string>
     <string name="idle_lock">Lock after idle</string>
     <string name="offline_mode">Offline mode (disable product lookup)</string>
+    <string name="replace_photo">Replace Photo</string>
     <!-- ── Privacy Policy ── -->
     <string name="privacy">Privacy Policy</string>
     <string name="privacy_data_title">Your Data</string>
