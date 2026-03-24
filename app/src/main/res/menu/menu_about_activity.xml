@@ -6,4 +6,14 @@
         android:id="@+id/mainScreen"
         android:icon="@drawable/ic_home"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/privacy"
+        android:title="@string/privacy_policy"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/instructions"
+        android:title="@string/menu_instructions"
+        app:showAsAction="never" />
 </menu>

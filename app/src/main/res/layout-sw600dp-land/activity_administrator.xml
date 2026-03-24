@@ -55,62 +55,132 @@
                 android:text="@string/employee_search"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/employee_details_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_details"
                 android:layout_marginTop="@dimen/spacing_m"
+                android:text="@string/employee_details"
                 app:layout_constraintTop_toBottomOf="@id/employee_search_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/employee_list_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_list"
                 android:layout_marginTop="@dimen/spacing_m"
+                android:text="@string/employee_list"
                 app:layout_constraintTop_toBottomOf="@id/employee_details_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_lock_after_idle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_l"
-                android:text="@string/idle_lock"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/employee_list_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_offline_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_m"
-                android:text="@string/offline_mode"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/switch_lock_after_idle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/theme_button"
                 style="@style/DarkGreenPillBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/theme_title"
                 android:layout_marginTop="@dimen/spacing_m"
-                app:layout_constraintTop_toBottomOf="@id/switch_offline_mode"
+                android:text="@string/theme_title"
+                app:layout_constraintTop_toBottomOf="@id/employee_list_button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/admin_bottom_section"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/theme_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/toggle_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/idle_lock"
+                            android:textColor="@color/black"
+                            android:layout_marginStart="@dimen/spacing_l" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_lock_after_idle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:text="" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/offline_mode_short"
+                            android:textColor="@color/black" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_offline_mode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:text="" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/offline_mode_hint_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/offline_mode_hint"
+                        android:textColor="@color/black"
+                        android:textStyle="italic"
+                        android:layout_marginTop="-4dp"
+                        android:paddingTop="0dp"
+                        android:lineSpacingExtra="0dp"
+                        android:includeFontPadding="false" />
+                </LinearLayout>
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

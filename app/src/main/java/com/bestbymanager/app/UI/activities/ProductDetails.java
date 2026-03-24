@@ -305,6 +305,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     }
 
     private void lookupByBarcode(String code) {
+        if (productViewModel == null) return;
         io.execute(() -> {
             Product local = productViewModel.getRecentExpiringProduct(code);
             runOnUiThread(() -> {

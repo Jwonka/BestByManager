@@ -35,6 +35,7 @@ public class EmployeeDetails extends BaseAdminActivity {
     private EmployeeDetailsViewModel employeeViewModel;
     private EditText name;
     private Button password;
+    private Button resetPin;
     private Employee currentEmployee;
     private SwitchMaterial adminSwitch;
 
@@ -61,6 +62,7 @@ public class EmployeeDetails extends BaseAdminActivity {
         Button saveButton = binding.saveEmployeeButton;
         Button clearButton = binding.clearEmployeeButton;
         password = binding.generateTempPwd;
+        resetPin = binding.resetPinButton;
         adminSwitch = binding.switchIsAdmin;
 
         // owner-only toggle
@@ -70,6 +72,21 @@ public class EmployeeDetails extends BaseAdminActivity {
 
         clearButton.setOnClickListener(v -> clearForm());
         saveButton.setOnClickListener(v -> saveEmployee());
+        resetPin.setOnClickListener(v -> {
+            if (currentEmployee == null) {
+                Toast.makeText(this, "Save employee first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            employeeViewModel.clearEmployeePin(currentEmployee.getEmployeeID())
+                    .observe(this, ok -> {
+                        if (Boolean.TRUE.equals(ok)) {
+                            Toast.makeText(this, "PIN reset. Employee must create a new PIN on next selection.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Could not reset PIN.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
 
         password.setOnClickListener(v -> {
             if (currentEmployee == null) {
@@ -155,6 +172,7 @@ public class EmployeeDetails extends BaseAdminActivity {
         name.setText(employee.getEmployeeName());
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(employee.isAdmin());
         password.setEnabled(true);
+        resetPin.setEnabled(true);
         invalidateOptionsMenu();
     }
 
@@ -163,6 +181,7 @@ public class EmployeeDetails extends BaseAdminActivity {
         currentEmployee = null;
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(false);
         password.setEnabled(false);
+        resetPin.setEnabled(true);
         invalidateOptionsMenu();
     }
 

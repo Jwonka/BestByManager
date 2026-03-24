@@ -461,6 +461,21 @@ public class Repository {
         return out;
     }
 
+    /** Clear PIN **set on next login**. */
+    public LiveData<Boolean> clearEmployeePin(long employeeId) {
+        MutableLiveData<Boolean> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                mEmployeeDAO.setEmployeePinHash(employeeId, null);
+                mEmployeeDAO.clearEmployeePinLockout(employeeId);
+                out.postValue(true);
+            } catch (Exception e) {
+                out.postValue(false);
+            }
+        });
+        return out;
+    }
+
     /** Verify PIN + apply attempt/lockout policy. */
     public LiveData<PinVerifyResult> verifyEmployeePin(long employeeId, @NonNull String plainPin) {
         MutableLiveData<PinVerifyResult> out = new MutableLiveData<>();

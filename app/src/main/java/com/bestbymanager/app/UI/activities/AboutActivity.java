@@ -86,6 +86,8 @@ public class AboutActivity extends AppCompatActivity {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { this.finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.privacy) { startActivity(new Intent(this, PrivacyActivity.class)); return true; }
+        if (item.getItemId() == R.id.instructions) { startActivity(new Intent(this, InstructionsActivity.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 }

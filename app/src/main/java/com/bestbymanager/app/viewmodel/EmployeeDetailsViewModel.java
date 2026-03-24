@@ -32,11 +32,10 @@ public class EmployeeDetailsViewModel extends AndroidViewModel {
         });
     }
     public LiveData<Employee> addEmployee(Employee employee, String plainPassword) { return repository.addEmployee(employee, plainPassword); }
-
     public LiveData<Boolean> updateGuarded(Employee employee, long ownerId) { return repository.updateEmployeeGuarded(employee, ownerId); }
-
     public LiveData<Boolean> deleteGuarded(long targetEmployeeId, long ownerId) { return repository.deleteEmployeeGuarded(targetEmployeeId, ownerId); }
     public LiveData<String> resetPassword(long employeeID) { return repository.resetPassword(employeeID);}
+    public LiveData<Boolean> clearEmployeePin(long employeeId) { return repository.clearEmployeePin(employeeId); }
     public LiveData<Employee> findByName(String name) {
         MutableLiveData<Employee> out = new MutableLiveData<>();
         new Thread(() -> out.postValue(repository.findByNameBlocking(name))).start();
