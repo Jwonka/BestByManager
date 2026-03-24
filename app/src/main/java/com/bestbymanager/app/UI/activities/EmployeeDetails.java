@@ -46,7 +46,7 @@ public class EmployeeDetails extends BaseAdminActivity {
         // BaseAdminActivity should enforce admin
         if (isFinishing() || isDestroyed()) return;
 
-        setTitle(R.string.employee_details);
+        setTitle(R.string.new_employee);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         ActivityEmployeeDetailsBinding binding = ActivityEmployeeDetailsBinding.inflate(getLayoutInflater());
@@ -170,6 +170,7 @@ public class EmployeeDetails extends BaseAdminActivity {
 
     private void populateForm(Employee employee) {
         name.setText(employee.getEmployeeName());
+        setTitle(employee.getEmployeeName());
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(employee.isAdmin());
         password.setEnabled(employee.isAdmin());
         resetPin.setEnabled(true);
@@ -178,10 +179,11 @@ public class EmployeeDetails extends BaseAdminActivity {
 
     private void clearForm() {
         name.setText("");
+        setTitle(R.string.new_employee);
         currentEmployee = null;
         if (adminSwitch.getVisibility() == View.VISIBLE) adminSwitch.setChecked(false);
         password.setEnabled(false);
-        resetPin.setEnabled(true);
+        resetPin.setEnabled(false);
         invalidateOptionsMenu();
     }
 

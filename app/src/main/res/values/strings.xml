@@ -131,6 +131,7 @@
     <string name="offline_mode_hint">(disable product lookup)</string>
     <string name="replace_photo">Replace Photo</string>
     <string name="reset_pin">Reset PIN</string>
+    <string name="new_employee">New Employee</string>
     <!-- ── Privacy Policy ── -->
     <string name="privacy">Privacy Policy</string>
     <string name="privacy_data_title">Your Data</string>
