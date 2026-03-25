@@ -71,6 +71,7 @@ public class InstructionsActivity extends AppCompatActivity {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == android.R.id.home) { finish(); return true; }
         if (item.getItemId() == R.id.mainScreen) { startActivity(new Intent(this, MainActivity.class)); return true; }
+        if (item.getItemId() == R.id.privacy) { startActivity(new Intent(this, PrivacyActivity.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 }

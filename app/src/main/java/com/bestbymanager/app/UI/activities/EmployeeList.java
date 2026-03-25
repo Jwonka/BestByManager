@@ -85,7 +85,7 @@ public class EmployeeList extends AppCompatActivity {
                     Long until = state.lockedUntilMs;
                     long msLeft = Math.max(0, (until == null ? 0L : until) - System.currentTimeMillis());
                     long sec = msLeft / 1000;
-                    Toast.makeText(this, "Locked. Try again in " + sec + "s.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Locked. Try again in 5 minutes.", Toast.LENGTH_SHORT).show();
                     pinFlowInFlight = false;
                     return;
                 }
