@@ -1,62 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link href="styles.css" rel="stylesheet"/>
     <title>About – Best By Manager</title>
-  </head>
-  <body>
-    <nav>
-      <ul class="navbar">
+</head>
+<body>
+<nav>
+    <ul class="navbar">
         <li><a href="index.html">Home</a></li>
         <li><a class="active" href="about.html">About</a></li>
         <li><a href="privacy.html">Privacy</a></li>
         <li><a href="faq.html">FAQ</a></li>
-      </ul>
-    </nav>
+    </ul>
+</nav>
+<main>
+    <h1>About Best By Manager</h1>
+    <p>
+        <strong>Best By Manager</strong> is an Android inventory tracking app built for grocery stores, gas stations, and small
+        businesses. It uses a kiosk-style workflow where the device stays in the store and employees select themselves
+        by name and enter a PIN — no cloud accounts, no shared passwords, no login screens to manage.
+    </p>
 
-    <main>
-      <h1>About Best By Manager</h1>
+    <h2>Why It Matters</h2>
+    <p>
+        Expired food is costly, wasteful, and unsafe. Best By Manager helps you keep stock accurate, track who entered
+        what, reduce waste, and catch items before they expire — including optional 7-day early warning alerts per product.
+    </p>
 
-      <p>
-        <strong>Best By Manager</strong> is an Android app for grocery stores, gas stations, and small businesses to track
-        product inventory and expiration dates. It supports barcode lookup, product photos, reporting, discard tracking,
-        and alarms — while keeping all inventory data stored locally on the device.
-      </p>
-
-      <h2>Why It Matters</h2>
-      <p>
-        Expired food is costly and unsafe. Best By Manager helps you keep stock accurate, reduce waste, and catch items
-        before they expire — including optional 7-day early warning alarms.
-      </p>
-
-      <section id="intended-target">
-        <h2>Who It’s For</h2>
+    <section id="intended-target">
+        <h2>Who It's For</h2>
         <ul class="features">
-          <li>Grocery stores & markets</li>
-          <li>Convenience stores & gas stations</li>
-          <li>Food pantries & stockrooms</li>
+            <li>Grocery stores and markets</li>
+            <li>Convenience stores and gas stations</li>
+            <li>Food pantries and stockrooms</li>
+            <li>Any small business tracking perishable inventory</li>
         </ul>
-      </section>
+    </section>
 
-      <p class="center">
+    <h2>How Roles Work</h2>
+    <p>
+        Best By Manager uses a three-tier permission model so the right people have the right access.
+    </p>
+    <ul class="features">
+        <li><strong>Owner</strong> — the first account created. Full control over employees, settings, theme, offline mode, idle lock, and data wipe. Ownership can be transferred.</li>
+        <li><strong>Administrator</strong> — can add and manage employees, reset passwords and PINs, and access employee-level reports. Cannot change app-level settings.</li>
+        <li><strong>Standard Employee</strong> — logs in via PIN. Can add and manage products, record discards, and view product reports. Cannot access employee management or admin settings.</li>
+    </ul>
+
+    <h2>The Kiosk Model</h2>
+    <p>
+        The device stays in your store. An admin or owner unlocks it, an employee taps their name and enters their PIN,
+        and the app tracks all activity under that employee's account. When they are done, the device locks automatically
+        after the configured idle timeout and returns to the employee selection screen.
+    </p>
+    <p>
+        No one shares a single login. No one can accidentally act as another employee. Every product entry,
+        update, and discard is tied to the person who made it.
+    </p>
+
+    <h2>All Data Stays on Your Device</h2>
+    <p>
+        There are no cloud accounts, no cloud sync, and no external servers storing your inventory. Everything lives
+        in a local Room database on your Android device. The only external call the app makes is an optional barcode
+        lookup against the Open Food Facts public database — and that can be disabled with the offline mode toggle.
+    </p>
+
+    <p class="center">
         For technical details, visit the <a href="https://github.com/Jwonka/BestByManager" target="_blank" rel="noopener">GitHub Repository</a>.
-      </p>
-    </main>
-
-    <footer>
-      <p>&copy; <span id="year"></span> Joshua Werlein</p>
-      <p>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
-      <p style="text-align: center; font-size: 1rem;">
+    </p>
+</main>
+<footer>
+    <p>&copy; <span id="year"></span> Joshua Werlein</p>
+    <p>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
+    <p style="text-align: center; font-size: 1rem;">
         This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>,
         licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
-      </p>
-    </footer>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
-  </body>
+    </p>
+</footer>
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
 </html>
-
