@@ -94,13 +94,23 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     @Nullable private Call<ProductResponse> inFlightLookupCall;
     @Nullable private String pendingScanResult;
+    @Nullable private Bundle restoredState;
 
-    private static final String STATE_IMAGE_URI = "IMAGE_URI";
+    private static final String STATE_IMAGE_URI      = "IMAGE_URI";
+    private static final String STATE_FORM_NAME      = "FORM_NAME";
+    private static final String STATE_FORM_BRAND     = "FORM_BRAND";
+    private static final String STATE_FORM_WEIGHT    = "FORM_WEIGHT";
+    private static final String STATE_FORM_QTY       = "FORM_QTY";
+    private static final String STATE_FORM_EXP       = "FORM_EXP";
+    private static final String STATE_FORM_BARCODE   = "FORM_BARCODE";
+    private static final String STATE_FORM_CATEGORY  = "FORM_CATEGORY";
+    private static final String STATE_FORM_ISLE      = "FORM_ISLE";
+    private static final String STATE_FORM_EARLY     = "FORM_EARLY";
+    private static final String STATE_FORM_MODE_ON   = "FORM_MODE_ON";
+    private static final String STATE_FORM_MODE_EN   = "FORM_MODE_EN";
 
     @Nullable
-    private static Uri restoreImageUri(@Nullable Bundle s) {
-        return (s == null) ? null : BundleCompat.getParcelable(s, STATE_IMAGE_URI, Uri.class);
-    }
+    private static Uri restoreImageUri(@Nullable Bundle s) { return (s == null) ? null : BundleCompat.getParcelable(s, STATE_IMAGE_URI, Uri.class); }
 
     @Override
     protected void onCreate(Bundle s) {
@@ -108,6 +118,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
 
         // NO UI WORK HERE (prevents one-frame flash when locked / no active employee)
         imageUri = restoreImageUri(s);
+        restoredState = s;
 
         takePictureLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
@@ -273,10 +284,22 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 .get(ProductDetailsViewModel.class);
 
         productViewModel.getProduct().observe(this, product -> {
-            if (product == null) return;
+            if (product == null) {
+                // New product form — restore any state saved before rotation
+                if (restoredState != null) {
+                    restoreFormState(restoredState);
+                    restoredState = null;
+                }
+                return;
+            }
             currentProduct = product;
             populateForm(product);
             thumbBlob = product.getThumbnail();
+            // Re-apply any unsaved user edits that existed before rotation
+            if (restoredState != null) {
+                restoreFormState(restoredState);
+                restoredState = null;
+            }
         });
 
         bindFutureDateField(editExp, this);
@@ -311,6 +334,22 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     protected void onSaveInstanceState(@NonNull Bundle out) {
         super.onSaveInstanceState(out);
         if (imageUri != null) out.putParcelable(STATE_IMAGE_URI, imageUri);
+        // Save all form fields so rotation does not lose unsaved data
+        if (name != null)     out.putString(STATE_FORM_NAME,     name.getText().toString());
+        if (brand != null)    out.putString(STATE_FORM_BRAND,    brand.getText().toString());
+        if (weight != null)   out.putString(STATE_FORM_WEIGHT,   weight.getText().toString());
+        if (quantity != null) out.putString(STATE_FORM_QTY,      quantity.getText().toString());
+        if (editExp != null)  out.putString(STATE_FORM_EXP,      editExp.getText().toString());
+        if (barcode != null)  out.putString(STATE_FORM_BARCODE,  barcode.getText().toString());
+        if (category != null) out.putInt(STATE_FORM_CATEGORY,    category.getSelectedItemPosition());
+        if (isle != null)     out.putInt(STATE_FORM_ISLE,        isle.getSelectedItemPosition());
+        out.putBoolean(STATE_FORM_EARLY, pendingEarlyWarningEnabled);
+        if (modeSwitch != null) {
+            out.putBoolean(STATE_FORM_MODE_ON, modeSwitch.isChecked());
+            out.putBoolean(STATE_FORM_MODE_EN, modeSwitch.isEnabled());
+        }
+        // Store thumbBlob in ViewModel — byte[] is too large for a safe bundle write
+        if (productViewModel != null) productViewModel.savePendingThumb(thumbBlob);
     }
 
     @Override
@@ -645,6 +684,30 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
         } else {
             preview.setBackgroundResource(R.drawable.image_placeholder_border);
             preview.setImageResource(R.drawable.ic_add_photo);
+        }
+    }
+
+    private void restoreFormState(@NonNull Bundle s) {
+        String n  = s.getString(STATE_FORM_NAME);    if (n  != null) name.setText(n);
+        String br = s.getString(STATE_FORM_BRAND);   if (br != null) brand.setText(br);
+        String w  = s.getString(STATE_FORM_WEIGHT);  if (w  != null) weight.setText(w);
+        String q  = s.getString(STATE_FORM_QTY);     if (q  != null) quantity.setText(q);
+        String ex = s.getString(STATE_FORM_EXP);     if (ex != null) editExp.setText(ex);
+        String bc = s.getString(STATE_FORM_BARCODE); if (bc != null) barcode.setText(bc);
+        int cat = s.getInt(STATE_FORM_CATEGORY, -1); if (cat >= 0) category.setSelection(cat, false);
+        int isl = s.getInt(STATE_FORM_ISLE, -1);     if (isl >= 0) isle.setSelection(isl, false);
+        pendingEarlyWarningEnabled = s.getBoolean(STATE_FORM_EARLY, false);
+        applyEarlyBellIcon(findViewById(R.id.edit_expiration_layout));
+        modeSwitch.setEnabled(s.getBoolean(STATE_FORM_MODE_EN, false));
+        modeSwitch.setChecked(s.getBoolean(STATE_FORM_MODE_ON, false));
+        // Restore thumbnail that was stashed in ViewModel before rotation
+        byte[] blob = productViewModel.consumePendingThumb();
+        if (blob != null) {
+            thumbBlob = blob;
+            if (preview != null) {
+                Bitmap bmp = Converters.toBitmap(blob);
+                if (bmp != null) preview.setImageBitmap(bmp);
+            }
         }
     }
 

@@ -27,6 +27,7 @@ public class ProductDetailsViewModel extends AndroidViewModel {
 
     public interface SaveCallback { void onResult(long idOrNeg1); }
     private final Executor executor = Executors.newSingleThreadExecutor();
+    @Nullable private byte[] pendingThumbBlob;
 
     public ProductDetailsViewModel(@NonNull Application app, SavedStateHandle handle) {
         super(app);
@@ -61,5 +62,12 @@ public class ProductDetailsViewModel extends AndroidViewModel {
     public Call<ProductResponse> fetchProduct(String barcode, Callback<ProductResponse> cb) { return repository.fetchProduct(barcode, cb); }
     public void discardExpiredProduct(long productID, int quantity, @Nullable String reason, @Nullable Long employeeId) {
         repository.discardExpiredProduct(productID, quantity, reason, employeeId);
+    }
+    public void savePendingThumb(@Nullable byte[] blob) { this.pendingThumbBlob = blob; }
+
+    @Nullable public byte[] consumePendingThumb() {
+        byte[] b = pendingThumbBlob;
+        pendingThumbBlob = null;
+        return b;
     }
 }
