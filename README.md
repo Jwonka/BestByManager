@@ -212,7 +212,7 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 ## What Changed from v1.x
 
-> ⚠️ **v2.0.0 is not behavior-compatible with v1.x.** It introduces a different session model, authentication flow, and permission structure.
+>⚠️ **v2.0.0 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different
 
 | Area | v1.x | v2.0.0 |
 |------|------|--------|
@@ -345,9 +345,11 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 ## Migrations
 
-Current Room schema version: **20**
+Current Room schema version: **1**
 
-Migrations: 15→16, 16→17, 17→18, 18→19 (adds `earlyWarningEnabled`), 19→20 (adds password reset fields)
+The kiosk branch (v2.0.0) uses a clean schema with no defined migrations.
+`fallbackToDestructiveMigration()` is enabled — on schema change the database
+is wiped and rebuilt automatically. No migration path exists from the v1.x schema.
 
 ---
 
