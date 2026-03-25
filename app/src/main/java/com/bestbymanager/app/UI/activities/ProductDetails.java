@@ -93,6 +93,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     @Nullable private Call<ProductResponse> inFlightLookupCall;
+    @Nullable private String pendingScanResult;
 
     private static final String STATE_IMAGE_URI = "IMAGE_URI";
 
@@ -116,10 +117,18 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 });
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) {
-                String code = result.getContents();
-                if (barcode != null) barcode.setText(code);
+            String code = result.getContents();
+            if (code == null) {
+                Toast.makeText(this, "Scan failed. Please try again.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (barcode != null && productViewModel != null) {
+                // Gate already passed — views and ViewModel are ready
+                barcode.setText(code);
                 lookupByBarcode(code);
+            } else {
+                // Gate not passed yet — hold for onGatePassed()
+                pendingScanResult = code;
             }
         });
 
@@ -277,7 +286,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
                 options.setPrompt("Align the barcode inside the box");
-                options.setBeepEnabled(false);
+                options.setBeepEnabled(true);
                 options.setOrientationLocked(true);
                 barcodeLauncher.launch(options);
             }
@@ -290,6 +299,12 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             }
             return false;
         });
+
+        if (pendingScanResult != null) {
+            barcode.setText(pendingScanResult);
+            lookupByBarcode(pendingScanResult);
+            pendingScanResult = null;
+        }
     }
 
     @Override

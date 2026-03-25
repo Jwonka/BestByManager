@@ -97,7 +97,7 @@ public class EmployeeSearch extends BaseAdminActivity {
                 ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
                 options.setPrompt("Align the barcode inside the box");
-                options.setBeepEnabled(false);
+                options.setBeepEnabled(true);
                 options.setOrientationLocked(true);
                 barcodeLauncher.launch(options);
             }
@@ -184,7 +184,7 @@ public class EmployeeSearch extends BaseAdminActivity {
             ScanOptions opts = new ScanOptions();
             opts.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
             opts.setPrompt("Align the barcode inside the box");
-            opts.setBeepEnabled(false);
+            opts.setBeepEnabled(true);
             opts.setOrientationLocked(true);
             barcodeLauncher.launch(opts);
         }
