@@ -1,87 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link href="styles.css" rel="stylesheet"/>
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <link rel="apple-touch-icon" href="images/icon.png" />
     <title>Privacy – Best By Manager</title>
-</head>
-<body>
-<nav>
-    <ul class="navbar">
+    <style>
+      /* Override centered flex list layout for privacy page — lists here need left-aligned readable text */
+      .privacy-list {
+        display: block !important;
+        text-align: left !important;
+        padding-left: 1.5rem !important;
+        max-width: 860px;
+        margin: 0.5rem auto 1rem auto !important;
+        width: 90% !important;
+      }
+      .privacy-list li {
+        margin: 0.75rem 0;
+        line-height: 1.55;
+        white-space: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul class="navbar">
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a class="active" href="privacy.html">Privacy</a></li>
         <li><a href="faq.html">FAQ</a></li>
-    </ul>
-</nav>
-
-<main>
-    <h1>Privacy Policy</h1>
-    <p class="center">
+      </ul>
+    </nav>
+ 
+    <main>
+      <h1>Privacy Policy</h1>
+      <p class="center">
         <strong>Best By Manager</strong> is committed to protecting your privacy.<br/>
         This app does not collect, store, or transmit any personal data outside of your device.
-    </p>
-
-    <section class="section-block">
+      </p>
+ 
+      <section class="section-block">
         <h2>What We Access</h2>
-        <ul>
-            <li><strong>Camera</strong> — used to scan barcodes and take product photos. All images are stored locally on your device only.</li>
-            <li><strong>Internet</strong> — used only to retrieve public product data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> during barcode lookup. No user data is sent. This can be disabled with the offline mode toggle.</li>
-            <li><strong>Notifications</strong> — used for expiration reminders and optional 7-day early warning alerts (Android 13+).</li>
-            <li><strong>Biometric / device auth</strong> — optionally used for local password reset. No biometric data is stored or transmitted.</li>
+        <ul class="privacy-list">
+          <li><strong>Camera</strong> — used to scan barcodes and take product photos. All images are stored locally on your device only.</li>
+          <li><strong>Internet</strong> — used only to retrieve public product data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a> during barcode lookup. No user data is sent. This can be disabled with the offline mode toggle.</li>
+          <li><strong>Notifications</strong> — used for expiration reminders and optional 7-day early warning alerts (Android 13+).</li>
+          <li><strong>Biometric / device auth</strong> — optionally used for local password reset. No biometric data is stored or transmitted.</li>
         </ul>
         <p class="center"><em>No ads. No analytics. No tracking. No data leaves your device.</em></p>
-    </section>
-
-    <h2>No Cloud Accounts</h2>
-    <p class="center">
+      </section>
+ 
+      <h2>No Cloud Accounts</h2>
+      <p class="center">
         Best By Manager does not have cloud accounts, cloud sync, or external servers. All employee records,
         inventory, photos, and reports are stored in a local Room database on your Android device.
         You own your data entirely.
-    </p>
-
-    <section class="section-block">
+      </p>
+ 
+      <section class="section-block">
         <h2>Employee Credentials</h2>
         <p>
-            Employee passwords and PINs are stored as bcrypt hashes on the device only. Plain-text credentials
-            are never stored anywhere. Temporary passwords generated during a reset expire within 24 hours.
+          Employee passwords and PINs are stored as bcrypt hashes on the device only. Plain-text credentials
+          are never stored anywhere. Temporary passwords generated during a reset expire within 24 hours.
         </p>
-    </section>
-
-    <section class="section-block">
+      </section>
+ 
+      <section class="section-block">
         <h2>Account Recovery (Local-Only)</h2>
-        <ul>
-            <li><strong>PIN reset:</strong> An admin or owner can clear any employee's PIN from the Employee Details screen. The employee sets a new PIN on next login.</li>
-            <li><strong>Password reset:</strong> An admin or owner can generate a temporary password for admin accounts from the Employee Details screen.</li>
-            <li><strong>Last resort — data wipe:</strong> The Owner can wipe all local app data from the login screen overflow menu to return the app to first-run state.</li>
+        <ul class="privacy-list">
+          <li><strong>PIN reset</strong> — an admin or owner can clear any employee's PIN from the Employee Details screen. The employee sets a new PIN on next login.</li>
+          <li><strong>Password reset</strong> — an admin or owner can generate a temporary password for admin accounts from the Employee Details screen.</li>
+          <li><strong>Last resort — data wipe</strong> — the Owner can wipe all local app data from the login screen overflow menu to return the app to first-run state.</li>
         </ul>
         <p><strong>Wiping data permanently deletes all inventory and employee data on the device and cannot be undone.</strong></p>
-    </section>
-
-    <h2>Third-Party Services</h2>
-    <p>
+      </section>
+ 
+      <h2>Third-Party Services</h2>
+      <p>
         Product data and images are retrieved from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>,
         a free and open database maintained by a non-profit volunteer community.
         Data is licensed under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">Open Database License (ODbL)</a>
         and images under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">Creative Commons BY-SA 3.0</a>.
         No user data is sent to Open Food Facts or any other third party.
-    </p>
-
-    <p class="center"><em>Last updated: 2025</em></p>
-</main>
-
-<footer>
-    <p>&copy; <span id="year"></span> Joshua Werlein</p>
-    <p>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
-    <p style="text-align: center; font-size: 1rem;">
+      </p>
+ 
+      <p class="center"><em>Last updated: 2025</em></p>
+    </main>
+ 
+    <footer>
+      <p>&copy; <span id="year"></span> Joshua Werlein</p>
+      <p>Contact: <a href="mailto:bestbymanager@gmail.com">bestbymanager@gmail.com</a></p>
+      <p style="text-align: center; font-size: 1rem;">
         This app uses public food data from <a href="https://openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>,
         licensed under <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>.
-    </p>
-</footer>
-<script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-</script>
-</body>
+      </p>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>
- 
