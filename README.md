@@ -212,7 +212,7 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 ## What Changed from v1.x
 
->⚠️ **v2.0.0 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different
+>⚠️ **v2.0.0 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
 
 | Area | v1.x | v2.0.0 |
 |------|------|--------|
