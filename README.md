@@ -254,7 +254,7 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 ## Installation
 
 ### Google Play
-Search **Best By Manager** on Google Play or use the direct listing link.
+📲 [Download on Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)
 
 ### APK Sideload
 👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
