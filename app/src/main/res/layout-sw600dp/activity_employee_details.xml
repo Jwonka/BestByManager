@@ -97,50 +97,37 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/save_employee_button"
+                    style="@style/DarkGreenPill"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:text="@string/save_employee" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/save_employee_button"
-                        style="@style/DarkGreenPill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/save_employee" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/clear_employee_button"
+                    style="@style/DarkGreenPill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:text="@string/clear" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/clear_employee_button"
-                        style="@style/DarkGreenPill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_s"
-                        android:text="@string/clear" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/generate_temp_pwd"
+                    style="@style/DarkGreenPill"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:text="@string/reset_password" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/generate_temp_pwd"
-                        style="@style/DarkGreenPill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reset_password" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reset_pin_button"
+                    style="@style/DarkGreenPill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:text="@string/reset_pin" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reset_pin_button"
-                        style="@style/DarkGreenPill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_s"
-                        android:text="@string/reset_pin" />
-                </LinearLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

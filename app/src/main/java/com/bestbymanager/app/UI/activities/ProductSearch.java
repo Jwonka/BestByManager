@@ -48,6 +48,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
     private static final String MODE_EXPIRING      = "expiring";
 
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private ActivityProductSearchBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +58,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
         BestByManagerDatabase.getDatabase(this);
 
         barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null) {
-                ActivityProductSearchBinding binding =
-                        ActivityProductSearchBinding.bind(findViewById(android.R.id.content).getRootView());
+            if (result.getContents() != null && binding != null) {
                 binding.editBarcode.setText(result.getContents());
             }
         });
@@ -70,7 +69,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
         setTitle(R.string.product_search);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductSearchBinding binding = ActivityProductSearchBinding.inflate(getLayoutInflater());
+        binding = ActivityProductSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         final View rootView = binding.getRoot();
