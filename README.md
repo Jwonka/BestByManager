@@ -15,7 +15,7 @@
 ## Status
 
 📦 **Version:** 2.0.2
-🚀 **Available on Google Play**
+🚀 **Available on [Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)**
 
 ---
 
@@ -347,7 +347,7 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 Current Room schema version: **1**
 
-The kiosk branch (v2.0.1) uses a clean schema with no defined migrations.
+The kiosk branch (v2.0.2) uses a clean schema with no defined migrations.
 `fallbackToDestructiveMigration()` is enabled — on schema change the database
 is wiped and rebuilt automatically. No migration path exists from the v1.x schema.
 
