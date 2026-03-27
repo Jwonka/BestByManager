@@ -14,7 +14,7 @@
 
 ## Status
 
-📦 **Version:** 2.0.0
+📦 **Version:** 2.0.1
 🚀 **Available on Google Play**
 
 ---
@@ -192,8 +192,8 @@ Reports can be copied to clipboard or shared via text from the overflow menu on 
 | Toggle | Who can change | What it does |
 |--------|:-------------:|-------------|
 | **Lock after idle** | Owner | Automatically returns the app to the employee selection screen after inactivity. Prevents an unattended device from staying unlocked. |
-| **Offline mode** | Owner | Disables Open Food Facts barcode lookup. Scanning still works and populates the barcode field but no auto-fill data is fetched. Use in environments without reliable internet. |
-| **App Theme** | Owner | Switches between light and dark theme across the entire app. Applied immediately and persists across sessions. |
+| **Offline mode** | Owner | Disables Open Food Facts barcode lookup. Scanning still works and populates the barcode field, but no auto-fill data is fetched. Use in environments without reliable internet. |
+| **App Theme** | Owner | Switches between light and dark themes across the entire app. Applied immediately and persists across sessions. |
 
 ---
 
@@ -212,9 +212,9 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 ## What Changed from v1.x
 
->⚠️ **v2.0.0 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
+>⚠️ **v2.0.1 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
 
-| Area | v1.x | v2.0.0 |
+| Area | v1.x | v2.0.1 |
 |------|------|--------|
 | Authentication | Username + password login | Kiosk PIN per employee; password for admins |
 | Roles | Admin / Standard | Owner / Admin / Standard Employee |
@@ -347,7 +347,7 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 Current Room schema version: **1**
 
-The kiosk branch (v2.0.0) uses a clean schema with no defined migrations.
+The kiosk branch (v2.0.1) uses a clean schema with no defined migrations.
 `fallbackToDestructiveMigration()` is enabled — on schema change the database
 is wiped and rebuilt automatically. No migration path exists from the v1.x schema.
 
