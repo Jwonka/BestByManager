@@ -14,7 +14,7 @@
 
 ## Status
 
-📦 **Version:** 2.0.2
+📦 **Version:** 2.0.3
 🚀 **Available on [Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)**
 
 ---
@@ -68,7 +68,7 @@
 
 ## How It Works — Kiosk Model
 
-Best By Manager operates as a shared-device kiosk. One device stays in the store and multiple employees use it throughout the day without a traditional login session.
+Best By Manager operates as a shared-device kiosk. One device stays in the store, and multiple employees use it throughout the day without a traditional login session.
 
 **Typical daily flow:**
 1. Admin or owner unlocks the device from the admin dashboard
@@ -183,7 +183,7 @@ Accessed from **Administrator Dashboard → Employee Details** (admin or owner r
 - Entries filtered by barcode, date range, or both
 - Combined filters (employee + barcode + date range)
 
-Reports can be copied to clipboard or shared via text from the overflow menu on any report screen.
+Reports can be copied to the clipboard or shared via text from the overflow menu on any report screen.
 
 ---
 
@@ -212,9 +212,9 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 ## What Changed from v1.x
 
->⚠️ **v2.0.2 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
+>⚠️ **v2.0.3 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
 
-| Area | v1.x | v2.0.2 |
+| Area | v1.x | v2.0.3 |
 |------|------|--------|
 | Authentication | Username + password login | Kiosk PIN per employee; password for admins |
 | Roles | Admin / Standard | Owner / Admin / Standard Employee |
@@ -336,8 +336,8 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 ## Known Issues
 
-- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for v2.1
-- Admin promote/demote and ownership transfer UI planned for v2.1
+- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for v2.4
+- Admin promote/demote and ownership transfer UI planned for v2.4
 - No automated test suite
 - Accessibility (TalkBack) not yet verified
 
@@ -347,8 +347,8 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 Current Room schema version: **1**
 
-The kiosk branch (v2.0.2) uses a clean schema with no defined migrations.
-`fallbackToDestructiveMigration()` is enabled — on schema change the database
+The kiosk branch (v2.0.3) uses a clean schema with no defined migrations.
+`fallbackToDestructiveMigration()` is enabled — on schema change, the database
 is wiped and rebuilt automatically. No migration path exists from the v1.x schema.
 
 ---
