@@ -3,6 +3,7 @@ package com.bestbymanager.app.UI.authentication;
 import android.content.Intent;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import com.bestbymanager.app.UI.activities.MainActivity;
 import com.bestbymanager.app.UI.activities.UnlockKioskActivity;
 import com.bestbymanager.app.UI.activities.EmployeeList;
@@ -139,6 +140,7 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
                 if (gatePassed) return;
                 gatePassed = true;
                 onGatePassed();
+                ViewCompat.requestApplyInsets(getWindow().getDecorView());
             });
         });
     }
