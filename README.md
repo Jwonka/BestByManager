@@ -10,12 +10,7 @@
 > ⚠️ **This is not a traditional login app.**
 > Best By Manager uses a **kiosk + employee session model**. The device stays in the store. An admin unlocks it, an employee selects themselves and enters a PIN, and all actions are tracked under that employee. Sessions expire automatically via idle lock.
 
----
-
-## Status
-
-📦 **Version:** 2.0.3
-🚀 **Available on [Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)**
+📲 **[Download on Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)** — 🚀 also available as an APK on [itch.io](https://jwonka2.itch.io/best-by-manager)
 
 ---
 
@@ -212,9 +207,9 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 ## What Changed from v1.x
 
->⚠️ **v2.0.3 is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
+>⚠️ **v2.x is not a drop-in upgrade from v1.x.** The schema has been reset to version 1 with no migration path. Upgrading from v1.x will wipe all existing inventory and employee data on the device. This is intentional — the session model, authentication flow, and database structure are fundamentally different.
 
-| Area | v1.x | v2.0.3 |
+| Area | v1.x | v2.x |
 |------|------|--------|
 | Authentication | Username + password login | Kiosk PIN per employee; password for admins |
 | Roles | Admin / Standard | Owner / Admin / Standard Employee |
@@ -337,7 +332,7 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 ## Known Issues
 
 - Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for v2.4
-- Admin promote/demote and ownership transfer UI planned for v2.4
+- Admin promote/demote and ownership transfer UI planned for v2.5
 - No automated test suite
 - Accessibility (TalkBack) not yet verified
 
@@ -347,7 +342,7 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 Current Room schema version: **1**
 
-The kiosk branch (v2.0.3) uses a clean schema with no defined migrations.
+The kiosk branch (v2.x) uses a clean schema with no defined migrations.
 `fallbackToDestructiveMigration()` is enabled — on schema change, the database
 is wiped and rebuilt automatically. No migration path exists from the v1.x schema.
 
