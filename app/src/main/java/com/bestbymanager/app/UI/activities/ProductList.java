@@ -48,6 +48,7 @@ public class ProductList extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(rootView);
 
         binding.productDetailsButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProductList.this, ProductDetails.class);

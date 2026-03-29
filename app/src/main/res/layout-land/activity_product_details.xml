@@ -312,6 +312,7 @@
                             android:layout_marginEnd="@dimen/padding_s"
                             android:textOff="@string/save_product"
                             android:textOn="@string/add_new_expiration"
+                            android:contentDescription="@string/toggle_mode_hint"
                             tools:ignore="DuplicateSpeakableTextCheck,TouchTargetSizeCheck"/>
 
 

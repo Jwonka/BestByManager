@@ -74,6 +74,7 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(rootView);
 
         prAdapter = new ProductReportAdapter(
                 id -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", id)),

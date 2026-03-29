@@ -140,7 +140,6 @@ public abstract class BaseEmployeeRequiredActivity extends AppCompatActivity {
                 if (gatePassed) return;
                 gatePassed = true;
                 onGatePassed();
-                ViewCompat.requestApplyInsets(getWindow().getDecorView());
             });
         });
     }

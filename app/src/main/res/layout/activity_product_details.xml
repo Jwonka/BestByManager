@@ -336,6 +336,7 @@
                         android:showText="true"
                         android:textOff="@string/save_product"
                         android:textOn="@string/add_new_expiration"
+                        android:contentDescription="@string/toggle_mode_hint"
                         tools:ignore="DuplicateSpeakableTextCheck" />
 
                     <com.google.android.material.button.MaterialButton

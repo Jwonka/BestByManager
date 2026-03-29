@@ -223,6 +223,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(rootView);
 
         TextView attribution = findViewById(R.id.image_attribution);
         attribution.setLinkTextColor(ContextCompat.getColor(this, R.color.dark_green));

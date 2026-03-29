@@ -27,6 +27,7 @@ public class MainActivity extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(binding.getRoot());
 
         binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(this, ProductDetails.class)));
         binding.productSearchButton.setOnClickListener(v -> startActivity(new Intent(this, ProductSearch.class)));

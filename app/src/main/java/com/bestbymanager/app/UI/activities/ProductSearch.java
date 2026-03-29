@@ -78,6 +78,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(rootView);
 
         binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
             if (ensureCameraPermission()) {
