@@ -331,8 +331,8 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 ## Known Issues
 
-- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for v2.4
-- Admin promote/demote and ownership transfer UI planned for v2.5
+- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for future releases
+- Admin promote/demote and ownership transfer UI planned for future releases
 - No automated test suite
 - Accessibility (TalkBack) not yet verified
 
