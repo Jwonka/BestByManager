@@ -130,6 +130,7 @@ public class EmployeeList extends AppCompatActivity {
         final EditText input = new EditText(this);
         input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         input.setHint("4-8 digit PIN");
+        input.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
 
         pinDialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Set employee PIN")
@@ -164,6 +165,7 @@ public class EmployeeList extends AppCompatActivity {
         final EditText input = new EditText(this);
         input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         input.setHint("Enter PIN");
+        input.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
 
         pinDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("Employee PIN")
