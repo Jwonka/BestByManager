@@ -57,6 +57,7 @@
 - 🌙 **Dark / light theme** — owner-controlled toggle
 - 📴 **Offline mode** — disable Open Food Facts lookup for environments without reliable internet
 - ⏱️ **Auto-lock** — configurable idle timeout returns the device to the employee selection screen
+- 🔄 **Ownership transfer** — owner can transfer ownership to any admin via biometric-verified handoff
 - 🗃️ **100% local storage** — Room database, no cloud sync, no analytics, no external accounts
 
 ---
@@ -331,8 +332,7 @@ Product data provided by [Open Food Facts](https://openfoodfacts.org), a free an
 
 ## Known Issues
 
-- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for future releases
-- Admin promote/demote and ownership transfer UI planned for future releases
+- Weight field is free text; a unit spinner (oz, g, lb, fl oz) is planned for a future release
 - No automated test suite
 - Accessibility (TalkBack) not yet verified
 
