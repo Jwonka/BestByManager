@@ -180,6 +180,28 @@
                     android:paddingEnd="@dimen/spacing_s"
                     android:layout_marginBottom="16dp"/>
 
+                <!-- Ownership Transfer -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/instructions_ownership_title"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/instructions_ownership_body"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp"
+                    android:paddingStart="@dimen/spacing_s"
+                    android:paddingEnd="@dimen/spacing_s"
+                    android:layout_marginBottom="16dp"/>
+
                 <!-- Reports -->
                 <TextView
                     android:layout_width="match_parent"

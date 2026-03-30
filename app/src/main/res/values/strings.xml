@@ -156,6 +156,8 @@
     <string name="instructions_discard_title">Discard Tracking</string>
     <string name="instructions_discard_body">When a product is loaded in Product Details, the overflow menu shows a Discard option. Enter the quantity discarded and an optional reason. Discards are recorded and included in employee reports.</string>
     <string name="instructions_pin_title">Employee PIN Login</string>
+    <string name="instructions_ownership_title">Ownership Transfer</string>
+    <string name="instructions_ownership_body">The owner can transfer ownership to any existing admin from the Administrator Dashboard overflow menu. Biometric or device credential verification is required. Recovery enrollment is cleared on transfer and must be re-enabled by the new owner.</string>
     <string name="instructions_pin_body">Employees select their name from the employee list. On first selection a PIN is required (4–8 digits). On future selections the PIN must be entered to confirm identity. After 5 failed attempts the account locks for 5 minutes.</string>
     <string name="instructions_reports_title">Reports</string>
     <string name="instructions_reports_body">Product Search generates product reports filterable by barcode, date range, or both. Employee Search generates employee reports showing entries, expired counts, and discard totals. Reports can be copied to clipboard or shared via any app.</string>

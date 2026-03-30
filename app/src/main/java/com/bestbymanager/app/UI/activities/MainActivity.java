@@ -55,6 +55,9 @@ public class MainActivity extends BaseEmployeeRequiredActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (AdminMenu.handle(this, item)) { return true; }
         if (item.getItemId() == R.id.adminPage) { startActivity(new Intent(this, AdministratorActivity.class)); return true; }
+        if (item.getItemId() == R.id.about) { startActivity(new Intent(this, AboutActivity.class)); return true; }
+        if (item.getItemId() == R.id.privacy) { startActivity(new Intent(this, PrivacyActivity.class)); return true; }
+        if (item.getItemId() == R.id.instructions) { startActivity(new Intent(this, InstructionsActivity.class)); return true; }
         return super.onOptionsItemSelected(item);
     }
 }
