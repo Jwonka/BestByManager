@@ -44,7 +44,7 @@ public class ProductList extends BaseEmployeeRequiredActivity {
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });

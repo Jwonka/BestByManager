@@ -94,8 +94,8 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     @Nullable private Call<ProductResponse> inFlightLookupCall;
     @Nullable private String pendingScanResult;
+    private boolean pendingBarcodeScan = false;
     @Nullable private Bundle restoredState;
-
     private static final String STATE_IMAGE_URI      = "IMAGE_URI";
     private static final String STATE_FORM_NAME      = "FORM_NAME";
     private static final String STATE_FORM_BRAND     = "FORM_BRAND";
@@ -219,7 +219,7 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
@@ -306,7 +306,9 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
         bindFutureDateField(editExp, this);
 
         barcodeLayout.setEndIconOnClickListener(view -> {
+            pendingBarcodeScan = true;
             if (ensureCameraPermission()) {
+                pendingBarcodeScan = false;
                 ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
                 options.setPrompt("Align the barcode inside the box");
@@ -541,12 +543,21 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(
-            int req, @NonNull String[] perms, @NonNull int[] grants) {
+    public void onRequestPermissionsResult(int req, @NonNull String[] perms, @NonNull int[] grants) {
         super.onRequestPermissionsResult(req, perms, grants);
 
         if (req == REQ_CAMERA && grants.length > 0 && grants[0] == PackageManager.PERMISSION_GRANTED) {
-            launchCamera();
+            if (pendingBarcodeScan) {
+                pendingBarcodeScan = false;
+                ScanOptions options = new ScanOptions();
+                options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
+                options.setPrompt("Align the barcode inside the box");
+                options.setBeepEnabled(true);
+                options.setOrientationLocked(true);
+                barcodeLauncher.launch(options);
+            } else {
+                launchCamera();
+            }
         }
     }
 

@@ -267,7 +267,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
-                android:layout_marginTop="@dimen/spacing_s"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:scaleType="centerCrop"
                 android:background="@drawable/image_placeholder_border"
                 android:src="@drawable/ic_add_photo"
@@ -287,7 +287,7 @@
                 android:id="@+id/image_attribution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_s"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="@string/open_food_facts_image_credit"
                 android:textColor="@color/black"
                 android:textSize="12sp"
@@ -304,7 +304,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:layout_marginEnd="@dimen/padding_xxs"
                 app:layout_constraintTop_toBottomOf="@id/image_attribution"
                 app:layout_constraintStart_toStartOf="parent"
@@ -329,27 +329,31 @@
                     android:textOff="@string/save_product"
                     android:textOn="@string/add_new_expiration"
                     android:contentDescription="@string/toggle_mode_hint"
-                    tools:ignore="DuplicateSpeakableTextCheck" />
+                    tools:ignore="DuplicateSpeakableTextCheck,TouchTargetSizeCheck" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_product_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_marginBottom="@dimen/spacing_xs"
                     android:layout_marginStart="@dimen/padding_xs"
                     android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/save_product"/>
+                    android:text="@string/save_product"
+                    tools:ignore="TouchTargetSizeCheck"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/clear_product_button"
                     style="@style/DarkGreenPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:layout_marginBottom="@dimen/spacing_xs"
                     android:layout_marginStart="@dimen/spacing_l"
                     android:paddingHorizontal="@dimen/padding_s"
-                    android:text="@string/clear"/>
+                    android:text="@string/clear"
+                    tools:ignore="TouchTargetSizeCheck"/>
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

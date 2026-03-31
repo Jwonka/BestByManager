@@ -37,7 +37,6 @@ import com.journeyapps.barcodescanner.ScanContract;
 
 public class ProductSearch extends BaseEmployeeRequiredActivity {
     private static final int REQ_CAMERA = 42;
-
     private static final String EXTRA_START_DATE   = "startDate";
     private static final String EXTRA_END_DATE     = "endDate";
     private static final String EXTRA_MODE         = "mode";
@@ -74,7 +73,7 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
