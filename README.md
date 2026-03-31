@@ -367,6 +367,8 @@ MIT License — see [LICENSE](https://github.com/Jwonka/BestByManager/blob/main/
 
 You are free to use, modify, and distribute this application commercially or privately under the terms of the MIT License.
 
+>**The Best By Manager name and logo are not covered by the MIT license and may not be reused without permission.**
+
 ---
 
 ## Contributing
