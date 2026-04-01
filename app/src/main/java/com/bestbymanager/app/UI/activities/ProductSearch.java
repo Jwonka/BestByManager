@@ -53,23 +53,15 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setTitle(R.string.product_search);
+
         // non-UI init only (safe before gate)
         BestByManagerDatabase.getDatabase(this);
-
-        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
-            if (result.getContents() != null && binding != null) {
-                binding.editBarcode.setText(result.getContents());
-            }
-        });
-    }
-
-    @Override
-    protected void onGatePassed() {
-        setTitle(R.string.product_search);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityProductSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.getRoot().setVisibility(View.INVISIBLE);
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
@@ -78,6 +70,12 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
             return insets;
         });
         ViewCompat.requestApplyInsets(rootView);
+
+        barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null && binding != null) {
+                binding.editBarcode.setText(result.getContents());
+            }
+        });
 
         binding.barcodeInputLayout.setEndIconOnClickListener(v -> {
             if (ensureCameraPermission()) {
@@ -166,6 +164,9 @@ public class ProductSearch extends BaseEmployeeRequiredActivity {
 
         binding.clearButton.setOnClickListener(v -> clearForm(binding));
     }
+
+    @Override
+    protected void onGatePassed() { if (binding != null) binding.getRoot().setVisibility(View.VISIBLE); }
 
     private void clearForm(ActivityProductSearchBinding binding) {
         binding.editBarcode.setText("");

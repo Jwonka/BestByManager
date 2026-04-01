@@ -30,8 +30,10 @@ public final class AppResetUtil {
             app.deleteDatabase(BestByManagerDatabase.DB_NAME);
 
             app.getSharedPreferences("app_prefs", Context.MODE_PRIVATE).edit().clear().apply();
-            app.getSharedPreferences("bestby_session", Context.MODE_PRIVATE).edit().clear().apply();
+            app.getSharedPreferences("bestby_state", Context.MODE_PRIVATE).edit().clear().apply();
             app.getSharedPreferences("security_prefs", Context.MODE_PRIVATE).edit().clear().apply();
+            app.getSharedPreferences("device_owner", Context.MODE_PRIVATE).edit().clear().apply();
+            app.getSharedPreferences("idle_prefs", Context.MODE_PRIVATE).edit().clear().apply();
             PreferenceManager.getDefaultSharedPreferences(app).edit().clear().apply();
             deleteRecursively(app.getCacheDir());
 

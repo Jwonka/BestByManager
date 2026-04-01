@@ -5,15 +5,26 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Keep business data -->
+        <include domain="database" path="bestbymanager.db" />
+        <include domain="database" path="bestbymanager.db-wal" />
+        <include domain="database" path="bestbymanager.db-shm" />
+
+        <!-- Keep preferences -->
+        <include domain="sharedpref" path="." />
+
+        <!-- Exclude session state -->
+        <exclude domain="sharedpref" path="bestby_state.xml" />
     </cloud-backup>
-    <!--
+
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- Same policy for device-to-device restore -->
+        <include domain="database" path="bestbymanager.db" />
+        <include domain="database" path="bestbymanager.db" />
+        <include domain="database" path="bestbymanager.db" />
+
+        <include domain="sharedpref" path="." />
+
+        <exclude domain="sharedpref" path="bestby_state.xml" />
     </device-transfer>
-    -->
 </data-extraction-rules>

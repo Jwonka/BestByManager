@@ -1,8 +1,10 @@
 package com.bestbymanager.app.UI.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,17 +17,23 @@ import com.bestbymanager.app.databinding.ActivityMainBinding;
 import com.bestbymanager.app.utilities.AdminMenu;
 
 public class MainActivity extends BaseEmployeeRequiredActivity {
+    private ActivityMainBinding binding;
 
     @Override
-    protected void onGatePassed() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         setTitle(R.string.main_screen);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.getRoot().setVisibility(View.INVISIBLE);
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets systemBars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
@@ -34,9 +42,13 @@ public class MainActivity extends BaseEmployeeRequiredActivity {
         binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(this, ProductDetails.class)));
         binding.productSearchButton.setOnClickListener(v -> startActivity(new Intent(this, ProductSearch.class)));
         binding.productListButton.setOnClickListener(v -> startActivity(new Intent(this, ProductList.class)));
-        binding.employeeListButton.setOnClickListener(v -> startActivity(new Intent(this, EmployeeList.class).putExtra("selectMode", true)));
+        binding.employeeListButton.setOnClickListener(v ->
+                startActivity(new Intent(this, EmployeeList.class).putExtra("selectMode", true)));
         binding.aboutButton.setOnClickListener(v -> startActivity(new Intent(this, AboutActivity.class)));
     }
+
+    @Override
+    protected void onGatePassed() { if (binding != null) binding.getRoot().setVisibility(View.VISIBLE); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

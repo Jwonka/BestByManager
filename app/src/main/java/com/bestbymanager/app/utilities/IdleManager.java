@@ -9,14 +9,8 @@ public final class IdleManager {
     private static final String KEY_LAST_TOUCH = "last_touch";
     private static final long EMPLOYEE_TIMEOUT_MS = 15 * 60 * 1000; // 15 min
     private static final long ADMIN_TIMEOUT_MS = 60 * 60 * 1000;  // 60 min
-
-    private static SharedPreferences prefs(Context c) {
-        return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    }
-
-    public static void touch(Context c) {
-        prefs(c).edit().putLong(KEY_LAST_TOUCH, System.currentTimeMillis()).apply();
-    }
+    private static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
+    public static void touch(Context c) { prefs(c).edit().putLong(KEY_LAST_TOUCH, System.currentTimeMillis()).apply(); }
 
     public static boolean isExpired(Context c) {
         long last = prefs(c).getLong(KEY_LAST_TOUCH, 0L);

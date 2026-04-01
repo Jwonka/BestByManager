@@ -31,21 +31,33 @@ import java.util.List;
 
 public class ProductReport extends BaseEmployeeRequiredActivity {
     private ProductReportViewModel prViewModel;
-
+    private ActivityProductReportBinding binding;
     private static final String EXTRA_START_DATE   = "startDate";
     private static final String EXTRA_END_DATE     = "endDate";
     private static final String EXTRA_MODE         = "mode";
     private static final String EXTRA_BARCODE      = "barcode";
     private static final String EXTRA_ALL_PRODUCTS = "allProducts";
-
     private boolean emptyToastShown = false;
     private ProductReportAdapter prAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.results);
 
-        // non-UI init only (safe before gate)
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        binding = ActivityProductReportBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.getRoot().setVisibility(View.INVISIBLE);
+
+        final View rootView = binding.getRoot();
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(rootView);
+
         Intent in = getIntent();
         Bundle args = new Bundle();
         args.putString(EXTRA_START_DATE, in.getStringExtra(EXTRA_START_DATE));
@@ -58,23 +70,6 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
                 this,
                 new SavedStateViewModelFactory(getApplication(), this, args)
         ).get(ProductReportViewModel.class);
-    }
-
-    @Override
-    protected void onGatePassed() {
-        setTitle(R.string.results);
-
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductReportBinding binding = ActivityProductReportBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        final View rootView = binding.getRoot();
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(rootView);
 
         prAdapter = new ProductReportAdapter(
                 id -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", id)),
@@ -99,6 +94,9 @@ public class ProductReport extends BaseEmployeeRequiredActivity {
             }
         });
     }
+
+    @Override
+    protected void onGatePassed() { if (binding != null) binding.getRoot().setVisibility(View.VISIBLE); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

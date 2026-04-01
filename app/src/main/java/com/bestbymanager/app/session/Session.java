@@ -97,11 +97,9 @@ public final class Session {
 
     // ---- Kiosk unlock getters ----
     public long adminId() { return adminId.get(); }
-
     public String adminName() { return adminName.get(); }
 
     public boolean isAdmin() { return isAdmin.get(); }
-
     public boolean isUnlocked() { return unlockedAdminId != null; }
 
     // ---- Limited/reset mode ----

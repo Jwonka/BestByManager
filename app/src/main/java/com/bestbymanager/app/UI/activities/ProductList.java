@@ -24,6 +24,7 @@ import java.util.Collections;
 
 public class ProductList extends BaseEmployeeRequiredActivity {
 
+    private ActivityProductListBinding binding;
     private ProductListViewModel productListViewModel;
 
     @Override
@@ -32,34 +33,27 @@ public class ProductList extends BaseEmployeeRequiredActivity {
 
         // non-UI init
         productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
-    }
 
-    @Override
-    protected void onGatePassed() {
         setTitle(R.string.product_list);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductListBinding binding = ActivityProductListBinding.inflate(getLayoutInflater());
+        binding = ActivityProductListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.getRoot().setVisibility(View.INVISIBLE);
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets systemBars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         ViewCompat.requestApplyInsets(rootView);
 
-        binding.productDetailsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ProductList.this, ProductDetails.class);
-            startActivity(intent);
-        });
+        binding.productDetailsButton.setOnClickListener(v -> startActivity(new Intent(ProductList.this, ProductDetails.class)));
 
-        final ProductAdapter productAdapter = new ProductAdapter((productID) -> {
-            Intent intent = new Intent(this, ProductDetails.class)
-                    .putExtra("productID", productID);
-            startActivity(intent);
-        });
+        final ProductAdapter productAdapter = new ProductAdapter(productID -> startActivity(new Intent(this, ProductDetails.class).putExtra("productID", productID)));
 
         binding.productListRecyclerView.setAdapter(productAdapter);
         binding.productListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,6 +71,9 @@ public class ProductList extends BaseEmployeeRequiredActivity {
             productAdapter.setProducts(list);
         });
     }
+
+    @Override
+    protected void onGatePassed() { if (binding != null) binding.getRoot().setVisibility(View.VISIBLE); }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

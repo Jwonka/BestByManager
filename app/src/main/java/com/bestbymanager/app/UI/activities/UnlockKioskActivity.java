@@ -76,6 +76,7 @@ public class UnlockKioskActivity extends AppCompatActivity {
                 return insets;
             }
         });
+        ViewCompat.requestApplyInsets(rootView);
 
         repository = new Repository(getApplication());
 
@@ -142,10 +143,7 @@ public class UnlockKioskActivity extends AppCompatActivity {
                 if (firstRun) {
                     setTitle(R.string.setup_owner);
                     button.setText(R.string.setup_owner);
-                    button.setOnClickListener(v -> {
-                        setupOwnerAction.run();
-                        refreshFirstRunStateAndWireUi();
-                    });
+                    button.setOnClickListener(v -> { setupOwnerAction.run(); });
                 } else {
                     setTitle(R.string.unlock_kiosk);
                     button.setText(R.string.unlock_kiosk);

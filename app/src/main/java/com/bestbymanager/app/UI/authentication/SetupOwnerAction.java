@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import com.bestbymanager.app.UI.activities.MainActivity;
 import com.bestbymanager.app.data.database.Repository;
+import com.bestbymanager.app.data.entities.Employee;
 import com.bestbymanager.app.session.ActiveEmployeeManager;
 import com.bestbymanager.app.session.DeviceOwnerManager;
 import com.bestbymanager.app.session.Session;
@@ -20,24 +23,31 @@ public class SetupOwnerAction extends AuthenticationAction {
 
     @Override
     protected void performAuthorization(String name, String plainPassword) {
-        repository.insertEmployee(name, plainPassword)
-                .observe((LifecycleOwner) context, employee -> {
-                    if (employee == null) {
-                        Toast.makeText(context, "Name already taken.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+        LiveData<Employee> live = repository.insertEmployee(name, plainPassword);
 
-                    // First employee is admin in Repository.insertEmployee(...)
-                    Session.get().unlockKiosk(employee, context);
-                    DeviceOwnerManager.setOwnerEmployeeId(context, employee.getEmployeeID());
-                    ActiveEmployeeManager.setActiveEmployeeId(context, employee.getEmployeeID());
-                    ActiveEmployeeManager.setActiveEmployeeIsAdmin(context, employee.isAdmin());
+        Observer<Employee> observer = new Observer<Employee>() {
+            @Override
+            public void onChanged(Employee employee) {
+                live.removeObserver(this);
 
-                    Toast.makeText(context, "Owner created. Kiosk unlocked.", Toast.LENGTH_SHORT).show();
+                if (employee == null) {
+                    Toast.makeText(context, "Name already taken.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                    context.startActivity(new Intent(context, MainActivity.class)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    ((Activity) context).finish();
-                });
+                Session.get().unlockKiosk(employee, context);
+                DeviceOwnerManager.setOwnerEmployeeId(context, employee.getEmployeeID());
+                ActiveEmployeeManager.setActiveEmployeeId(context, employee.getEmployeeID());
+                ActiveEmployeeManager.setActiveEmployeeIsAdmin(context, employee.isAdmin());
+
+                Toast.makeText(context, "Owner created. Kiosk unlocked.", Toast.LENGTH_SHORT).show();
+
+                context.startActivity(new Intent(context, MainActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                ((Activity) context).finish();
+            }
+        };
+
+        live.observe((LifecycleOwner) context, observer);
     }
 }

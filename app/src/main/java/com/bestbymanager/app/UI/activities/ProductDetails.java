@@ -74,9 +74,9 @@ import retrofit2.Response;
 public class ProductDetails extends BaseEmployeeRequiredActivity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private ProductDetailsViewModel productViewModel;
+    private ActivityProductDetailsBinding binding;
     private static final String TAG = "ProductDetails";
     private static final int REQ_CAMERA = 10;
-
     private EditText name, quantity, weight, brand, editExp, barcode;
     Button saveButton;
     Button clearButton;
@@ -207,15 +207,13 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
                 Log.e(TAG, "Failed to fetch product", t);
             }
         };
-    }
 
-    @Override
-    protected void onGatePassed() {
         setTitle(R.string.product_details);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
+        binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.getRoot().setVisibility(View.INVISIBLE);
 
         final View rootView = binding.getRoot();
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
@@ -332,6 +330,9 @@ public class ProductDetails extends BaseEmployeeRequiredActivity {
             pendingScanResult = null;
         }
     }
+
+    @Override
+    protected void onGatePassed() {  if (binding != null) binding.getRoot().setVisibility(View.VISIBLE); }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle out) {
