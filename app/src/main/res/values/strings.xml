@@ -162,7 +162,7 @@
     <string name="instructions_reports_title">Reports</string>
     <string name="instructions_reports_body">Product Search generates product reports filterable by barcode, date range, or both. Employee Search generates employee reports showing entries, expired counts, and discard totals. Reports can be copied to clipboard or shared via any app.</string>
     <string name="instructions_faq_label">For more help and frequently asked questions, visit:</string>
-    <string name="instructions_faq_link"><a href="https://jwonka.github.io/BestByManager/faq.html">Best By Manager FAQ</a></string>
+    <string name="instructions_faq_link"><a href="https://joshua-werlein.github.io/BestByManager/faq.html">Best By Manager FAQ</a></string>
 
     <!-- ── Menu labels ── -->
     <string name="privacy_policy">Privacy Policy</string>

@@ -10,7 +10,7 @@
 > ⚠️ **This is not a traditional login app.**
 > Best By Manager uses a **kiosk + employee session model**. The device stays in the store. An admin unlocks it, an employee selects themselves and enters a PIN, and all actions are tracked under that employee. Sessions expire automatically via idle lock.
 
-📲 **[Download on Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)** — 🚀 also available as an APK on [itch.io](https://jwonka2.itch.io/best-by-manager)
+📲 **[Download on Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)** — 🚀 also available as an APK on [itch.io](https://joshua-werlein.itch.io/best-by-manager)
 
 ---
 
@@ -253,7 +253,7 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 📲 [Download on Google Play](https://play.google.com/store/apps/details?id=com.bestbymanager.app)
 
 ### APK Sideload
-👉 [Download on itch.io](https://jwonka2.itch.io/best-by-manager)
+👉 [Download on itch.io](https://joshua-werlein.itch.io/best-by-manager)
 
 Android will prompt once to allow installs from unknown sources. Accept to complete installation.
 
@@ -273,7 +273,7 @@ Android will prompt once to allow installs from unknown sources. Accept to compl
 ## Build From Source
 
 ```bash
-git clone https://github.com/Jwonka/BestByManager.git
+git clone https://github.com/joshua-werlein/BestByManager.git
 cd BestByManager
 ./gradlew assembleRelease
 ```
@@ -357,13 +357,13 @@ Best By Manager stores all data locally on your device. Nothing is ever uploaded
 - No analytics, no tracking, no cloud sync, no accounts on any external service
 - All employee credentials are stored as bcrypt hashes on-device only
 
-Full privacy policy: [https://jwonka.github.io/BestByManager/privacy.html](https://jwonka.github.io/BestByManager/privacy.html)
+Full privacy policy: [https://joshua-werlein.github.io/BestByManager/privacy.html](https://joshua-werlein.github.io/BestByManager/privacy.html)
 
 ---
 
 ## License
 
-MIT License — see [LICENSE](https://github.com/Jwonka/BestByManager/blob/main/LICENSE)
+MIT License — see [LICENSE](https://github.com/joshua-werlein/BestByManager/blob/main/LICENSE)
 
 You are free to use, modify, and distribute this application commercially or privately under the terms of the MIT License.
 
@@ -378,4 +378,6 @@ Not currently accepting outside contributions. Feel free to fork, open issues, o
 ---
 
 > ⚡ Built in Wisconsin with 💚 for small businesses.
+
+
 
