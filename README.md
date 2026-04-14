@@ -227,21 +227,21 @@ Best By Manager does not use cloud accounts, email recovery, or external service
 
 <div align="center">
   <h3>🏠 Home Screen &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔍 Product Search</h3>
-  <a href="images/home_screen.png">
-    <img src="images/home_screen.png" width="300" height="500" alt="Home Screen">
+  <a href="images/homeScreen.png">
+    <img src="images/homeScreen.png" width="300" height="500" alt="Home Screen">
   </a>
-  <a href="images/product_search.png">
-    <img src="images/product_search.png" width="300" height="500" alt="Product Search">
+  <a href="images/productSearch.png">
+    <img src="images/productSearch.png" width="300" height="500" alt="Product Search">
   </a>
 </div>
 
 <div align="center">
   <h3>📋 Product Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📈 Product Report</h3>
-  <a href="images/product_details.png">
-    <img src="images/product_details.png" width="300" height="500" alt="Product Details">
+  <a href="images/productDetails.png">
+    <img src="images/productDetails.png" width="300" height="500" alt="Product Details">
   </a>
-  <a href="images/product_report.png">
-    <img src="images/product_report.png" width="300" height="500" alt="Product Report">
+  <a href="images/productReport.png">
+    <img src="images/productReport.png" width="300" height="500" alt="Product Report">
   </a>
 </div>
 
