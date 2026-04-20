@@ -242,6 +242,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:gravity="center"
+                    android:clickable="true"
                     android:layout_marginBottom="@dimen/spacing_l"/>
 
             </LinearLayout>
