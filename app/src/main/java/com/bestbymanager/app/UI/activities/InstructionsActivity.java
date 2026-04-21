@@ -1,9 +1,8 @@
 package com.bestbymanager.app.UI.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,9 +45,10 @@ public class InstructionsActivity extends AppCompatActivity {
 
         // Wire the FAQ hyperlink
         TextView faqLink = binding.faqLink;
-        faqLink.setText(Html.fromHtml(getString(R.string.instructions_faq_link), Html.FROM_HTML_MODE_LEGACY));
-        faqLink.setMovementMethod(LinkMovementMethod.getInstance());
-        faqLink.setLinkTextColor(ContextCompat.getColor(this, R.color.dark_green));
+        faqLink.setText(getString(R.string.instructions_faq_link));
+        faqLink.setTextColor(ContextCompat.getColor(this, R.color.dark_green));
+        faqLink.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://joshua-werlein.github.io/BestByManager/faq.html"))));
     }
 
     @Override
