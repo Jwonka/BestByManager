@@ -285,7 +285,7 @@ Built with Android Studio Meerkat 2024.3.2
 ## Requirements
 
 - **Min SDK:** API 27 (Android 8.1 Oreo)
-- **Target SDK:** API 35 (Android 15)
+- **Target SDK:** API 36 (Android 16)
 - **Compile SDK:** 36
 - **Architecture:** arm64-v8a, armeabi-v7a, x86_64
 
