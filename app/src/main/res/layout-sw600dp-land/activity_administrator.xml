@@ -13,29 +13,28 @@
         android:id="@+id/grocery_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/spacing_xxxxxl"
         android:src="@drawable/best_by_manager_icon"
         android:contentDescription="@string/icon"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/admin_panel"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintWidth_percent="0.32"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintWidth_max="340dp"
         app:layout_constraintHeight_max="340dp"
-        android:layout_marginEnd="@dimen/spacing_z" />
+        android:layout_marginEnd="24dp" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/admin_panel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_z"
-        android:layout_marginEnd="@dimen/spacing_xxxxl"
+        android:layout_marginStart="24dp"
         app:cardBackgroundColor="@color/sky_blue"
         app:strokeColor="@color/black"
         app:strokeWidth="1dp"
         app:cardCornerRadius="0dp"
-
         app:layout_constraintStart_toEndOf="@id/grocery_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

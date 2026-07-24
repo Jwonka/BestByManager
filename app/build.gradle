@@ -9,10 +9,9 @@ android {
     defaultConfig {
         applicationId "com.bestbymanager.app"
         minSdk = 27
-        //noinspection OldTargetApi
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 28
-        versionName = "2.1.0"
+        versionName = "2.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
